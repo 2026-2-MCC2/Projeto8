@@ -11,15 +11,19 @@
 <header>
     <div class="eyebrown">TicketLab - Painel do Administrador</div>
     <h1>Cadastros pendentes</h1>
-    <p class="subtitulo">BL-03 - aprove ou rejeite os cadastros de Organizadores e Fronecedores.</p>
+    <p class="subtitulo">Aprove ou rejeite os cadastros de Organizadores e Fronecedores.</p>
 </header>
+<!-- class é usado pelo CSS e o id é usado pelo JavaScript -->
 <nav class="abas" id="abas">
+    <!-- class é usado para quando clica ou nao na aba e data-filtro é o que retorna quando clica e o que aparece na tela (serve para todos)-->
     <div class="aba ativa" data-filtro="pendente">Pendentes</div>
     <div class="aba" data-filtro="aprovado">Aprovados</div>
     <div class="aba" data-filtro="rejeitado">Rejeitados</div>
     <div class="aba" data-filtro="todos">Todos</div>
 </nav>
+<!--retorna o conteudo que o JS vai colocar dentro da lista, sem esse id a pagina quebra e nao retorna nada-->
 <div class="lista" id="lista"></div>
-<script src="../js/admin.js"></script>
+<!--liga o script JavaScript ao HTML-->
+<script src="js/admin.js"></script>
 </body>
 </html>
