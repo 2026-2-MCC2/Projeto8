@@ -1,0 +1,27 @@
+{
+  "name": "projeto8",
+  "version": "1.0.0",
+  "description": "```sh\r Utilize o site <https://www.toptal.com/developers/gitignore> para gerar seu arquivo gitignore e apague este campo.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2026-2-MCC2/Projeto8.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/2026-2-MCC2/Projeto8/issues"
+  },
+  "homepage": "https://github.com/2026-2-MCC2/Projeto8#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.9.1",
+    "globals": "^17.11.0",
+    "prettier": "^3.9.6"
+  }
+}
