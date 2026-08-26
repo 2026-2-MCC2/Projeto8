@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicketLab - Administrador - Cadastros pendentes</title>
+    <link rel="sylesheet" href="../css/admin.css">
+</head>
+<body>
+    
+<header>
+    <div class="eyebrown">TicketLab - Painel do Administrador</div>
+    <h1>Cadastros pendentes</h1>
+    <p class="subtitulo">BL-03 - aprove ou rejeite os cadastros de Organizadores e Fronecedores.</p>
+</header>
+<nav class="abas" id="abas">
+    <div class="aba ativa" data-filtro="pendente">Pendentes</div>
+    <div class="aba" data-filtro="aprovado">Aprovados</div>
+    <div class="aba" data-filtro="rejeitado">Rejeitados</div>
+    <div class="aba" data-filtro="todos">Todos</div>
+</nav>
+<div class="lista" id="lista"></div>
+<script src="../js/admin.js"></script>
+</body>
+</html>
