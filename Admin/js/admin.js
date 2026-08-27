@@ -33,8 +33,8 @@ function criarCartaoHTML(c) {
   if (c.status === "pendente") {
     botoes = `
       <div class="acoes">
-        <button class="btn-aprovar" data-id="${c.id}" data-acao="aprovar">Aprovar</button>
-        <button class="btn-rejeitar" data-id="${c.id}" data-acao="rejeitar">Rejeitar</button>
+        <button class="btn-aprovar" data-id="${c.id}" data-acao="aprovado">Aprovar</button>
+        <button class="btn-rejeitar" data-id="${c.id}" data-acao="rejeitado">Rejeitar</button>
       </div>`;
   } else {
     botoes = `
