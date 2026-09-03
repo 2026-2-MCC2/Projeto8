@@ -310,40 +310,40 @@ app.patch("/usuarios/:id", (req, res) => {
 
 app.delete("/usuarios/:id", (req, res) => {
 
-    const id = req.params.id;
+  const id = req.params.id;
 
-    connection.query(
-        "DELETE FROM usuarios WHERE id = ?",
-        [id],
-        (error, results) => {
+  connection.query(
+    "DELETE FROM usuarios WHERE id = ?",
+    [id],
+    (error, results) => {
 
-            if (error) {
-                console.error(
-                    "Erro ao deletar usuário:",
-                    error.message
-                );
+      if (error) {
+        console.error(
+          "Erro ao deletar usuário:",
+          error.message
+        );
 
-                res.status(500).json({
-                    mensagem: "Erro ao deletar usuário"
-                });
+        res.status(500).json({
+          mensagem: "Erro ao deletar usuário"
+        });
 
-                return;
-            }
+        return;
+      }
 
-            if (results.affectedRows === 0) {
-                res.status(404).json({
-                    mensagem: "Usuário não encontrado"
-                });
+      if (results.affectedRows === 0) {
+        res.status(404).json({
+          mensagem: "Usuário não encontrado"
+        });
 
-                return;
-            }
+        return;
+      }
 
-            res.status(200).json({
-                mensagem: "Usuário deletado com sucesso!"
-            });
+      res.status(200).json({
+        mensagem: "Usuário deletado com sucesso!"
+      });
 
-        }
-    );
+    }
+  );
 
 });
 
@@ -368,6 +368,7 @@ app.delete("/usuarios/:id", (req, res) => {
 //     "telefone": "11999999999",
 //     "tipo": "ORGANIZADOR"
 // }
+
 app.post("/usuarios", (req, res) => {
 
   // Retira do req.body os campos que precisamos
@@ -396,7 +397,6 @@ app.post("/usuarios", (req, res) => {
 
   // Executa o INSERT no banco.
   connection.query(
-
     sql,
 
     // Os valores seguem exatamente a mesma
@@ -417,7 +417,6 @@ app.post("/usuarios", (req, res) => {
       "PENDENTE"
     ],
 
-
     (error, results) => {
 
       // Verifica se aconteceu algum erro
@@ -429,33 +428,23 @@ app.post("/usuarios", (req, res) => {
           error.message
         );
 
-        // Por enquanto apenas interrompemos
-        // a execução em caso de erro.
-        //
-        // Futuramente vamos melhorar esse tratamento
-        // para retornar o status HTTP adequado.
+        res.status(500).json({
+          mensagem: "Erro ao cadastrar usuário"
+        });
+
         return;
       }
-
-
-      // Mostra no terminal que o cadastro funcionou.
-      console.log(
-        "Usuário cadastrado com sucesso!"
-      );
 
 
       // HTTP 201 = Created.
       //
       // Indica que um novo recurso foi criado.
       res.status(201).json({
-
-        mensagem:
-          "Usuário cadastrado com sucesso!",
+        mensagem: "Usuário cadastrado com sucesso!",
 
         // insertId contém o ID gerado automaticamente
         // pelo AUTO_INCREMENT do MySQL.
         id: results.insertId
-
       });
 
     }
@@ -464,6 +453,677 @@ app.post("/usuarios", (req, res) => {
 });
 
 
+// ======================================================
+// POST /organizadores
+// ======================================================
+
+// Rota responsável pelo autocadastro de um Organizador.
+//
+// O cadastro precisa criar dois registros no banco:
+//
+// 1. Um registro na tabela "usuarios"
+// 2. Um registro na tabela "organizadores"
+//
+// As duas tabelas ficam relacionadas pelo ID do usuário.
+//
+// Como as duas operações fazem parte do mesmo cadastro,
+// vamos utilizar uma transação do MySQL.
+//
+// Se tudo der certo:
+//     COMMIT
+//
+// Se alguma operação falhar:
+//     ROLLBACK
+
+app.post("/organizadores", (req, res) => {
+
+  // Retira do req.body os campos necessários
+  // para realizar o cadastro.
+  //
+  // Os primeiros campos pertencem à tabela "usuarios".
+  // Os últimos campos pertencem à tabela "organizadores".
+  const {
+    nome,
+    email,
+    senha,
+    telefone,
+    tipo_pessoa,
+    documento,
+    data_nascimento
+  } = req.body;
+
+
+  // ==================================================
+  // VALIDAÇÃO DOS CAMPOS OBRIGATÓRIOS
+  // ==================================================
+
+  // Verifica se algum dos campos necessários
+  // não foi informado pelo usuário.
+  if (
+    !nome ||
+    !email ||
+    !senha ||
+    !telefone ||
+    !tipo_pessoa ||
+    !documento ||
+    !data_nascimento
+  ) {
+
+    res.status(400).json({
+      mensagem: "Todos os campos são obrigatórios"
+    });
+
+    return;
+  }
+
+
+  // ==================================================
+  // VALIDAÇÃO DO TIPO DE PESSOA
+  // ==================================================
+
+  // O banco aceita somente PF ou PJ.
+  if (tipo_pessoa !== "PF" && tipo_pessoa !== "PJ") {
+
+    res.status(400).json({
+      mensagem: "Tipo de pessoa deve ser 'PF' ou 'PJ'"
+    });
+
+    return;
+  }
+
+
+  // ==================================================
+  // VALIDAÇÃO DA DATA DE NASCIMENTO
+  // ==================================================
+
+  // Converte a data recebida para um objeto Date.
+  const data = new Date(data_nascimento);
+
+
+  // Verifica se a data informada é inválida.
+  if (isNaN(data.getTime())) {
+
+    res.status(400).json({
+      mensagem: "Data de nascimento inválida"
+    });
+
+    return;
+  }
+
+
+  // Verifica se a data de nascimento está no futuro.
+  if (data > new Date()) {
+
+    res.status(400).json({
+      mensagem: "Data de nascimento não pode ser no futuro"
+    });
+
+    return;
+  }
+
+
+  // ==================================================
+  // SQL DO USUÁRIO
+  // ==================================================
+
+  // SQL responsável por inserir o usuário.
+  //
+  // Os "?" são placeholders.
+  // Os valores reais serão enviados no array abaixo.
+  const sql = `
+        INSERT INTO usuarios
+        (nome, email, telefone, senha_hash, tipo, status)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+
+  // ==================================================
+  // INÍCIO DA TRANSAÇÃO
+  // ==================================================
+
+  // Inicia uma transação no MySQL.
+  //
+  // A partir daqui, as alterações poderão ser
+  // confirmadas com COMMIT ou desfeitas com ROLLBACK.
+  connection.beginTransaction((error) => {
+
+    // Verifica se houve algum problema ao iniciar
+    // a transação.
+    if (error) {
+
+      console.error(
+        "Erro ao iniciar transação:",
+        error.message
+      );
+
+      res.status(500).json({
+        mensagem: "Erro ao iniciar cadastro"
+      });
+
+      return;
+    }
+
+
+    // ==================================================
+    // PRIMEIRO INSERT
+    // ==================================================
+
+    // Insere os dados básicos na tabela "usuarios".
+    connection.query(
+      sql,
+
+      // Os valores seguem exatamente a mesma
+      // ordem dos "?" presentes na SQL.
+      [
+        nome,
+        email,
+        telefone,
+        senha,
+        "ORGANIZADOR",
+        "PENDENTE"
+      ],
+
+      (error, results) => {
+
+        // Se o primeiro INSERT falhar,
+        // desfazemos a transação.
+        if (error) {
+
+          connection.rollback(() => {
+
+            console.error(
+              "Erro ao cadastrar usuário:",
+              error.message
+            );
+
+
+            // ER_DUP_ENTRY significa que
+            // tentamos inserir um valor que
+            // deveria ser único, mas já existe.
+            if (error.code === "ER_DUP_ENTRY") {
+
+              res.status(409).json({
+                mensagem: "E-mail já cadastrado"
+              });
+
+              return;
+            }
+
+
+            res.status(500).json({
+              mensagem: "Erro ao cadastrar usuário"
+            });
+
+          });
+
+          return;
+        }
+
+
+        // ==================================================
+        // SQL DO ORGANIZADOR
+        // ==================================================
+
+        // SQL responsável por inserir os dados
+        // específicos do organizador.
+        const sqlOrganizador = `
+                    INSERT INTO organizadores
+                    (id_usuario, tipo_pessoa, documento, data_nascimento)
+                    VALUES (?, ?, ?, ?)
+                `;
+
+
+        // ==================================================
+        // SEGUNDO INSERT
+        // ==================================================
+
+        // Insere os dados específicos do organizador.
+        connection.query(
+          sqlOrganizador,
+
+          // results.insertId contém o ID gerado
+          // automaticamente pelo primeiro INSERT.
+          //
+          // Esse ID será utilizado como
+          // id_usuario na tabela organizadores.
+          [
+            results.insertId,
+            tipo_pessoa,
+            documento,
+            data_nascimento
+          ],
+
+          (error) => {
+
+            // Se o segundo INSERT falhar,
+            // desfazemos também o primeiro INSERT.
+            if (error) {
+
+              connection.rollback(() => {
+
+                console.error(
+                  "Erro ao cadastrar organizador:",
+                  error.message
+                );
+
+
+                // Verifica se o erro aconteceu
+                // porque o documento já existe.
+                if (error.code === "ER_DUP_ENTRY") {
+
+                  res.status(409).json({
+                    mensagem: "Documento já cadastrado"
+                  });
+
+                  return;
+                }
+
+
+                res.status(500).json({
+                  mensagem: "Erro ao cadastrar organizador"
+                });
+
+              });
+
+              return;
+            }
+
+
+            // ==================================================
+            // COMMIT
+            // ==================================================
+
+            // Os dois INSERTs foram executados com sucesso.
+            //
+            // Agora confirmamos definitivamente
+            // todas as alterações realizadas
+            // durante a transação.
+            connection.commit((error) => {
+
+              // Verifica se houve algum problema
+              // ao confirmar a transação.
+              if (error) {
+
+                // Se o COMMIT falhar, tentamos
+                // desfazer a transação.
+                connection.rollback(() => {
+
+                  console.error(
+                    "Erro ao confirmar cadastro:",
+                    error.message
+                  );
+
+                  res.status(500).json({
+                    mensagem: "Erro ao confirmar cadastro"
+                  });
+
+                });
+
+                return;
+              }
+
+
+              // ==================================================
+              // RESPOSTA DE SUCESSO
+              // ==================================================
+
+              // HTTP 201 = Created.
+              //
+              // Só chegamos aqui depois que:
+              //
+              // 1. O usuário foi criado.
+              // 2. O organizador foi criado.
+              // 3. O COMMIT foi realizado.
+              res.status(201).json({
+                mensagem: "Organizador cadastrado com sucesso!",
+                id: results.insertId
+              });
+
+            });
+
+          }
+        );
+
+      }
+    );
+
+  });
+
+});
+
+// ======================================================
+// POST /fornecedores
+// ======================================================
+// Rota responsável pelo autocadastro de um Fornecedor.
+//
+// O cadastro precisa criar dois registros no banco:
+//
+// 1. Um registro na tabela "usuarios"
+// 2. Um registro na tabela "fornecedores"
+//
+// As duas tabelas ficam relacionadas pelo ID do usuário.
+//
+// Neste momento estamos utilizando uma transação,
+// mas ainda não adicionamos COMMIT nem ROLLBACK.
+// Vamos fazer essas partes separadamente.
+
+// ======================================================
+// POST /fornecedores
+// ======================================================
+// Rota responsável pelo autocadastro de um Fornecedor.
+//
+// O cadastro precisa criar dois registros no banco:
+//
+// 1. Um registro na tabela "usuarios"
+// 2. Um registro na tabela "fornecedores"
+//
+// As duas tabelas ficam relacionadas pelo ID do usuário.
+//
+// Como são dois INSERTs que fazem parte do mesmo cadastro,
+// utilizamos uma transação.
+//
+// Se tudo der certo:
+//     COMMIT
+//
+// Se alguma operação falhar:
+//     ROLLBACK
+
+app.post("/fornecedores", (req, res) => {
+
+  // ==================================================
+  // DADOS RECEBIDOS
+  // ==================================================
+
+  // Retira do req.body os campos necessários
+  // para realizar o cadastro do fornecedor.
+  const {
+    nome,
+    email,
+    senha,
+    telefone,
+    cnpj,
+    categoria_atuacao
+  } = req.body;
+
+
+  // ==================================================
+  // VALIDAÇÃO DOS CAMPOS OBRIGATÓRIOS
+  // ==================================================
+
+  // Verifica se algum dos campos necessários
+  // não foi informado pelo usuário.
+  if (
+    !nome ||
+    !email ||
+    !senha ||
+    !telefone ||
+    !cnpj ||
+    !categoria_atuacao
+  ) {
+
+    res.status(400).json({
+      mensagem: "Todos os campos são obrigatórios"
+    });
+
+    return;
+  }
+
+
+  // ==================================================
+  // VALIDAÇÃO DO CNPJ
+  // ==================================================
+
+  // Neste momento estamos esperando que o CNPJ
+  // seja informado somente com números.
+  //
+  // Exemplo:
+  // 12345678000199
+  //
+  // Por isso verificamos se possui exatamente
+  // 14 caracteres.
+  if (cnpj.length !== 14) {
+
+    res.status(400).json({
+      mensagem: "CNPJ deve ter 14 dígitos"
+    });
+
+    return;
+  }
+
+
+  // ==================================================
+  // SQL DO USUÁRIO
+  // ==================================================
+
+  // Primeiro vamos cadastrar os dados básicos
+  // na tabela usuarios.
+  const sql = `
+    INSERT INTO usuarios
+    (nome, email, telefone, senha_hash, tipo, status)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+
+  // ==================================================
+  // INÍCIO DA TRANSAÇÃO
+  // ==================================================
+
+  // Inicia uma transação no MySQL.
+  //
+  // A partir daqui, as alterações poderão ser
+  // confirmadas com COMMIT ou desfeitas com ROLLBACK.
+  connection.beginTransaction((error) => {
+
+    // Verifica se aconteceu algum erro
+    // ao iniciar a transação.
+    if (error) {
+
+      console.error(
+        "Erro ao iniciar transação:",
+        error.message
+      );
+
+      res.status(500).json({
+        mensagem: "Erro ao iniciar cadastro"
+      });
+
+      return;
+    }
+
+
+    // ==================================================
+    // PRIMEIRO INSERT
+    // ==================================================
+
+    // Insere os dados básicos do fornecedor
+    // na tabela usuarios.
+    connection.query(
+      sql,
+
+      // Os valores seguem exatamente a mesma
+      // ordem dos "?" presentes na SQL.
+      [
+        nome,
+        email,
+        telefone,
+        senha,
+        "FORNECEDOR",
+        "PENDENTE"
+      ],
+
+      (error, results) => {
+
+        // Verifica se aconteceu algum erro
+        // durante o primeiro INSERT.
+        if (error) {
+
+          // Desfaz a transação.
+          connection.rollback(() => {
+
+            console.error(
+              "Erro ao cadastrar fornecedor:",
+              error.message
+            );
+
+
+            // ER_DUP_ENTRY significa que tentamos
+            // inserir um valor que deveria ser único,
+            // mas ele já existe no banco.
+            if (error.code === "ER_DUP_ENTRY") {
+
+              res.status(409).json({
+                mensagem: "E-mail já cadastrado"
+              });
+
+              return;
+            }
+
+
+            res.status(500).json({
+              mensagem: "Erro ao cadastrar fornecedor"
+            });
+
+          });
+
+          return;
+        }
+
+
+        console.log(
+          "Usuário fornecedor criado com sucesso!"
+        );
+
+
+        // ==================================================
+        // SQL DO FORNECEDOR
+        // ==================================================
+
+        // Agora vamos inserir os dados específicos
+        // do fornecedor na tabela fornecedores.
+        const sqlFornecedor = `
+          INSERT INTO fornecedores
+          (id_usuario, cnpj, categoria_atuacao)
+          VALUES (?, ?, ?)
+        `;
+
+
+        // ==================================================
+        // SEGUNDO INSERT
+        // ==================================================
+
+        // Insere os dados específicos do fornecedor.
+        connection.query(
+          sqlFornecedor,
+
+          // results.insertId contém o ID gerado
+          // pelo primeiro INSERT na tabela usuarios.
+          //
+          // Esse mesmo ID será utilizado como
+          // id_usuario na tabela fornecedores.
+          [
+            results.insertId,
+            cnpj,
+            categoria_atuacao
+          ],
+
+          (error) => {
+
+            // Verifica se aconteceu algum erro
+            // durante o segundo INSERT.
+            if (error) {
+
+              // Desfaz também o primeiro INSERT.
+              connection.rollback(() => {
+
+                console.error(
+                  "Erro ao cadastrar fornecedor:",
+                  error.message
+                );
+
+
+                // Se o CNPJ já existir,
+                // retornamos HTTP 409.
+                if (error.code === "ER_DUP_ENTRY") {
+
+                  res.status(409).json({
+                    mensagem: "CNPJ já cadastrado"
+                  });
+
+                  return;
+                }
+
+
+                res.status(500).json({
+                  mensagem: "Erro ao cadastrar fornecedor"
+                });
+
+              });
+
+              return;
+            }
+
+
+            // ==================================================
+            // COMMIT
+            // ==================================================
+
+            // Os dois INSERTs foram executados com sucesso.
+            //
+            // Agora confirmamos definitivamente
+            // todas as alterações realizadas
+            // durante a transação.
+            connection.commit((error) => {
+
+              // Verifica se aconteceu algum erro
+              // ao confirmar a transação.
+              if (error) {
+
+                console.error(
+                  "Erro ao confirmar cadastro:",
+                  error.message
+                );
+
+                // Tenta desfazer a transação.
+                connection.rollback(() => {
+
+                  res.status(500).json({
+                    mensagem: "Erro ao confirmar cadastro"
+                  });
+
+                });
+
+                return;
+              }
+
+
+              // ==================================================
+              // RESPOSTA DE SUCESSO
+              // ==================================================
+
+              // HTTP 201 = Created.
+              //
+              // Só chegamos aqui depois que:
+              //
+              // 1. O usuário foi criado.
+              // 2. O fornecedor foi criado.
+              // 3. O COMMIT foi realizado.
+
+              res.status(201).json({
+                mensagem: "Fornecedor cadastrado com sucesso!",
+                id: results.insertId
+              });
+
+            });
+
+          }
+        );
+
+      }
+    );
+
+  });
+
+});
 // ======================================================
 // INICIALIZAÇÃO DO SERVIDOR
 // ======================================================
@@ -476,6 +1136,7 @@ app.post("/usuarios", (req, res) => {
 //
 // O callback será executado quando o servidor
 // começar a funcionar.
+
 app.listen(3000, () => {
 
   console.log(
