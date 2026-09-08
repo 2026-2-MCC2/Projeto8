@@ -7,6 +7,8 @@ const connection = require("./db");
 // Cria uma aplicação utilizando o Express.
 const app = express();
 
+const bcrypt = require("bcrypt");
+
 
 // ======================================================
 // MIDDLEWARE
@@ -383,6 +385,13 @@ app.post("/usuarios", (req, res) => {
     tipo
   } = req.body;
 
+  // Gera um hash seguro para a senha.
+  //
+  // O número 10 representa o custo utilizado
+  // pelo bcrypt para gerar o hash.
+  //
+  // A senha original NÃO será armazenada no banco.
+  const senhaHash = bcrypt.hashSync(senha, 10);
 
   // SQL responsável por inserir um novo usuário.
   //
@@ -405,14 +414,14 @@ app.post("/usuarios", (req, res) => {
     // nome      -> primeiro ?
     // email     -> segundo ?
     // telefone  -> terceiro ?
-    // senha     -> quarto ?
+    // senhaHash -> quarto ?
     // tipo      -> quinto ?
     // PENDENTE  -> sexto ?
     [
       nome,
       email,
       telefone,
-      senha,
+      senhaHash,
       tipo,
       "PENDENTE"
     ],
@@ -561,6 +570,8 @@ app.post("/organizadores", (req, res) => {
     return;
   }
 
+  const senhaHash = bcrypt.hashSync(senha, 10);
+
 
   // ==================================================
   // SQL DO USUÁRIO
@@ -618,7 +629,7 @@ app.post("/organizadores", (req, res) => {
         nome,
         email,
         telefone,
-        senha,
+        senhaHash,
         "ORGANIZADOR",
         "PENDENTE"
       ],
@@ -845,6 +856,7 @@ app.post("/fornecedores", (req, res) => {
     categoria_atuacao
   } = req.body;
 
+  
 
   // ==================================================
   // VALIDAÇÃO DOS CAMPOS OBRIGATÓRIOS
@@ -889,6 +901,8 @@ app.post("/fornecedores", (req, res) => {
 
     return;
   }
+
+  const senhaHash = bcrypt.hashSync(senha, 10);  
 
 
   // ==================================================
@@ -946,7 +960,7 @@ app.post("/fornecedores", (req, res) => {
         nome,
         email,
         telefone,
-        senha,
+        senhaHash,
         "FORNECEDOR",
         "PENDENTE"
       ],
