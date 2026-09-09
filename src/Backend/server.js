@@ -1516,6 +1516,25 @@ app.post("/login", (req, res) => {
       mensagem: "Email e senha são obrigatórios"
     });
   }
+  if (typeof email !== "string" || typeof senha !== "string") {
+    return res.status(400).json({
+      mensagem: "Email e senha devem ser textos"
+    });
+  }
+
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailValido.test(email)) {
+    return res.status(400).json({
+      mensagem: "E-mail inválido"
+    });
+  }
+
+  if(senha.length < 6){
+    return res.status(400).json({
+      mensagem: "A senha deve ter no minimo 6 caracteres"
+    });
+  }
+
   connection.query(
     "SELECT * FROM usuarios WHERE email = ?",
     [email],
