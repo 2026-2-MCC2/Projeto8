@@ -1,0 +1,260 @@
+:root {
+  /* Cores principais */
+  --cor-primaria: #5b45f5;
+  --cor-primaria-hover: #4935d4;
+
+  /* Fundos */
+  --cor-fundo: #f7f7f9;
+  --cor-card: #ffffff;
+
+  /* Textos */
+  --cor-texto: #18181b;
+  --cor-texto-secundario: #71717a;
+
+  /* Bordas */
+  --cor-borda: #dedee3;
+
+  /* Estados */
+  --cor-sucesso: #22c55e;
+  --cor-erro: #ef4444;
+}
+
+/* Página inteira */
+
+.login-container {
+  min-height: 100vh;
+  background-color: var(--cor-fundo);
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cabeçalho */
+
+.cabecalho {
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 20px 28px;
+  box-sizing: border-box;
+}
+
+.title {
+  margin: 0;
+
+  color: var(--cor-primaria);
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.descricao {
+  margin: 0;
+
+  color: var(--cor-texto-secundario);
+
+  font-size: 13px;
+}
+
+/* Área central */
+
+.login-main {
+  flex: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 40px 20px;
+}
+
+/* Card */
+
+.card {
+  width: 420px;
+
+  min-height: 420px;
+
+  background-color: var(--cor-card);
+
+  border-radius: 12px;
+
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  padding: 40px 36px;
+
+  box-sizing: border-box;
+}
+
+/* Conteúdo do card */
+
+.card-conteudo {
+  width: 100%;
+}
+
+/* Logo dentro do card */
+
+.logo-card {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: var(--cor-primaria);
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Título do login */
+
+.login-title {
+  margin: 0 0 8px;
+
+  color: var(--cor-texto);
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* Descrição */
+
+.card-descricao {
+  margin: 0 0 28px;
+
+  color: var(--cor-texto-secundario);
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Formulário */
+
+form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+/* Labels */
+
+form > label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  color: var(--cor-texto);
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Inputs */
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+
+  padding: 10px 12px;
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--cor-borda);
+  border-radius: 7px;
+
+  font-size: 13px;
+
+  outline: none;
+}
+
+/* Opções */
+
+.opcoes-login {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-size: 12px;
+}
+
+/* Checkbox */
+
+.lembrar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap: 7px;
+
+  color: var(--cor-texto-secundario);
+
+  font-weight: 400;
+}
+
+.lembrar input {
+  margin: 0;
+}
+
+/* Links */
+
+a {
+  color: var(--cor-primaria);
+
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Botão */
+
+button {
+  width: 100%;
+
+  padding: 12px;
+
+  border: none;
+  border-radius: 7px;
+
+  background-color: var(--cor-primaria);
+  color: white;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--cor-primaria-hover);
+}
+
+/* Cadastro */
+
+.cadastro {
+  margin: 22px 0 0;
+
+  text-align: center;
+
+  color: var(--cor-texto-secundario);
+
+  font-size: 12px;
+}
+
+/* Rodapé */
+
+.rodape {
+  padding: 18px;
+
+  text-align: center;
+
+  color: #9999a3;
+
+  font-size: 11px;
+}
