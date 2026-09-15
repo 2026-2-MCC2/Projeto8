@@ -10,13 +10,13 @@ function Login() {
       </header>
 
       <main className="login-main">
-        <article className="card">
+        <article className="card-login">
           <div className="card-conteudo">
             <span className="logo-card">TROCATICKET</span>
 
             <h2 className="login-title">Entrar na sua conta</h2>
 
-            <p className="card-descricao">
+            <p className="login-descricao">
               Acesse a plataforma para continuar o planejamento do seu evento.
             </p>
 
@@ -49,7 +49,7 @@ function Login() {
 
             <p className="cadastro">
               Ainda não possui uma conta?
-              <a href="#"> Cadastrar-se</a>
+              <a href="./cadastro"> Cadastrar-se</a>
             </p>
           </div>
         </article>
