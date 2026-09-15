@@ -1,4 +1,5 @@
 import "./Login.css";
+import { Link } from "react-router-dom";
 
 function Login() {
   return (
@@ -49,7 +50,7 @@ function Login() {
 
             <p className="cadastro">
               Ainda não possui uma conta?
-              <a href="./cadastro"> Cadastrar-se</a>
+              <Link to="/cadastro"> Cadastrar-se</Link>
             </p>
           </div>
         </article>

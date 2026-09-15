@@ -1,10 +1,15 @@
 import "./Cadastro.css";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function cadastro() {
+  const navigate = useNavigate();
   return (
     <div className="cadastro-container">
       <header className="cabecalho">
-        <h1 className="title">TrocaTicket</h1>
+        <Link to="/login" className="voltar"> 
+         ← Voltar ao login 
+        </Link>
         <p className="descricao">Planeje seu evento. Calcule seu ticket </p>
       </header>
       <main className="cadastro-main">
@@ -19,13 +24,13 @@ function cadastro() {
               plataforma.
             </p>
             <div className="opcoes-cadastro">
-              <button type="button" className="botao-cadastro">
+              <button type="button" className="botao-cadastro" onClick={() => navigate("/cadastro/organizador")}>
                 <span className="botao-titulo">Sou Organizador </span>
                 <span className="botao-descricao"> Planeje eventos, gerencie custos e calcule o valor do ticket.
                 </span>
               </button>
 
-              <button type="button" className="botao-cadastro">
+              <button type="button" className="botao-cadastro" onClick={() => navigate("/cadastro/fornecedor")}>
                 <span className="botao-titulo">Sou Fornecedor</span>
                 <span className="botao-descricao">
                   Cadastre seus serviços, encontre eventos e envie propostas.
@@ -34,7 +39,7 @@ function cadastro() {
             </div>
             <p className="login">
               Já tem uma conta?
-              <a href="./login"> Fazer login</a>
+              <Link to="/login"> Fazer login</Link>
             </p>
           </div>
         </article>

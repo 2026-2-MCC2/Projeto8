@@ -30,6 +30,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: var(--cor-fundo);
+  font-family: Arial, sans-serif;
 }
 
 #root {
