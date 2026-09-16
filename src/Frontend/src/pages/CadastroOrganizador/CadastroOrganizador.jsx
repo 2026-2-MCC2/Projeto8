@@ -8,7 +8,7 @@ function cadastroOrganizador() {
   return (
     <div className="organizador-container">
       <header className="cabecalho-cadastro">
-        <Link to="/cadastro"> ← Voltar ao cadastro</Link>
+        <Link to="/cadastro" className="voltar"> ← Voltar ao cadastro</Link>
         <p className="descricao">Planeje seu evento. Calcule seu ticket </p>
       </header>
       <main className="cadastroOrganizador-main">

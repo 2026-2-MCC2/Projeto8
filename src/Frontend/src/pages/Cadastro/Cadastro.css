@@ -173,3 +173,9 @@ button:hover {
   line-height: 1.4;
   text-align: left;
 }
+.voltar {
+  color: var(--cor-primaria);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
