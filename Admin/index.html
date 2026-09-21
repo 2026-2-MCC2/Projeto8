@@ -3,26 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TicketLab - Administrador - Cadastros pendentes</title>
+    <title>TicketLab - Administrador</title>
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
-    
+
 <header>
     <div class="eyebrown">TicketLab - Painel do Administrador</div>
-    <h1>Cadastros pendentes</h1>
-    <p class="subtitulo">Aprove ou rejeite os cadastros de Organizadores e Fornecedores.</p>
+    <h1 id="tituloPagina">Cadastros pendentes</h1>
+    <p class="subtitulo" id="subtituloPagina">Aprove ou rejeite os cadastros de Organizadores e Fornecedores.</p>
 </header>
-<!-- class é usado pelo CSS e o id é usado pelo JavaScript -->
-<nav class="abas" id="abas">
-    <!-- class é usado para quando clica ou nao na aba e data-filtro é o que retorna quando clica e o que aparece na tela (serve para todos)-->
-    <div class="aba ativa" data-filtro="pendente">Pendentes</div>
-    <div class="aba" data-filtro="aprovado">Aprovados</div>
-    <div class="aba" data-filtro="rejeitado">Rejeitados</div>
-    <div class="aba" data-filtro="todos">Todos</div>
+
+<!-- Navegação principal: alterna entre as duas telas do administrador. -->
+<!-- data-area é lido pelo JS pra saber qual seção mostrar. -->
+<nav class="area-principal" id="areaPrincipal">
+    <button class="area-btn ativa" data-area="cadastros">Cadastros pendentes</button>
+    <button class="area-btn" data-area="eventos">Relatório gerencial</button>
 </nav>
-<!--retorna o conteudo que o JS vai colocar dentro da lista, sem esse id a pagina quebra e nao retorna nada-->
-<div class="lista" id="lista"></div>
+
+<!-- TELA 1: CADASTROS -->
+<section class="view" id="view-cadastros">
+
+    <nav class="abas" id="abas">
+        <button type="button" class="aba ativa" data-filtro="pendente" aria-selected="true">Pendentes</button>
+        <button type="button" class="aba" data-filtro="aprovado" aria-selected="false">Aprovados</button>
+        <button type="button" class="aba" data-filtro="rejeitado" aria-selected="false">Rejeitados</button>
+        <button type="button" class="aba" data-filtro="todos" aria-selected="false">Todos</button>
+    </nav>
+
+    <!--retorna o conteudo que o JS vai colocar dentro da lista, sem esse id a pagina quebra e nao retorna nada-->
+    <div class="lista" id="lista"></div>
+
+</section>
+
+<!--  TELA 2: RELATÓRIO GERENCIAL -->
+<section class="view" id="view-eventos" hidden>
+
+    <!-- Cartões de resumo geral: somam TODOS os eventos, sem depender do filtro selecionado abaixo. -->
+    <div class="kpis" id="kpis"></div>
+
+    <!-- Filtro por status do evento, no mesmo padrão das abas de cadastros. -->
+    <nav class="abas" id="abas-eventos">
+        <button type="button" class="aba ativa" data-filtro="todos" aria-selected="true">Todos</button>
+        <button type="button" class="aba" data-filtro="planejamento" aria-selected="false">Em planejamento</button>
+        <button type="button" class="aba" data-filtro="confirmado" aria-selected="false">Confirmado</button>
+        <button type="button" class="aba" data-filtro="concluido" aria-selected="false">Concluído</button>
+        <button type="button" class="aba" data-filtro="cancelado" aria-selected="false">Cancelado</button>
+    </nav>
+
+    <!-- Lista de eventos, preenchida pelo JS. -->
+    <div class="lista" id="lista-eventos"></div>
+
+</section>
+
 <!--liga o script JavaScript ao HTML-->
 <script src="js/admin.js"></script>
 </body>
