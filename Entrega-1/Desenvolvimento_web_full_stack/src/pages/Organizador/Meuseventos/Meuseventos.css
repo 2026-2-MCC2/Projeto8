@@ -1,0 +1,424 @@
+:root {
+  --primary: #4f46e5;
+  --primary-light: #eef2ff;
+  --primary-dark: #4338ca;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --bg-page: #f8f9fb;
+  --bg-card: #ffffff;
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #dc2626;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  color: var(--text-main);
+  background: var(--bg-page);
+}
+
+.meuseventos-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar-organizador {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-organizador h2 {
+  color: var(--primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 2rem 0.5rem;
+}
+
+.sidebar-organizador nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.sidebar-organizador nav a,
+.sidebar-bottom a {
+  display: block;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.sidebar-organizador nav a:hover {
+  background: var(--bg-page);
+  color: var(--text-main);
+}
+
+/* "Meus eventos" é o 2º item do menu nesta página */
+.sidebar-organizador nav a:nth-child(2) {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.sidebar-bottom a:last-child {
+  color: var(--danger);
+}
+
+.sidebar-bottom a:last-child:hover {
+  background: #fef2f2;
+}
+
+/* ---------- Main content ---------- */
+.meuseventosOrganizador-container {
+  flex: 1;
+  min-width: 0;
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.cabecalho-meuseventos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  width: 130%;
+}
+
+.title-meuseventos {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.3rem;
+}
+
+.descricao-meuseventos {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 0.9rem;
+  max-width: 46ch;
+}
+
+.cabecalho-meuseventos > button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.cabecalho-meuseventos > button:hover {
+  background: var(--primary-dark);
+}
+
+/* ---------- Barra de pesquisa ---------- */
+/* No protótipo, busca e filtro são dois campos soltos lado a lado,
+   sem um card grande envolvendo os dois. */
+.barra-pesquisa {
+  margin-bottom: 1.5rem;
+  width: 130%;
+}
+
+.barra-pesquisa form {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 1rem;
+}
+
+.barra-pesquisa label {
+  display: block;
+}
+
+.barra-pesquisa label:first-child {
+  flex: 1 1 auto;
+}
+
+.barra-pesquisa label:last-child {
+  position: relative;
+  flex: 0 0 240px;
+}
+
+.barra-pesquisa input,
+.barra-pesquisa select {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  color: var(--text-main);
+  background: var(--bg-card);
+  box-shadow: var(--shadow);
+}
+
+.barra-pesquisa select {
+  min-width: 190px;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.2rem;
+  cursor: pointer;
+}
+
+/* seta customizada do select, usando o <label> que já existe como
+   referência de posicionamento — não precisa de nenhum elemento novo */
+.barra-pesquisa label:last-child::after {
+  content: "⌄";
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  font-size: 0.85rem;
+}
+
+.barra-pesquisa input:focus,
+.barra-pesquisa select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* ---------- Lista de eventos ---------- */
+.eventos-listados {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 130%;
+}
+
+.meuseventos-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+}
+
+.evento-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.1rem;
+}
+
+.evento-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.evento-titulo > span:first-child {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.evento-status {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+}
+
+.evento-acoes {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.evento-acoes button {
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+.evento-acoes button:hover {
+  background: var(--bg-page);
+}
+
+.evento-acoes button:last-child {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.evento-acoes button:last-child:hover {
+  background: var(--primary-dark);
+}
+
+.evento-dados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem 2.5rem;
+}
+
+.evento-dados > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.evento-dados span {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.evento-dados strong {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+/* ---------- Rodapé ---------- */
+.rodape {
+  margin-top: auto;
+  padding-top: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.estado-vazio {
+  min-height: 220px;
+
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 2rem;
+}
+
+.estado-vazio-icone {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 0.8rem;
+
+  color: #c4c4c8;
+  font-size: 2rem;
+}
+
+.estado-vazio h2 {
+  margin: 0 0 0.4rem;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+
+  color: var(--text-main);
+}
+
+.estado-vazio p {
+  margin: 0 0 1.2rem;
+
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.estado-vazio button {
+  background: var(--primary);
+  color: white;
+
+  border: none;
+  border-radius: 8px;
+
+  padding: 0.65rem 1rem;
+
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.estado-vazio button:hover {
+  background: var(--primary-dark);
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 900px) {
+  .cabecalho-meuseventos {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cabecalho-meuseventos > button {
+    width: 100%;
+  }
+  .barra-pesquisa form {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .meuseventos-container {
+    flex-direction: column;
+  }
+  .sidebar-organizador {
+    width: 100%;
+  }
+  .evento-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .evento-dados {
+    gap: 1.25rem;
+  }
+}

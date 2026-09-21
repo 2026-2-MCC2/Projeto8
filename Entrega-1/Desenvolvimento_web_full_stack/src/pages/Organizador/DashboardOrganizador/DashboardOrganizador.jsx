@@ -6,7 +6,7 @@ function DashboardOrganizador() {
       <aside className="sidebar">
         <h2>TrocaTicket</h2>
         <nav>
-          <Link to="/dashboardorganizador">Dashboard</Link>
+          <Link to="/dashboard">Dashboard</Link>
           <Link to="/meus-eventos">Meus eventos</Link>
           <Link to="/buscar-servicos">Buscar serviços</Link>
           <Link to="/cotacoes">Cotações</Link>
@@ -62,13 +62,13 @@ function DashboardOrganizador() {
               <div className="evento">
                 <span>Festa da Computação</span>
                 <span>15/10/2026</span>
-                <span>300–500</span>
+                <span>300-500</span>
                 <span>Em planejamento</span>
               </div>
               <div className="evento">
                 <span>Choppada Universitária</span>
                 <span>20/11/2026</span>
-                <span>500–800</span>
+                <span>500-800</span>
                 <span>Em planejamento</span>
               </div>
             </div>
