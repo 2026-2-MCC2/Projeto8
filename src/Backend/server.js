@@ -1,11 +1,11 @@
 const express = require("express");
-
 // Importa a conexão com o banco de dados MySQL
 // que configuramos no arquivo db.js.
 const connection = require("./db");
-
 // Cria uma aplicação utilizando o Express.
 const app = express();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 
 // ======================================================
@@ -26,6 +26,72 @@ const app = express();
 // através de req.body.
 app.use(express.json());
 
+// Middleware responsável por verificar se o usuário possui
+// um token JWT válido antes de acessar uma rota protegida.
+function autenticarToken(req, res, next) {
+  //Pega o cabeçalho Authorization da requisição.
+  const authHeader = req.headers["authorization"];
+
+  //Verfica se o cabeçalho foi enviado.
+  if (!authHeader) {
+    return res.status(401).json({
+      mensagem: "Token não fornecido"
+    });
+  }
+
+  //O formato esperado eh:
+  //Authorization: Bearer <token>
+  const partes = authHeader.split(" ");
+
+  //Verfica se o formato do cabeçalho está correto.
+  if (partes.length !== 2 || partes[0] !== "Bearer") {
+    return res.status(401).json({
+      mensagem: "Formato de token inválido"
+    });
+  }
+  const token = partes[1];
+
+  // Verifica se o token foi realmente assinado pelo nosso servidor
+  // e se ainda não expirou.
+  jwt.verify(token, process.env.JWT_SECRET, (error, usuario) => {
+    if (error) {
+      return res.status(401).json({
+        mensagem: "Token inválido ou expirado"
+      });
+    }
+
+    // Guarda os dados do usuário dentro da requisição.
+    // Assim, as próximas etapas da requisição poderão
+    // saber quem está tentando acessar a rota.
+
+    req.usuario = usuario;
+    // Continua para a próxima etapa.
+    next();
+  });
+}
+
+// Middleware responsável por verificar se o usuário possui
+// um dos perfis permitidos para acessar determinada rota.
+function autorizarPerfis(...perfisPermitidos) {
+  return (req, res, next) => {
+    // req.usuario foi preenchido pelo middleware autenticarToken.
+    if (!req.usuario) {
+      return res.status(401).json({
+        mensagem: "Usuário não autenticado"
+      });
+    }
+
+    // Verifica se o perfil do usuário está entre
+    // os perfis autorizados para aquela rota.
+    if (!perfisPermitidos.includes(req.usuario.tipo)) {
+      return res.status(403).json({
+        mensagem: "Acesso negado: perfil não autorizado"
+      });
+    }
+    //Se o perfil tiver permissão, continua para a próxima etapa.
+    next();
+  };
+}
 
 // ======================================================
 // ROTA PRINCIPAL
@@ -38,6 +104,7 @@ app.use(express.json());
 //
 // req = request (requisição enviada pelo cliente)
 // res = response (resposta enviada pela API)
+
 app.get("/", (req, res) => {
 
   // Envia uma mensagem de texto como resposta.
@@ -58,48 +125,52 @@ app.get("/", (req, res) => {
 //
 // Exemplo:
 // GET http://localhost:3000/usuarios
-app.get("/usuarios", (req, res) => {
+app.get(
+  "/usuarios",
+  autenticarToken,
+  autorizarPerfis("ADMINISTRADOR"),
+  (req, res) => {
 
-  // Executa uma consulta SQL no banco.
-  //
-  // SELECT * significa que queremos buscar
-  // todas as colunas da tabela usuarios.
-  connection.query(
-    "SELECT * FROM usuarios",
-    (error, results) => {
+    // Executa uma consulta SQL no banco.
+    //
+    // SELECT id , nome, email, telefone, tipo, status FROM usuarios significa que queremos buscar
+    // essas colunas específicas da tabela usuarios.
+    connection.query(
+      "SELECT id , nome, email, telefone, tipo, status FROM usuarios",
+      (error, results) => {
 
-      // Se acontecer algum erro durante a consulta,
-      // entramos neste bloco.
-      if (error) {
+        // Se acontecer algum erro durante a consulta,
+        // entramos neste bloco.
+        if (error) {
 
-        // Mostra o erro no terminal para ajudar
-        // durante o desenvolvimento.
-        console.error(
-          "Erro ao buscar usuario",
-          error.message
-        );
+          // Mostra o erro no terminal para ajudar
+          // durante o desenvolvimento.
+          console.error(
+            "Erro ao buscar usuários",
+            error.message
+          );
 
-        // Retorna HTTP 500.
-        //
-        // 500 = Internal Server Error
-        // Significa que aconteceu um erro interno
-        // no servidor.
-        res.status(500).json({
-          mensagem: "Erro ao buscar usuários"
-        });
+          // Retorna HTTP 500.
+          //
+          // 500 = Internal Server Error
+          // Significa que aconteceu um erro interno
+          // no servidor.
+          res.status(500).json({
+            mensagem: "Erro ao buscar usuários"
+          });
 
-        // Interrompe a execução da função.
-        return;
+          // Interrompe a execução da função.
+          return;
+        }
+
+        // Se não houve erro, enviamos os resultados
+        // encontrados no banco como JSON.
+        res.json(results);
+
       }
+    );
 
-      // Se não houve erro, enviamos os resultados
-      // encontrados no banco como JSON.
-      res.json(results);
-
-    }
-  );
-
-});
+  });
 
 
 // ======================================================
@@ -114,79 +185,83 @@ app.get("/usuarios", (req, res) => {
 // GET /usuarios/2
 //
 // Nesse caso, o valor de ":id" será 2.
-app.get("/usuarios/:id", (req, res) => {
+app.get(
+  "/usuarios/:id",
+  autenticarToken,
+  autorizarPerfis("ADMINISTRADOR"),
+  (req, res) => {
 
-  // req.params contém os parâmetros presentes na URL.
-  //
-  // Em /usuarios/2:
-  //
-  // req.params.id = "2"
-  //
-  // Guardamos esse valor na constante id.
-  const id = req.params.id;
-
-
-  // Executa uma consulta SQL procurando
-  // pelo usuário cujo ID seja igual ao valor recebido.
-  connection.query(
-
-    // O "?" é um placeholder.
-    // O valor real será fornecido separadamente
-    // no array [id].
-    "SELECT * FROM usuarios WHERE id = ?",
-
-    // O mysql2 substitui o primeiro "?" pelo valor de id.
-    [id],
-
-    (error, results) => {
-
-      // Verifica se ocorreu algum erro no banco.
-      if (error) {
-
-        console.error(
-          "Erro ao buscar usuário:",
-          error.message
-        );
-
-        // HTTP 500 = erro interno do servidor.
-        res.status(500).json({
-          mensagem: "Erro ao buscar usuário"
-        });
-
-        return;
-      }
+    // req.params contém os parâmetros presentes na URL.
+    //
+    // Em /usuarios/2:
+    //
+    // req.params.id = "2"
+    //
+    // Guardamos esse valor na constante id.
+    const id = req.params.id;
 
 
-      // results é um array contendo os registros
-      // encontrados pela consulta.
-      //
-      // Se o array tiver tamanho 0, significa que
-      // nenhum usuário foi encontrado.
-      if (results.length === 0) {
+    // Executa uma consulta SQL procurando
+    // pelo usuário cujo ID seja igual ao valor recebido.
+    connection.query(
 
-        // HTTP 404 = Not Found.
+      // O "?" é um placeholder.
+      // O valor real será fornecido separadamente
+      // no array [id].
+      "SELECT id , nome, email, telefone, tipo, status FROM usuarios WHERE id = ?",
+
+      // O mysql2 substitui o primeiro "?" pelo valor de id.
+      [id],
+
+      (error, results) => {
+
+        // Verifica se ocorreu algum erro no banco.
+        if (error) {
+
+          console.error(
+            "Erro ao buscar usuário:",
+            error.message
+          );
+
+          // HTTP 500 = erro interno do servidor.
+          res.status(500).json({
+            mensagem: "Erro ao buscar usuário"
+          });
+
+          return;
+        }
+
+
+        // results é um array contendo os registros
+        // encontrados pela consulta.
         //
-        // Usamos 404 porque o recurso solicitado
-        // não existe.
-        res.status(404).json({
-          mensagem: "Usuário não encontrado"
-        });
+        // Se o array tiver tamanho 0, significa que
+        // nenhum usuário foi encontrado.
+        if (results.length === 0) {
 
-        return;
+          // HTTP 404 = Not Found.
+          //
+          // Usamos 404 porque o recurso solicitado
+          // não existe.
+          res.status(404).json({
+            mensagem: "Usuário não encontrado"
+          });
+
+          return;
+        }
+
+
+        // Como estamos procurando apenas um ID,
+        // esperamos apenas um usuário.
+        //
+        // results[0] pega o primeiro registro
+        // encontrado no array.
+        res.json(results[0]);
+
       }
+    );
 
-
-      // Como estamos procurando apenas um ID,
-      // esperamos apenas um usuário.
-      //
-      // results[0] pega o primeiro registro
-      // encontrado no array.
-      res.json(results[0]);
-
-    }
-  );
-
-});
+  });
 
 
 // ======================================================
@@ -207,145 +282,338 @@ app.get("/usuarios/:id", (req, res) => {
 // }
 //
 // Nesse caso, somente o nome será alterado.
-app.patch("/usuarios/:id", (req, res) => {
+app.patch(
+  "/usuarios/:id",
+  autenticarToken,
+  (req, res) => {
 
-  // Pega o ID enviado na URL.
-  //
-  // Exemplo:
-  // PATCH /usuarios/2
-  //
-  // req.params.id = "2"
-  const id = req.params.id;
-
-
-  // Mostra o ID no terminal.
-  // Isso foi utilizado durante nossos testes
-  // para verificar se o Express estava recebendo
-  // corretamente o parâmetro da URL.
-
-
-  // Mostra no terminal os dados enviados
-  // no corpo da requisição.
-  //
-  // Exemplo:
-  //
-  // {
-  //     nome: "Fornecedor Novo"
-  // }
-
-
-  // Executa o UPDATE no banco de dados.
-  connection.query(
-
-    // O mysql2 permite utilizar um objeto no SET.
+    // Pega o ID enviado na URL.
     //
-    // Se req.body for:
+    // Exemplo:
+    // PATCH /usuarios/2
+    //
+    // req.params.id = "2"
+    const id = req.params.id;
+
+    // Verifica se o ID informado na URL é um número inteiro positivo.
+    if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
+      return res.status(400).json({
+        mensagem: "ID de usuário inválido"
+      });
+    }
+
+    // Verifica se o usuário logado é um administrador
+    // ou se está tentando alterar o próprio cadastro.
+    if (req.usuario.tipo !== "ADMINISTRADOR" &&
+      req.usuario.id !== Number(id)) {
+      return res.status(403).json({
+        mensagem: "Acesso negado: você só pode alterar seu próprio cadastro"
+      });
+    }
+
+    // Mostra o ID no terminal.
+    // Isso foi utilizado durante nossos testes
+    // para verificar se o Express estava recebendo
+    // corretamente o parâmetro da URL.
+
+
+    // Mostra no terminal os dados enviados
+    // no corpo da requisição.
+    //
+    // Exemplo:
     //
     // {
     //     nome: "Fornecedor Novo"
     // }
+
+    // Copia os dados enviados pelo usuário para um novo objeto.
+    // Dessa forma podemos controlar quais campos serão atualizados
+    // antes de enviá-los para o banco de dados.
+    const dadosAtualizacao = { ...req.body };
+
+    // Define quais campos podem ser alterados pelo PATCH.
+    // Campos como id, tipo e status não podem
+    // ser alterados diretamente pelo usuário.
     //
-    // o mysql2 transforma isso em uma atualização
-    // correspondente à coluna nome.
-    //
-    // O segundo "?" representa o ID do usuário.
-    "UPDATE usuarios SET ? WHERE id = ?",
+    // A senha também não é alterada diretamente.
+    // Quando uma nova senha é enviada, ela é transformada
+    // em um hash bcrypt antes de ser salva no banco.
+    const camposPermitidos = [
+      "nome",
+      "email",
+      "telefone"
+    ];
+    // Cria um objeto vazio para armazenar somente
+    // os campos que podem ser atualizados.
+    const dadosPermitidos = {};
 
+    // Percorre os campos permitidos.
+    camposPermitidos.forEach((campo) => {
 
-    // Primeiro valor:
-    // req.body -> campos que serão atualizados
-    //
-    // Segundo valor:
-    // id -> usuário que será atualizado.
-    [req.body, id],
+      // Verifica se o campo foi realmente enviado
+      // na requisição.
+      if (req.body[campo] !== undefined) {
 
-
-    (error, results) => {
-
-      // Verifica se aconteceu algum erro
-      // durante o UPDATE.
-      if (error) {
-
-        console.error(
-          "Erro ao atualizar usuário:",
-          error.message
-        );
-
-        // HTTP 500 = erro interno do servidor.
-        res.status(500).json({
-          mensagem: "Erro ao atualizar usuário"
-        });
-
-        return;
+        // Adiciona o campo ao objeto que será
+        // enviado para o banco de dados.
+        dadosPermitidos[campo] = req.body[campo];
       }
+    });
 
+    // Se uma nova senha foi enviada, adiciona o hash
+    // ao objeto de atualização.
+    if (dadosAtualizacao.senha_hash) {
+      dadosPermitidos.senha_hash = dadosAtualizacao.senha_hash;
+    }
 
-      // affectedRows informa quantas linhas
-      // foram afetadas pela operação.
+    // Verifica se pelo menos um campo válido
+    // foi enviado para atualização.
+    if (Object.keys(dadosPermitidos).length === 0) {
+      return res.status(400).json({
+        mensagem: "Nenhum campo válido para atualização foi enviado"
+      });
+    }
+
+    // Valida o formato do e-mail, caso ele esteja sendo alterado.
+    if (dadosPermitidos.email) {
+      const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailValido.test(dadosPermitidos.email)) {
+        return res.status(400).json({
+          mensagem: "E-mail inválido"
+        });
+      }
+    }
+
+    if (dadosAtualizacao.senha !== undefined) {
+      // Verifica se a senha enviada é uma string.
+      if (typeof dadosAtualizacao.senha !== "string") {
+        return res.status(400).json({
+          mensagem: "A senha deve ser um texto"
+        });
+      }
+      if (dadosAtualizacao.senha.length < 6) {
+        return res.status(400).json({
+          mensagem: "A senha deve ter pelo menos 6 caracteres"
+        });
+      }
+      const senhaHash = bcrypt.hashSync(dadosAtualizacao.senha, 10);
+
+      delete dadosAtualizacao.senha;
+
+      dadosAtualizacao.senha_hash = senhaHash;
+    }
+
+    // Verifica se o telefone enviado é uma string.
+    if (dadosPermitidos.telefone !== undefined) {
+      if (typeof dadosPermitidos.telefone !== "string") {
+        return res.status(400).json({
+          mensagem: "O telefone deve ser um texto"
+        });
+      }
+    }
+
+    if (dadosPermitidos.telefone) {
+      const telefoneValido = /^\d{10,11}$/;
+
+      if (!telefoneValido.test(dadosPermitidos.telefone)) {
+        return res.status(400).json({
+          mensagem: "Telefone inválido."
+        });
+      }
+    }
+
+    // Verifica se o nome enviado é uma string.
+    if (dadosPermitidos.nome !== undefined) {
+      if (typeof dadosPermitidos.nome !== "string") {
+        return res.status(400).json({
+          mensagem: "O nome deve ser um texto"
+        });
+      }
+    }
+
+    if (dadosPermitidos.nome !== undefined) {
+      if (dadosPermitidos.nome.trim().length === 0) {
+        return res.status(400).json({
+          mensagem: "O nome nao pode ser vazio"
+        });
+      }
+    }
+
+    if (dadosPermitidos.nome !== undefined) {
+      if (dadosPermitidos.nome.length > 250) {
+        return res.status(400).json({
+          mensagem: "O nome deve ter no maximo 250 caracteres"
+        });
+      }
+    }
+
+    // Verifica se o e-mail enviado é uma string.
+    if (dadosPermitidos.email !== undefined) {
+      if (typeof dadosPermitidos.email !== "string") {
+        return res.status(400).json({
+          mensagem: "O e-mail deve ser um texto"
+        });
+      }
+    }
+
+    // Verifica o tamanho do e-mail, caso ele esteja sendo alterado.
+    if (dadosPermitidos.email !== undefined) {
+      if (dadosPermitidos.email.length > 250) {
+        return res.status(400).json({
+          mensagem: "O e-mail deve ter no máximo 250 caracteres"
+        });
+      }
+    }
+
+    // Executa o UPDATE no banco de dados.
+    connection.query(
+
+      // O mysql2 permite utilizar um objeto no SET.
       //
-      // Se for 0, significa que nenhum usuário
-      // com aquele ID foi encontrado/alterado.
-      if (results.affectedRows === 0) {
+      // Se req.body for:
+      //
+      // {
+      //     nome: "Fornecedor Novo"
+      // }
+      //
+      // o mysql2 transforma isso em uma atualização
+      // correspondente à coluna nome.
+      //
+      // O segundo "?" representa o ID do usuário.
+      "UPDATE usuarios SET ? WHERE id = ?",
 
-        // HTTP 404 = usuário não encontrado.
-        res.status(404).json({
-          mensagem: "Usuário não encontrado"
+
+      // Primeiro valor:
+      // dadosPermitidos -> campos que serão atualizados
+      //
+      // Segundo valor:
+      // id -> usuário que será atualizado.
+      [dadosPermitidos, id],
+
+
+      (error, results) => {
+
+        // Verifica se aconteceu algum erro
+        // durante o UPDATE.
+        if (error) {
+          console.error(
+            "Erro ao atualizar usuário:",
+            error.message
+          );
+
+          // ER_DUP_ENTRY acontece quando tentamos utilizar
+          // um valor UNIQUE que já existe no banco.
+          // Neste caso, o exemplo principal é um email duplicado.
+          if (error.code === "ER_DUP_ENTRY") {
+            return res.status(409).json({
+              mensagem: "Email já cadastrado"
+            });
+          }
+
+          return res.status(500).json({
+            mensagem: "Erro ao atualizar usuário"
+          });
+        }
+
+
+        // affectedRows informa quantas linhas
+        // foram afetadas pela operação.
+        //
+        // Se for 0, significa que nenhum usuário
+        // com aquele ID foi encontrado/alterado.
+        if (results.affectedRows === 0) {
+
+          // Verifica se o usuário realmente não existe.
+          connection.query(
+            "SELECT id FROM usuarios WHERE id = ?",
+            [id],
+            (error, rows) => {
+
+              if (error) {
+                console.error(
+                  "Erro ao verificar usuário:",
+                  error.message
+                );
+
+                return res.status(500).json({
+                  mensagem: "Erro ao verificar usuário"
+                });
+              }
+
+              // Se não encontrou o usuário, retornamos 404.
+              if (rows.length === 0) {
+                return res.status(404).json({
+                  mensagem: "Usuário não encontrado"
+                });
+              }
+
+              // O usuário existe, mas os dados enviados
+              // já eram iguais aos dados atuais.
+              return res.status(200).json({
+                mensagem: "Nenhuma alteração realizada"
+              });
+            }
+          );
+
+          return;
+        }
+
+
+        // Se chegou até aqui, o usuário foi atualizado
+        // com sucesso.
+        res.json({
+          mensagem: "Usuário atualizado com sucesso!"
         });
 
-        return;
       }
+    );
+
+  });
 
 
-      // Se chegou até aqui, o usuário foi atualizado
-      // com sucesso.
-      res.json({
-        mensagem: "Usuário atualizado com sucesso!"
-      });
+app.delete(
+  "/usuarios/:id",
+  autenticarToken,
+  autorizarPerfis("ADMINISTRADOR"),
+  (req, res) => {
 
-    }
-  );
+    const id = req.params.id;
 
-});
+    connection.query(
+      "DELETE FROM usuarios WHERE id = ?",
+      [id],
+      (error, results) => {
 
+        if (error) {
+          console.error(
+            "Erro ao deletar usuário:",
+            error.message
+          );
 
-app.delete("/usuarios/:id", (req, res) => {
+          res.status(500).json({
+            mensagem: "Erro ao deletar usuário"
+          });
 
-  const id = req.params.id;
+          return;
+        }
 
-  connection.query(
-    "DELETE FROM usuarios WHERE id = ?",
-    [id],
-    (error, results) => {
+        if (results.affectedRows === 0) {
+          res.status(404).json({
+            mensagem: "Usuário não encontrado"
+          });
 
-      if (error) {
-        console.error(
-          "Erro ao deletar usuário:",
-          error.message
-        );
+          return;
+        }
 
-        res.status(500).json({
-          mensagem: "Erro ao deletar usuário"
+        res.status(200).json({
+          mensagem: "Usuário deletado com sucesso!"
         });
 
-        return;
       }
+    );
 
-      if (results.affectedRows === 0) {
-        res.status(404).json({
-          mensagem: "Usuário não encontrado"
-        });
-
-        return;
-      }
-
-      res.status(200).json({
-        mensagem: "Usuário deletado com sucesso!"
-      });
-
-    }
-  );
-
-});
+  });
 
 // ======================================================
 // POST /usuarios
@@ -380,76 +648,199 @@ app.post("/usuarios", (req, res) => {
     email,
     senha,
     telefone,
-    tipo
+    tipo_pessoa,
+    documento,
+    data_nascimento
   } = req.body;
 
+  // Verifica se todos os campos obrigatórios foram enviados.
+  if (
+    !nome ||
+    !email ||
+    !senha ||
+    !telefone ||
+    !tipo_pessoa ||
+    !documento ||
+    !data_nascimento
+  ) {
+    return res.status(400).json({
+      mensagem: "Todos os campos são obrigatórios"
+    });
+  }
+
+  // Verifica se o tipo de pessoa é válido.
+  //
+  // A tabela organizadores permite somente:
+  // PF = Pessoa Física
+  // PJ = Pessoa Jurídica
+  if (tipo_pessoa !== "PF" && tipo_pessoa !== "PJ") {
+    return res.status(400).json({
+      mensagem: "Tipo de pessoa deve ser 'PF' ou 'PJ'"
+    });
+  }
+
+  // Gera um hash seguro para a senha.
+  //
+  // O número 10 representa o custo utilizado
+  // pelo bcrypt para gerar o hash.
+  //
+  // A senha original NÃO será armazenada no banco.
+  const senhaHash = bcrypt.hashSync(senha, 10);
 
   // SQL responsável por inserir um novo usuário.
   //
   // Os "?" são placeholders.
   // Os valores reais serão enviados no array abaixo.
-  const sql = `
+  const sqlUsuario = `
         INSERT INTO usuarios
         (nome, email, telefone, senha_hash, tipo, status)
         VALUES (?, ?, ?, ?, ?, ?)
     `;
 
+  // Inicia uma transação no banco de dados.
+  //
+  // A partir daqui, as alterações só serão confirmadas
+  // definitivamente quando executarmos o COMMIT.
+  connection.beginTransaction((error) => {
 
-  // Executa o INSERT no banco.
-  connection.query(
-    sql,
+    if (error) {
+      console.error(
+        "Erro ao iniciar transação:",
+        error.message
+      );
 
-    // Os valores seguem exatamente a mesma
-    // ordem dos "?" presentes na SQL.
-    //
-    // nome      -> primeiro ?
-    // email     -> segundo ?
-    // telefone  -> terceiro ?
-    // senha     -> quarto ?
-    // tipo      -> quinto ?
-    // PENDENTE  -> sexto ?
-    [
-      nome,
-      email,
-      telefone,
-      senha,
-      tipo,
-      "PENDENTE"
-    ],
-
-    (error, results) => {
-
-      // Verifica se aconteceu algum erro
-      // durante o cadastro.
-      if (error) {
-
-        console.error(
-          "Erro ao cadastrar usuário:",
-          error.message
-        );
-
-        res.status(500).json({
-          mensagem: "Erro ao cadastrar usuário"
-        });
-
-        return;
-      }
-
-
-      // HTTP 201 = Created.
-      //
-      // Indica que um novo recurso foi criado.
-      res.status(201).json({
-        mensagem: "Usuário cadastrado com sucesso!",
-
-        // insertId contém o ID gerado automaticamente
-        // pelo AUTO_INCREMENT do MySQL.
-        id: results.insertId
+      return res.status(500).json({
+        mensagem: "Erro ao iniciar cadastro"
       });
-
     }
-  );
 
+    // Executa o INSERT do usuário.
+    connection.query(
+      sqlUsuario,
+      [
+        nome,
+        email,
+        telefone,
+        senhaHash,
+        "ORGANIZADOR",
+        "PENDENTE"
+      ],
+      (error, results) => {
+
+        // Verifica se aconteceu algum erro
+        // durante o cadastro do usuário.
+        if (error) {
+
+          console.error(
+            "Erro ao cadastrar usuário:",
+            error.message
+          );
+
+          // Desfaz qualquer alteração realizada
+          // dentro da transação.
+          return connection.rollback(() => {
+
+            // ER_DUP_ENTRY = registro duplicado.
+            //
+            // Nesse caso, normalmente significa
+            // que o email já está cadastrado.
+            if (error.code === "ER_DUP_ENTRY") {
+              return res.status(409).json({
+                mensagem: "Email já cadastrado"
+              });
+            }
+
+            return res.status(500).json({
+              mensagem: "Erro ao cadastrar usuário"
+            });
+          });
+        }
+
+        // Guarda o ID gerado pelo AUTO_INCREMENT
+        // da tabela usuarios.
+        const idUsuario = results.insertId;
+
+        // SQL responsável por criar o registro
+        // correspondente na tabela organizadores.
+        const sqlOrganizador = `
+                    INSERT INTO organizadores
+                    (id_usuario, tipo_pessoa, documento, data_nascimento)
+                    VALUES (?, ?, ?, ?)
+                `;
+
+        // Cria o registro do organizador.
+        connection.query(
+          sqlOrganizador,
+          [
+            idUsuario,
+            tipo_pessoa,
+            documento,
+            data_nascimento
+          ],
+          (error) => {
+
+            // Verifica se aconteceu algum erro
+            // ao cadastrar os dados do organizador.
+            if (error) {
+
+              console.error(
+                "Erro ao cadastrar organizador:",
+                error.message
+              );
+
+              // Desfaz o INSERT do usuário
+              // caso o organizador não consiga
+              // ser cadastrado.
+              return connection.rollback(() => {
+
+                // ER_DUP_ENTRY pode acontecer
+                // caso o documento já exista.
+                if (error.code === "ER_DUP_ENTRY") {
+                  return res.status(409).json({
+                    mensagem: "Documento já cadastrado"
+                  });
+                }
+
+                return res.status(500).json({
+                  mensagem: "Erro ao cadastrar organizador"
+                });
+              });
+            }
+
+            // Confirma definitivamente todas as
+            // alterações realizadas na transação.
+            connection.commit((error) => {
+
+              if (error) {
+
+                console.error(
+                  "Erro ao confirmar cadastro:",
+                  error.message
+                );
+
+                // Se o COMMIT falhar, desfaz
+                // as alterações da transação.
+                return connection.rollback(() => {
+                  return res.status(500).json({
+                    mensagem: "Erro ao confirmar cadastro"
+                  });
+                });
+              }
+
+              // HTTP 201 = Created.
+              //
+              // Indica que os dois registros
+              // foram criados com sucesso.
+              return res.status(201).json({
+                mensagem: "Usuário cadastrado com sucesso!",
+                id: idUsuario
+              });
+            });
+          }
+        );
+      }
+    );
+  });
 });
 
 
@@ -561,6 +952,8 @@ app.post("/organizadores", (req, res) => {
     return;
   }
 
+  const senhaHash = bcrypt.hashSync(senha, 10);
+
 
   // ==================================================
   // SQL DO USUÁRIO
@@ -618,7 +1011,7 @@ app.post("/organizadores", (req, res) => {
         nome,
         email,
         telefone,
-        senha,
+        senhaHash,
         "ORGANIZADOR",
         "PENDENTE"
       ],
@@ -803,22 +1196,6 @@ app.post("/organizadores", (req, res) => {
 //
 // As duas tabelas ficam relacionadas pelo ID do usuário.
 //
-// Neste momento estamos utilizando uma transação,
-// mas ainda não adicionamos COMMIT nem ROLLBACK.
-// Vamos fazer essas partes separadamente.
-
-// ======================================================
-// POST /fornecedores
-// ======================================================
-// Rota responsável pelo autocadastro de um Fornecedor.
-//
-// O cadastro precisa criar dois registros no banco:
-//
-// 1. Um registro na tabela "usuarios"
-// 2. Um registro na tabela "fornecedores"
-//
-// As duas tabelas ficam relacionadas pelo ID do usuário.
-//
 // Como são dois INSERTs que fazem parte do mesmo cadastro,
 // utilizamos uma transação.
 //
@@ -844,6 +1221,7 @@ app.post("/fornecedores", (req, res) => {
     cnpj,
     categoria_atuacao
   } = req.body;
+
 
 
   // ==================================================
@@ -889,6 +1267,8 @@ app.post("/fornecedores", (req, res) => {
 
     return;
   }
+
+  const senhaHash = bcrypt.hashSync(senha, 10);
 
 
   // ==================================================
@@ -946,7 +1326,7 @@ app.post("/fornecedores", (req, res) => {
         nome,
         email,
         telefone,
-        senha,
+        senhaHash,
         "FORNECEDOR",
         "PENDENTE"
       ],
@@ -1124,6 +1504,107 @@ app.post("/fornecedores", (req, res) => {
   });
 
 });
+
+//Rota responsavel pelo login de usuários (organizadores e fornecedores).
+app.post("/login", (req, res) => {
+  //Pega o email e senha enviados no corpo da requisição.
+  const { email, senha } = req.body;
+
+  //Verifica se os dois obrigatorios foram enviados.
+  if (!email || !senha) {
+    return res.status(400).json({
+      mensagem: "Email e senha são obrigatórios"
+    });
+  }
+  if (typeof email !== "string" || typeof senha !== "string") {
+    return res.status(400).json({
+      mensagem: "Email e senha devem ser textos"
+    });
+  }
+
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailValido.test(email)) {
+    return res.status(400).json({
+      mensagem: "E-mail inválido"
+    });
+  }
+
+  if(senha.length < 6){
+    return res.status(400).json({
+      mensagem: "A senha deve ter no minimo 6 caracteres"
+    });
+  }
+
+  connection.query(
+    "SELECT * FROM usuarios WHERE email = ?",
+    [email],
+    (error, results) => {
+      //Verifica se houve algum erro na consulta.
+      if (error) {
+        console.error(
+          "Erro ao buscar usuário:",
+          error.message
+        );
+        return res.status(500).json({
+          mensagem: "Erro interno do servidor"
+        });
+      }
+      if (results.length === 0) {
+        return res.status(401).json({
+          mensagem: "Email ou senha inválidos"
+        });
+      }
+      //Guarda os dados do usuário encontrado.
+      const usuario = results[0];
+      const senhaCorreta = bcrypt.compareSync(senha, usuario.senha_hash);
+      if (!senhaCorreta) {
+        return res.status(401).json({
+          mensagem: "Email ou senha inválidos"
+        });
+      }
+      //Verifica se o cadastro do usuário foi aprovado.
+      //antes de permitir o login.
+      if (usuario.status !== "APROVADO") {
+        return res.status(403).json({
+          mensagem: "Cadastro não aprovado"
+        });
+      }
+      //Se chegou até aqui, o login foi bem-sucedido.
+      //E o usuário pode acessar a aplicação.
+      //
+      //Retornamos somente informações básicas do usuário, sem a senha.
+      //identificar o usuario e seu perfil
+      //A senha e o senha_hash nunca sao enviados na resposta.
+      // Cria um token JWT depois que o usuário foi autenticado.
+      // Dentro do token colocamos informações que identificam o usuário
+      // e o perfil dele dentro do sistema.
+      const token = jwt.sign(
+        {
+          id: usuario.id,
+          tipo: usuario.tipo
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "2h"
+        }
+      );
+      // Retorna o token para o cliente.
+      // A senha e o senha_hash nunca são enviados na resposta.
+      return res.status(200).json({
+        mensagem: "Login bem-sucedido",
+        token: token,
+        usuario: {
+          id: usuario.id,
+          nome: usuario.nome,
+          email: usuario.email,
+          tipo: usuario.tipo,
+        }
+      });
+    }
+  );
+});
+
+
 // ======================================================
 // INICIALIZAÇÃO DO SERVIDOR
 // ======================================================

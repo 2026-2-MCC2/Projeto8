@@ -4,10 +4,10 @@ CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(250) NOT NULL ,
     telefone VARCHAR(30) NOT NULL ,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    senha_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(250) NOT NULL UNIQUE,
+    senha_hash VARCHAR(250) NOT NULL,
     tipo VARCHAR(50) NOT NULL CHECK(
-        tipo IN('FONECEDOR', 'ORGANIZADOR', 'ADMINISTRADOR')
+        tipo IN('FORNECEDOR', 'ORGANIZADOR', 'ADMINISTRADOR')
         ),
     status VARCHAR(20) NOT NULL CHECK (status IN ('APROVADO', 'PENDENTE', 'REJEITADO'))
 );
@@ -27,13 +27,13 @@ CREATE TABLE fornecedores (
 CREATE TABLE eventos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_organizador INT NOT NULL,
-    nome VARCHAR(255) NOT NULL,
+    nome VARCHAR(100) NOT NULL,
     descricao TEXT NOT NULL,
     horario TIME NOT NULL,
     data_evento DATE NOT NULL,
     publico_min INT NOT NULL,
     publico_max INT NOT NULL,
-    local VARCHAR(255) NOT NULL,
+    local VARCHAR(200) NOT NULL,
     status VARCHAR(20) NOT NULL CHECK (status IN ('CONFIRMADO', 'CANCELADO', 'PLANEJAMENTO')),
     FOREIGN KEY (id_organizador) REFERENCES organizadores(id_usuario),
     CHECK (publico_min < publico_max)
@@ -41,7 +41,7 @@ CREATE TABLE eventos (
 CREATE TABLE servicos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_fornecedor INT NOT NULL,
-    nome VARCHAR(255) NOT NULL,
+    nome VARCHAR(200) NOT NULL,
     descricao TEXT NOT NULL,
     categoria VARCHAR(100) NOT NULL,
     FOREIGN KEY (id_fornecedor) REFERENCES fornecedores(id_usuario)
