@@ -46,8 +46,9 @@ let filtroAtual = "pendente"; //variavel pra guardar o filtro atual, que começa
 
 // Desenha a lista na tela a partir do array, aqui cria-se a função renderizarLista, que vai pegar o array de cadastros e filtrar de acordo com o filtroAtual, se estiver na aba todos, ele mostra todos os cadastros, se estiver na aba pendente, ele filtra e mostra apenas os cadastros com status pendente, e assim por diante. Se não houver nenhum cadastro no filtro atual, ele mostra uma mensagem de vazio.
 function renderizarLista() {
-    const container = document.getElementById("lista");
-    const itensFiltrados =
+  atualizarContagensAbas("abas", cadastros);
+
+  const container = document.getElementById("lista");    const itensFiltrados =
         filtroAtual === "todos"
             ? cadastros
             : cadastros.filter((c) => c.status === filtroAtual);
@@ -127,6 +128,19 @@ document.getElementById("lista").addEventListener("click", function (evento) {
 
     atualizarStatus(id, acao);
 });
+
+// procura, dentro do nav indicado, todo elemento com [data-contagem] e
+// escreve nele "(N)", contando quantos itens do array têm aquele status.
+// data-contagem="todos" é um caso especial: mostra o total do array inteiro.
+function atualizarContagensAbas(idDoNav, itens) {
+  document.querySelectorAll(`#${idDoNav} [data-contagem]`).forEach(span => {
+    const chave = span.dataset.contagem;
+    const quantidade = chave === "todos"
+      ? itens.length
+      : itens.filter(item => item.status === chave).length;
+    span.textContent = `(${quantidade})`;
+  });
+}
 
 // função reaproveitável pra qualquer nav de abas da página: recebe o id do
 // <nav> e uma função "aoClicar" que decide o que fazer com o filtro escolhido.
@@ -302,6 +316,8 @@ let eventos = [
 
 let filtroEventoAtual = "todos"; // igual o filtroAtual dos cadastros, mas separado, pra não misturar as duas telas
 let idsAbertos = new Set(); // guarda quais cartões de evento estão com os detalhes abertos, pra não fechar tudo de novo a cada renderização
+let buscaEventoAtual = "";      // texto digitado no campo de busca, sempre comparado em minúsculo
+let ordenacaoAtual = "data";    // "data" = evento mais próximo primeiro | "cadastro" = mais recém-cadastrado primeiro
 
 // formata um número pra ficar "R$ 9.500", igual aparece em qualquer sistema financeiro
 function formatarMoeda(valor) {
@@ -397,25 +413,43 @@ function renderizarKpis() {
 }
 // desenha a lista de eventos, aplicando o filtro de status escolhido nas abas
 function renderizarEventos() {
-    renderizarKpis();
+  renderizarKpis();
+  atualizarContagensAbas("abas-eventos", eventos);
 
-    const container = document.getElementById("lista-eventos");
-    const itensFiltrados = (
-        filtroEventoAtual === "todos"
-            ? eventos
-            : eventos.filter((ev) => ev.status === filtroEventoAtual)
-    )
-        .slice()
-        .sort((a, b) =>
-            converterDataParaOrdenar(a.data).localeCompare(
-                converterDataParaOrdenar(b.data),
-            ),
-        );
+  const container = document.getElementById("lista-eventos");
+  // 1) filtra por status (as abas de cima)
+  const porStatus = filtroEventoAtual === "todos"
+    ? eventos
+    : eventos.filter(ev => ev.status === filtroEventoAtual);
 
-    if (itensFiltrados.length === 0) {
-        container.innerHTML = `<div class="vazio">Nenhum evento nessa categoria.</div>`;
-        return;
+  // 2) dentro do que sobrou, filtra pelo texto da busca — compara o nome do
+  // evento OU o nome do organizador, sem diferenciar maiúscula/minúscula
+  const textoBusca = buscaEventoAtual.trim().toLowerCase();
+  const porBusca = textoBusca === ""
+    ? porStatus
+    : porStatus.filter(ev =>
+        ev.nome.toLowerCase().includes(textoBusca) ||
+        ev.organizador.toLowerCase().includes(textoBusca)
+      );
+
+  // 3) por fim, ordena de acordo com o que estiver selecionado no <select>.
+  // .slice().
+  const itensFiltrados = porBusca.slice().sort((a, b) => {
+    if (ordenacaoAtual === "cadastro") {
+      // id maior = foi cadastrado depois = é mais recente
+      return b.id - a.id;
     }
+    // padrão: data do evento mais próxima primeiro
+    return converterDataParaOrdenar(a.data).localeCompare(converterDataParaOrdenar(b.data));
+  });
+
+      if (itensFiltrados.length === 0) {
+    const mensagem = textoBusca !== ""
+      ? `Nenhum evento encontrado para "${buscaEventoAtual.trim()}".`
+      : "Nenhum evento nessa categoria.";
+    container.innerHTML = `<div class="vazio">${mensagem}</div>`;
+    return;
+  }
 
     container.innerHTML = itensFiltrados
         .map((ev) => criarCartaoEventoHTML(ev))
@@ -537,6 +571,19 @@ function criarCartaoEventoHTML(evento) {
 configurarAbas("abas-eventos", function (filtro) {
     filtroEventoAtual = filtro;
     renderizarEventos();
+});
+
+// atualiza a busca a cada letra digitada (evento "input" dispara em tempo real,
+// diferente do "change" que só dispara quando você sai do campo)
+document.getElementById("busca-eventos").addEventListener("input", function (evento) {
+  buscaEventoAtual = evento.target.value;
+  renderizarEventos();
+});
+
+// atualiza a ordenação quando o usuário troca a opção do <select>
+document.getElementById("ordenar-eventos").addEventListener("change", function (evento) {
+  ordenacaoAtual = evento.target.value;
+  renderizarEventos();
 });
 
 // clique no botão "Ver custos e cotações" / "Ocultar detalhes" de cada cartão.

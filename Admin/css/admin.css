@@ -108,6 +108,15 @@
       color: var(--verde-escuro);
       border-bottom-color: var(--verde-medio);
   }
+
+  /* o número entre parênteses dentro de cada aba (ex: "Pendentes (2)") fica um
+   pouco mais claro que o texto da aba, pra não competir com o rótulo */
+.contagem-aba {
+    color: inherit;
+    opacity: 0.6;
+    font-weight: 700;
+}
+
   /*Define a largura máxima da lista, define a margem superior e inferior da lista, define a exibição da lista como flex, define a direção do flex como coluna e define o espaçamento entre os itens da lista*/
   .lista{
       max-width: 760px;
@@ -236,9 +245,39 @@
       }
   
   /* RELATÓRIO GERENCIAL
+
+      /* Barra com o campo de busca e o seletor de ordenação, acima da lista de
+   eventos. flex-wrap deixa os dois empilharem em telas bem estreitas. */
+    .controles-eventos {
+      display: flex;
+      gap: 10px;
+      max-width: 760px;
+      margin: 0 auto 16px;
+      flex-wrap: wrap;
+  }
+    .busca-eventos {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 12px;
+      border: 2px solid var(--borda);
+      border-radius: 8px;
+      font-size: 14px;
+  }
+    .ordenar-eventos {
+      padding: 10px 12px;
+      border: 2px solid var(--borda);
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      color: var(--texto-suave);
+  }
+
+
+
   /* Grade dos cartões de resumo (KPIs) lá no topo da tela de eventos.
      auto-fit + minmax faz ela quebrar linha sozinha em telas pequenas,
      sem precisar de media query. */
+
   .kpis {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
