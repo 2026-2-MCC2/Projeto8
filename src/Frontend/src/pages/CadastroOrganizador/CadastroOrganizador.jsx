@@ -1,14 +1,18 @@
 import { useState } from "react";
 import "./CadastroOrganizador.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function cadastroOrganizador() {
+  const navigate = useNavigate();
   const [tipoPessoa, setTipoPessoa] = useState("PF");
   const [mostrarSenha, setMostrarSenha] = useState(false);
   return (
     <div className="organizador-container">
       <header className="cabecalho-cadastro">
-        <Link to="/cadastro" className="voltar"> ← Voltar ao cadastro</Link>
+        <Link to="/cadastro" className="voltar">
+          {" "}
+          ← Voltar ao cadastro
+        </Link>
         <p className="descricao">Planeje seu evento. Calcule seu ticket </p>
       </header>
       <main className="cadastroOrganizador-main">
@@ -24,11 +28,16 @@ function cadastroOrganizador() {
               Cadastre-se para planejar seus eventos, gerenciar custos e
               calcular o ticket.
             </p>
-            <form>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                navigate("/dashboard");
+              }}
+            >
               <label htmlFor="nome">
                 Nome completo
                 <input
-                  id="noe"
+                  id="nome"
                   type="text"
                   placeholder="Digite seu nome completo"
                 />

@@ -1,0 +1,523 @@
+:root {
+  /* Cores principais */
+  --cor-primaria: #5b45f5;
+  --cor-primaria-hover: #4935d4;
+
+  /* Fundos */
+  --cor-fundo: #f7f7f9;
+  --cor-card: #ffffff;
+
+  /* Textos */
+  --cor-texto: #18181b;
+  --cor-texto-secundario: #71717a;
+
+  /* Bordas */
+  --cor-borda: #dedee3;
+
+  /* Estados */
+  --cor-sucesso: #22c55e;
+  --cor-erro: #ef4444;
+}
+
+/* =========================================================
+   CONFIGURAÇÕES GERAIS
+   ========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+/* =========================================================
+     DASHBOARD
+     ========================================================= */
+
+.dashboard-container {
+  min-height: 100vh;
+  display: flex;
+  background-color: var(--cor-fundo);
+}
+
+/* =========================================================
+     SIDEBAR
+     ========================================================= */
+
+.sidebar {
+  width: 238px;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 20px 12px;
+
+  background-color: var(--cor-card);
+  border-right: 1px solid var(--cor-borda);
+}
+
+/* Logo */
+
+.sidebar h2 {
+  margin: 0 10px 25px;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  color: var(--cor-primaria);
+}
+
+/* =========================================================
+     MENU
+     ========================================================= */
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+
+  min-height: 32px;
+  padding: 8px 10px;
+
+  border-radius: 6px;
+
+  color: var(--cor-texto-secundario);
+  text-decoration: none;
+
+  font-size: 11px;
+  font-weight: 400;
+
+  transition: 0.2s ease;
+}
+
+.sidebar nav a:hover {
+  background-color: #f1efff;
+  color: var(--cor-primaria);
+}
+
+/* Dashboard selecionado */
+
+.sidebar nav a:first-child {
+  background-color: #eeeaff;
+  color: var(--cor-primaria);
+  font-weight: 600;
+}
+
+/* =========================================================
+     PARTE INFERIOR DA SIDEBAR
+     ========================================================= */
+
+.sidebar-bottom {
+  margin-top: auto;
+
+  padding-top: 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  border-top: 1px solid var(--cor-borda);
+}
+
+.sidebar-bottom a {
+  display: flex;
+  align-items: center;
+
+  min-height: 32px;
+  padding: 8px 10px;
+
+  border-radius: 6px;
+
+  color: var(--cor-texto-secundario);
+  text-decoration: none;
+
+  font-size: 11px;
+
+  transition: 0.2s ease;
+}
+
+.sidebar-bottom a:hover {
+  background-color: #f1efff;
+  color: var(--cor-primaria);
+}
+
+.sidebar-bottom a:last-child:hover {
+  color: var(--cor-erro);
+}
+
+/* =========================================================
+     ÁREA PRINCIPAL
+     ========================================================= */
+
+.dashboard-OrganizadorContainer {
+  flex: 1;
+  min-width: 0;
+
+  padding: 28px 32px;
+}
+
+/* =========================================================
+     CABEÇALHO
+     ========================================================= */
+
+.cabecalho-dashboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  margin-bottom: 22px;
+}
+
+.cabecalho-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.title-dashboard {
+  font-size: 22px;
+  font-weight: 700;
+
+  color: var(--cor-texto);
+}
+
+.descricao-dashboard {
+  font-size: 11px;
+  line-height: 1.5;
+
+  color: var(--cor-texto-secundario);
+}
+
+.nome-dashboard {
+  margin-top: 4px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: var(--cor-texto);
+}
+
+/* =========================================================
+     CARDS DE RESUMO
+     ========================================================= */
+
+.resumo-cards {
+  display: flex;
+  gap: 14px;
+
+  margin-bottom: 20px;
+}
+
+.resumo-card {
+  flex: 1;
+
+  min-height: 104px;
+
+  padding: 17px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  background-color: var(--cor-card);
+
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+}
+
+.resumo-card span {
+  font-size: 11px;
+  color: var(--cor-texto-secundario);
+}
+
+.resumo-card strong {
+  font-size: 25px;
+  font-weight: 700;
+
+  color: var(--cor-texto);
+}
+
+/* =========================================================
+     CONTEÚDO INFERIOR
+     ========================================================= */
+
+.dashboard-content {
+  display: grid;
+
+  grid-template-columns: 230px minmax(0, 1fr);
+
+  gap: 15px;
+
+  align-items: start;
+}
+
+/* =========================================================
+     AÇÕES RÁPIDAS
+     ========================================================= */
+
+.acoes-card {
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  background-color: var(--cor-card);
+
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+}
+
+.acoes-card h2 {
+  margin-bottom: 5px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: var(--cor-texto);
+}
+
+.acoes-card button {
+  width: 100%;
+
+  min-height: 32px;
+
+  padding: 7px 10px;
+
+  border: 1px solid var(--cor-borda);
+  border-radius: 5px;
+
+  background-color: var(--cor-card);
+
+  color: var(--cor-texto);
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 500;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.acoes-card button:hover {
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria);
+  background-color: #faf9ff;
+}
+
+/* =========================================================
+     MEUS EVENTOS
+     ========================================================= */
+
+.eventos-card {
+  min-width: 0;
+
+  background-color: var(--cor-card);
+
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+
+  overflow: hidden;
+}
+
+/* =========================================================
+     CABEÇALHO DOS EVENTOS
+     ========================================================= */
+
+.eventos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 14px 16px;
+
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.eventos-header h2 {
+  font-size: 13px;
+  font-weight: 600;
+
+  color: var(--cor-texto);
+}
+
+.eventos-header button {
+  min-width: 125px;
+
+  padding: 7px 10px;
+
+  border: none;
+  border-radius: 5px;
+
+  background-color: var(--cor-primaria);
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+}
+
+.eventos-header button:hover {
+  background-color: var(--cor-primaria-hover);
+}
+
+/* =========================================================
+     COLUNAS
+     ========================================================= */
+
+.eventos-colunas {
+  display: grid;
+
+  grid-template-columns:
+    2fr
+    1fr
+    1.2fr
+    1fr;
+
+  gap: 12px;
+
+  padding: 10px 16px;
+
+  background-color: #fafafa;
+
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.eventos-colunas span {
+  font-size: 9px;
+  font-weight: 600;
+
+  color: var(--cor-texto-secundario);
+
+  text-transform: uppercase;
+}
+
+/* =========================================================
+     EVENTOS
+     ========================================================= */
+
+.evento {
+  display: grid;
+
+  grid-template-columns:
+    2fr
+    1fr
+    1.2fr
+    1fr;
+
+  gap: 12px;
+
+  padding: 13px 16px;
+
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.evento:last-child {
+  border-bottom: none;
+}
+
+.evento span {
+  display: flex;
+  align-items: center;
+
+  font-size: 10px;
+
+  color: var(--cor-texto-secundario);
+}
+
+.evento span:first-child {
+  font-weight: 600;
+  color: var(--cor-texto);
+}
+
+/* =========================================================
+     RESPONSIVIDADE
+     ========================================================= */
+
+@media (max-width: 1000px) {
+  .dashboard-OrganizadorContainer {
+    padding: 24px;
+  }
+
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+
+  .acoes-card {
+    order: 2;
+  }
+
+  .eventos-card {
+    order: 1;
+  }
+}
+
+@media (max-width: 800px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .resumo-cards {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+  }
+
+  .sidebar nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sidebar-bottom {
+    margin-top: 12px;
+  }
+
+  .dashboard-OrganizadorContainer {
+    padding: 20px;
+  }
+
+  .cabecalho-dashboard {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .resumo-cards {
+    flex-direction: column;
+  }
+
+  .eventos-card {
+    overflow-x: auto;
+  }
+
+  .eventos-main {
+    min-width: 600px;
+  }
+}
