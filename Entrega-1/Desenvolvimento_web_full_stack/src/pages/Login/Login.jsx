@@ -1,7 +1,43 @@
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { apiRequest } from "../../services/api";
+import { useState } from "react";
 
 function Login() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+  const [carregando, setCarregando] = useState(false);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    setErro("");
+    setCarregando(true);
+
+    try {
+      const data = await apiRequest("/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          senha,
+        }),
+      });
+
+      sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
+
+      console.log("Login realizado:", data);
+
+      navigate("/dashboard");
+    } catch (error) {
+      setErro(error.message);
+    } finally {
+      setCarregando(false);
+    }
+  }
   return (
     <div className="login-container">
       <header className="cabecalho">
@@ -21,10 +57,17 @@ function Login() {
               Acesse a plataforma para continuar o planejamento do seu evento.
             </p>
 
-            <form>
+            <form onSubmit={handleSubmit}>
               <label htmlFor="email">
                 E-mail
-                <input id="email" type="email" placeholder="nome@email.com" />
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="nome@email.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                />
               </label>
 
               <label htmlFor="senha">
@@ -33,6 +76,9 @@ function Login() {
                   id="senha"
                   type="password"
                   placeholder="Digite sua senha"
+                  value={senha}
+                  onChange={(event) => setSenha(event.target.value)}
+                  required
                 />
               </label>
 
@@ -45,7 +91,11 @@ function Login() {
                 <a href="#">Esqueci minha senha</a>
               </div>
 
-              <button type="submit">Entrar</button>
+              {erro && <p className="mensagem-erro">{erro}</p>}
+
+              <button type="submit" disabled={carregando}>
+                {carregando ? "Entrando..." : "Entrar"}
+              </button>
             </form>
 
             <p className="cadastro">

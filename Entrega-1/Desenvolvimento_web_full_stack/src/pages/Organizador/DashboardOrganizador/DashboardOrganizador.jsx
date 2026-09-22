@@ -1,6 +1,45 @@
 import "./DashboardOrganizador.css";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { apiRequest } from "../../../services/api";
+
 function DashboardOrganizador() {
+  const [eventos, setEventos] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
+
+  const usuario = JSON.parse(sessionStorage.getItem("usuario") || "null");
+
+  useEffect(() => {
+    async function carregarEventos() {
+      try {
+        setErro("");
+
+        const dados = await apiRequest("/eventos");
+
+        setEventos(dados);
+      } catch (error) {
+        setErro(error.message);
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarEventos();
+  }, []);
+
+  const eventosPlanejamento = eventos.filter(
+    (evento) => evento.status === "PLANEJAMENTO",
+  ).length;
+
+  const eventosConfirmados = eventos.filter(
+    (evento) => evento.status === "CONFIRMADO",
+  ).length;
+
+  const eventosCancelados = eventos.filter(
+    (evento) => evento.status === "CANCELADO",
+  ).length;
+
   return (
     <div className="dashboard-container">
       <aside className="sidebar">
@@ -24,33 +63,33 @@ function DashboardOrganizador() {
           <p className="descricao-dashboard">
             Tenha uma visão geral dos seus eventos e acompanhe seu planejamento.
           </p>
-          <h2 className="nome-dashboard">Brian Walter</h2>
+          <h2 className="nome-dashboard">{usuario?.nome || "Organizador"}</h2>
         </header>
         <section className="resumo-cards">
           <article className="resumo-card">
             <span>Eventos em planejamento</span>
-            <strong>2</strong>
+            <strong>{eventosPlanejamento}</strong>
           </article>
           <article className="resumo-card">
             <span>Eventos confirmados</span>
-            <strong>1</strong>
+            <strong>{eventosConfirmados}</strong>
           </article>
           <article className="resumo-card">
-            <span>Eventos concluidos </span>
-            <strong>1</strong>
+            <span>Eventos cancelados </span>
+            <strong>{eventosCancelados}</strong>
           </article>
         </section>
         <section className="dashboard-content">
           <article className="acoes-card">
             <h2>Ações rápidas</h2>
-            <button>+ Criar evento</button>
+            <Link to="/criar-evento">+ Criar evento</Link>
             <button>Buscar serviços</button>
             <button>Ver cotações</button>
           </article>
           <article className="eventos-card">
             <div className="eventos-header">
               <h2>Meus eventos</h2>
-              <button>+ Criar novo evento</button>
+              <Link to="/criar-evento">+ Criar novo evento</Link>
             </div>
             <div className="eventos-main">
               <div className="eventos-colunas">
@@ -59,18 +98,31 @@ function DashboardOrganizador() {
                 <span>Público esperado</span>
                 <span>Status</span>
               </div>
-              <div className="evento">
-                <span>Festa da Computação</span>
-                <span>15/10/2026</span>
-                <span>300-500</span>
-                <span>Em planejamento</span>
-              </div>
-              <div className="evento">
-                <span>Choppada Universitária</span>
-                <span>20/11/2026</span>
-                <span>500-800</span>
-                <span>Em planejamento</span>
-              </div>
+              {carregando && <p>Carregando eventos...</p>}
+
+              {erro && <p className="mensagem-erro">{erro}</p>}
+
+              {!carregando && !erro && eventos.length === 0 && (
+                <p>Você ainda não possui eventos.</p>
+              )}
+
+              {!carregando &&
+                !erro &&
+                eventos.map((evento) => (
+                  <div className="evento" key={evento.id}>
+                    <span>{evento.nome}</span>
+
+                    <span>
+                      {new Date(evento.data_evento).toLocaleDateString("pt-BR")}
+                    </span>
+
+                    <span>
+                      {evento.publico_min} – {evento.publico_max}
+                    </span>
+
+                    <span>{evento.status}</span>
+                  </div>
+                ))}
             </div>
           </article>
         </section>

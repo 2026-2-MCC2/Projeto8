@@ -4,14 +4,16 @@ import Cadastro from "./pages/Cadastro/Cadastro";
 import CadastroOrganizador from "./pages/CadastroOrganizador/CadastroOrganizador";
 import CadastroFornecedor from "./pages/CadastroFornecedor/CadastroFornecedor";
 import Meuseventos from "./pages/Organizador/Meuseventos/Meuseventos";
-import DashboardOrganizador from "./pages/Organizador/DashboardOrganizador/DashboardOrganizador"
+import DashboardOrganizador from "./pages/Organizador/DashboardOrganizador/DashboardOrganizador";
+import CriarEvento from "./pages/Organizador/CriarEvento/CriarEvento";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/criar-evento" element={<CriarEvento />} />
 
-        <Route path="/dashboard" element={< DashboardOrganizador/>} />
+        <Route path="/dashboard" element={<DashboardOrganizador />} />
 
         <Route path="/meus-eventos" element={<Meuseventos />} />
 
@@ -20,12 +22,11 @@ function App() {
         <Route path="/cadastro/organizador" element={<CadastroOrganizador />} />
 
         <Route path="/cadastro" element={<Cadastro />} />
-        
-        
+
         <Route path="/" element={<h1>TrocaTicket</h1>} />
 
         <Route path="/login" element={<Login />} />
-        
+
         <Route path="*" element={<h1>Página não encontrada</h1>} />
       </Routes>
     </BrowserRouter>

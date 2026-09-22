@@ -1,35 +1,79 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 import "./Meuseventos.css";
-import { useState } from "react";
+
+import { apiRequest } from "../../../services/api";
 
 function MeusEventos() {
+  const [eventos, setEventos] = useState([]);
   const [status, setStatus] = useState("");
-  const eventos = [
-    {
-      nome: "Festa da Computação",
-      data: "15/10/2026",
-      horario: "22:00",
-      local: "São Paulo",
-      publico: "300 – 500 pessoas",
-      custos: "R$ 0,00",
-      servicos: 0,
-      status: "Em planejamento",
-    },
-    {
-      nome: "Choppada Universitária",
-      data: "20/11/2026",
-      horario: "21:00",
-      local: "São Paulo",
-      publico: "500 – 800 pessoas",
-      custos: "R$ 0,00",
-      servicos: 0,
-      status: "Em planejamento",
-    },
-  ];
-  const eventosFiltrados =
-    status === ""
-      ? eventos
-      : eventos.filter((evento) => evento.status === status);
+  const [pesquisa, setPesquisa] = useState("");
+
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
+
+  useEffect(() => {
+    async function carregarEventos() {
+      try {
+        setErro("");
+
+        // Busca no backend os eventos do organizador logado.
+        const dados = await apiRequest("/eventos");
+
+        setEventos(dados);
+      } catch (error) {
+        setErro(error.message);
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarEventos();
+  }, []);
+
+  // Converte o status salvo no banco
+  // para o texto que será mostrado na tela.
+  function formatarStatus(statusEvento) {
+    const statusFormatado = {
+      PLANEJAMENTO: "Em planejamento",
+      CONFIRMADO: "Confirmado",
+      CANCELADO: "Cancelado",
+    };
+
+    return statusFormatado[statusEvento] || statusEvento;
+  }
+
+  // Formata a data recebida da API.
+  function formatarData(data) {
+    if (!data) {
+      return "-";
+    }
+
+    // Pegamos somente a parte da data para evitar
+    // problemas de fuso horário.
+    const dataParte = String(data).split("T")[0];
+
+    const [ano, mes, dia] = dataParte.split("-");
+
+    if (!ano || !mes || !dia) {
+      return "-";
+    }
+
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  // Filtra os eventos pela pesquisa e pelo status.
+  const eventosFiltrados = eventos.filter((evento) => {
+    const correspondePesquisa = evento.nome
+      .toLowerCase()
+      .includes(pesquisa.toLowerCase());
+
+    const correspondeStatus = status === "" || evento.status === status;
+
+    return correspondePesquisa && correspondeStatus;
+  });
+
   return (
     <div className="meuseventos-container">
       <aside className="sidebar-organizador">
@@ -46,7 +90,7 @@ function MeusEventos() {
 
         <div className="sidebar-bottom">
           <Link to="/minha-conta">Minha conta</Link>
-          <Link to="/sair">Sair</Link>
+          <Link to="/login">Sair</Link>
         </div>
       </aside>
 
@@ -61,36 +105,61 @@ function MeusEventos() {
             </p>
           </div>
 
-          <button type="button">+ Criar novo evento</button>
+          <Link to="/criar-evento" className="botao-criar-evento">
+            + Criar novo evento
+          </Link>
         </header>
 
         <section className="barra-pesquisa">
-          <form>
+          <form onSubmit={(event) => event.preventDefault()}>
             <label htmlFor="barra-pesquisa">
               <input
                 type="text"
                 id="barra-pesquisa"
                 placeholder="🔎 Pesquisar evento..."
+                value={pesquisa}
+                onChange={(event) => setPesquisa(event.target.value)}
               />
             </label>
 
             <label htmlFor="status-eventos">
               <select
-                value={status}
                 id="status-eventos"
-                onChange={(e) => setStatus(e.target.value)}
+                value={status}
+                onChange={(event) => setStatus(event.target.value)}
               >
                 <option value="">Todos os eventos</option>
-                <option value="Em planejamento">Em planejamento</option>
-                <option value="Confirmado">Confirmado</option>
-                <option value="Cancelados">Cancelados</option>
+
+                <option value="PLANEJAMENTO">Em planejamento</option>
+
+                <option value="CONFIRMADO">Confirmado</option>
+
+                <option value="CANCELADO">Cancelado</option>
               </select>
             </label>
           </form>
         </section>
 
         <section className="eventos-listados">
-          {eventosFiltrados.length === 0 ? (
+          {/* Estado de carregamento */}
+          {carregando && (
+            <div className="estado-vazio">
+              <h2>Carregando eventos...</h2>
+              <p>Aguarde enquanto buscamos seus eventos.</p>
+            </div>
+          )}
+
+          {/* Estado de erro */}
+          {!carregando && erro && (
+            <div className="estado-vazio">
+              <h2>Não foi possível carregar os eventos.</h2>
+
+              <p>{erro}</p>
+            </div>
+          )}
+
+          {/* Nenhum evento encontrado */}
+          {!carregando && !erro && eventosFiltrados.length === 0 && (
             <div className="estado-vazio">
               <div className="estado-vazio-icone">▣</div>
 
@@ -98,16 +167,24 @@ function MeusEventos() {
 
               <p>Crie seu primeiro evento para começar o planejamento.</p>
 
-              <button type="button">+ Criar novo evento</button>
+              <Link to="/criar-evento" className="botao-criar-evento">
+                + Criar novo evento
+              </Link>
             </div>
-          ) : (
+          )}
+
+          {/* Eventos vindos da API */}
+          {!carregando &&
+            !erro &&
             eventosFiltrados.map((evento) => (
-              <article className="meuseventos-card" key={evento.nome}>
+              <article className="meuseventos-card" key={evento.id}>
                 <div className="evento-header">
                   <div className="evento-titulo">
                     <span>{evento.nome}</span>
 
-                    <span className="evento-status">{evento.status}</span>
+                    <span className="evento-status">
+                      {formatarStatus(evento.status)}
+                    </span>
                   </div>
 
                   <div className="evento-acoes">
@@ -120,37 +197,32 @@ function MeusEventos() {
                 <div className="evento-dados">
                   <div>
                     <span>Data</span>
-                    <strong>{evento.data}</strong>
+
+                    <strong>{formatarData(evento.data_evento)}</strong>
                   </div>
 
                   <div>
                     <span>Horário</span>
+
                     <strong>{evento.horario}</strong>
                   </div>
 
                   <div>
                     <span>Local</span>
+
                     <strong>{evento.local}</strong>
                   </div>
 
                   <div>
                     <span>Público</span>
-                    <strong>{evento.publico}</strong>
-                  </div>
 
-                  <div>
-                    <span>Custos cadastrados</span>
-                    <strong>{evento.custos}</strong>
-                  </div>
-
-                  <div>
-                    <span>Serviços selecionados</span>
-                    <strong>{evento.servicos}</strong>
+                    <strong>
+                      {evento.publico_min} – {evento.publico_max} pessoas
+                    </strong>
                   </div>
                 </div>
               </article>
-            ))
-          )}
+            ))}
         </section>
       </main>
 

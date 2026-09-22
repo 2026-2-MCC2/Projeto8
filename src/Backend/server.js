@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 // Importa a conexão com o banco de dados MySQL
 // que configuramos no arquivo db.js.
 const connection = require("./db");
@@ -24,6 +25,7 @@ const jwt = require("jsonwebtoken");
 //
 // Depois disso, conseguimos acessar esses dados
 // através de req.body.
+app.use(cors());
 app.use(express.json());
 
 // Middleware responsável por verificar se o usuário possui
@@ -888,23 +890,25 @@ app.post("/organizadores", (req, res) => {
   // VALIDAÇÃO DOS CAMPOS OBRIGATÓRIOS
   // ==================================================
 
-  // Verifica se algum dos campos necessários
-  // não foi informado pelo usuário.
+  // Estes campos são obrigatórios para PF e PJ.
   if (
     !nome ||
     !email ||
     !senha ||
     !telefone ||
     !tipo_pessoa ||
-    !documento ||
-    !data_nascimento
+    !documento
   ) {
-
-    res.status(400).json({
+    return res.status(400).json({
       mensagem: "Todos os campos são obrigatórios"
     });
+  }
 
-    return;
+  // A data de nascimento é obrigatória somente para PF.
+  if (tipo_pessoa === "PF" && !data_nascimento) {
+    return res.status(400).json({
+      mensagem: "A data de nascimento é obrigatória para Pessoa Física"
+    });
   }
 
 
@@ -912,14 +916,10 @@ app.post("/organizadores", (req, res) => {
   // VALIDAÇÃO DO TIPO DE PESSOA
   // ==================================================
 
-  // O banco aceita somente PF ou PJ.
   if (tipo_pessoa !== "PF" && tipo_pessoa !== "PJ") {
-
-    res.status(400).json({
+    return res.status(400).json({
       mensagem: "Tipo de pessoa deve ser 'PF' ou 'PJ'"
     });
-
-    return;
   }
 
 
@@ -927,29 +927,23 @@ app.post("/organizadores", (req, res) => {
   // VALIDAÇÃO DA DATA DE NASCIMENTO
   // ==================================================
 
-  // Converte a data recebida para um objeto Date.
-  const data = new Date(data_nascimento);
+  // A data só precisa ser validada quando o cadastro for PF.
+  if (tipo_pessoa === "PF") {
+    const data = new Date(data_nascimento);
 
+    // Verifica se a data é válida.
+    if (isNaN(data.getTime())) {
+      return res.status(400).json({
+        mensagem: "Data de nascimento inválida"
+      });
+    }
 
-  // Verifica se a data informada é inválida.
-  if (isNaN(data.getTime())) {
-
-    res.status(400).json({
-      mensagem: "Data de nascimento inválida"
-    });
-
-    return;
-  }
-
-
-  // Verifica se a data de nascimento está no futuro.
-  if (data > new Date()) {
-
-    res.status(400).json({
-      mensagem: "Data de nascimento não pode ser no futuro"
-    });
-
-    return;
+    // A data não pode estar no futuro.
+    if (data > new Date()) {
+      return res.status(400).json({
+        mensagem: "Data de nascimento não pode ser no futuro"
+      });
+    }
   }
 
   const senhaHash = bcrypt.hashSync(senha, 10);
@@ -1529,7 +1523,7 @@ app.post("/login", (req, res) => {
     });
   }
 
-  if(senha.length < 6){
+  if (senha.length < 6) {
     return res.status(400).json({
       mensagem: "A senha deve ter no minimo 6 caracteres"
     });
@@ -1604,6 +1598,195 @@ app.post("/login", (req, res) => {
   );
 });
 
+
+// ======================================================
+// GET /eventos
+// ======================================================
+
+// Retorna somente os eventos do organizador autenticado.
+app.get(
+  "/eventos",
+  autenticarToken,
+  autorizarPerfis("ORGANIZADOR"),
+  (req, res) => {
+
+    const idOrganizador = req.usuario.id;
+
+    const sql = `
+      SELECT
+        id,
+        nome,
+        descricao,
+        horario,
+        data_evento,
+        publico_min,
+        publico_max,
+        local,
+        status
+      FROM eventos
+      WHERE id_organizador = ?
+      ORDER BY data_evento ASC, horario ASC
+    `;
+
+    connection.query(
+      sql,
+      [idOrganizador],
+      (error, results) => {
+
+        if (error) {
+          console.error(
+            "Erro ao buscar eventos:",
+            error.message
+          );
+
+          return res.status(500).json({
+            mensagem: "Erro ao buscar eventos"
+          });
+        }
+
+        return res.status(200).json(results);
+      }
+    );
+  }
+);
+
+// ======================================================
+// POST /eventos
+// ======================================================
+
+// Rota responsável por criar um evento para o
+// organizador que está autenticado.
+app.post(
+  "/eventos",
+  autenticarToken,
+  autorizarPerfis("ORGANIZADOR"),
+  (req, res) => {
+
+    // Recebe os dados enviados pelo frontend.
+    const {
+      nome,
+      descricao,
+      horario,
+      data_evento,
+      publico_min,
+      publico_max,
+      local
+    } = req.body;
+
+    // ==================================================
+    // VALIDAÇÃO DOS CAMPOS
+    // ==================================================
+
+    if (
+      !nome ||
+      !horario ||
+      !data_evento ||
+      !publico_min ||
+      !publico_max ||
+      !local
+    ) {
+      return res.status(400).json({
+        mensagem: "Todos os campos obrigatórios devem ser preenchidos"
+      });
+    }
+
+    // Verifica se o nome é realmente um texto.
+    if (typeof nome !== "string") {
+      return res.status(400).json({
+        mensagem: "O nome do evento deve ser um texto"
+      });
+    }
+
+    // Verifica se existe uma descrição e garante que é texto.
+    if (descricao !== undefined && descricao !== null) {
+      if (typeof descricao !== "string") {
+        return res.status(400).json({
+          mensagem: "A descrição deve ser um texto"
+        });
+      }
+    }
+
+    // Converte os valores de público para número.
+    const minimo = Number(publico_min);
+    const maximo = Number(publico_max);
+
+    // Verifica se os públicos são números válidos.
+    if (
+      !Number.isInteger(minimo) ||
+      !Number.isInteger(maximo) ||
+      minimo <= 0 ||
+      maximo <= 0
+    ) {
+      return res.status(400).json({
+        mensagem: "O público deve ser informado com números inteiros positivos"
+      });
+    }
+
+    // O público mínimo precisa ser menor que o máximo.
+    if (minimo >= maximo) {
+      return res.status(400).json({
+        mensagem: "O público mínimo deve ser menor que o público máximo"
+      });
+    }
+
+    // ==================================================
+    // INSERT NO BANCO
+    // ==================================================
+
+    const sql = `
+      INSERT INTO eventos
+      (
+        id_organizador,
+        nome,
+        descricao,
+        horario,
+        data_evento,
+        publico_min,
+        publico_max,
+        local,
+        status
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    // O ID vem do JWT.
+    // O frontend não escolhe o organizador.
+    const idOrganizador = req.usuario.id;
+
+    connection.query(
+      sql,
+      [
+        idOrganizador,
+        nome,
+        descricao || null,
+        horario,
+        data_evento,
+        minimo,
+        maximo,
+        local,
+        "PLANEJAMENTO"
+      ],
+      (error, results) => {
+
+        if (error) {
+          console.error(
+            "Erro ao criar evento:",
+            error.message
+          );
+
+          return res.status(500).json({
+            mensagem: "Erro ao criar evento"
+          });
+        }
+
+        return res.status(201).json({
+          mensagem: "Evento criado com sucesso!",
+          id: results.insertId
+        });
+      }
+    );
+  }
+);
 
 // ======================================================
 // INICIALIZAÇÃO DO SERVIDOR
