@@ -1,151 +1,170 @@
 # Banco de Dados — TrocaTicket
 
-## Objetivo
+## 1. Objetivo
 
-O banco de dados do TrocaTicket foi desenvolvido em MySQL para armazenar as principais informações utilizadas pela plataforma de planejamento e precificação de eventos.
+Breve explicação de para que o banco existe e o que ele armazena.
 
-A modelagem contempla usuários, organizadores, fornecedores, eventos, serviços, preços dos serviços e a associação entre eventos e serviços.
+Exemplo:
+O banco de dados do TrocaTicket foi desenvolvido em MySQL para armazenar os usuários da plataforma, os dados específicos de Organizadores e Fornecedores, os eventos, os serviços oferecidos e as associações entre eventos e serviços.
 
-## Diagrama
+---
 
-![Diagrama do Banco de Dados](./diagrama-banco.pdf)
+## 2. Estrutura do Banco
 
-## Tabelas
+- **SGBD:** MySQL
+- **Banco:** `trocaticket`
+
+### Arquivos principais
+
+- [`schema.sql`](./schema.sql)
+- [`diagrama-banco.pdf`](./diagrama-banco.pdf)
+
+---
+
+## 3. Tabelas
 
 ### usuarios
 
-Armazena os dados básicos dos usuários da plataforma.
+| Campo      | Tipo         | Restrição          |
+| ---------- | ------------ | ------------------ |
+| id         | INT          | PK, AUTO_INCREMENT |
+| nome       | VARCHAR(250) | NOT NULL           |
+| email      | VARCHAR(250) | UNIQUE, NOT NULL   |
+| telefone   | VARCHAR(30)  | NOT NULL           |
+| senha_hash | VARCHAR(250) | NOT NULL           |
+| tipo       | VARCHAR(50)  | NOT NULL, CHECK    |
+| status     | VARCHAR(50)  | NOT NULL, CHECK    |
 
-- **PK:** `id`
-- **UK:** `email`
-- `nome`
-- `telefone`
-- `senha_hash`
-- `tipo`
-- `status`
+### organizadores
 
-Os tipos de usuário são:
+| Campo           | Tipo        | Restrição            |
+| --------------- | ----------- | -------------------- |
+| id_usuario      | INT         | PK, FK → usuarios.id |
+| tipo_pessoa     | VARCHAR(50) | NOT NULL, CHECK      |
+| documento       | VARCHAR(20) | UNIQUE, NOT NULL     |
+| data_nascimento | DATE        | NULL                 |
+
+### fornecedores
+
+| Campo             | Tipo         | Restrição            |
+| ----------------- | ------------ | -------------------- |
+| id_usuario        | INT          | PK, FK → usuarios.id |
+| CNPJ              | VARCHAR(40)  | UNIQUE, NOT NULL     |
+| categoria_atuacao | VARCHAR(255) | NOT NULL             |
+
+### eventos
+
+| Campo          | Tipo         | Restrição                               |
+| -------------- | ------------ | --------------------------------------- |
+| id             | INT          | PK, AUTO_INCREMENT                      |
+| id_organizador | INT          | FK → organizadores.id_usuario, NOT NULL |
+| nome           | VARCHAR(100) | NOT NULL                                |
+| descricao      | TEXT         | NULL                                    |
+| local          | VARCHAR(200) | NOT NULL                                |
+| data_evento    | DATE         | NOT NULL                                |
+| horario        | TIME         | NOT NULL                                |
+| publico_min    | INT          | NOT NULL                                |
+| publico_max    | INT          | NOT NULL                                |
+| status         | VARCHAR(20)  | NOT NULL, CHECK                         |
+
+### servicos
+
+| Campo         | Tipo         | Restrição                              |
+| ------------- | ------------ | -------------------------------------- |
+| id            | INT          | PK, AUTO_INCREMENT                     |
+| id_fornecedor | INT          | FK → fornecedores.id_usuario, NOT NULL |
+| nome          | VARCHAR(200) | NOT NULL                               |
+| descricao     | TEXT         | NOT NULL                               |
+| categoria     | VARCHAR(100) | NOT NULL                               |
+
+### precos_servicos
+
+| Campo       | Tipo          | Restrição                  | 
+| ----------- | ------------- | -------------------------- |
+| id          | INT           | PK, AUTO_INCREMENT         |
+| id_servico  | INT           | FK → servicos.id, NOT NULL |
+| publico_max | INT           | NOT NULL                   |
+| publico_min | INT           | NOT NULL                   |
+| preco       | DECIMAL(10,2) | NOT NULL                   |
+
+### eventos_servicos
+
+| Campo          | Tipo          | Restrição                  |
+| -------------- | ------------- | -------------------------- |
+| id             | INT           | PK, AUTO_INCREMENT         |
+| id_evento      | INT           | FK → eventos.id, NOT NULL  |
+| id_servico     | INT           | FK → servicos.id, NOT NULL |
+| preco_aplicado | DECIMAL(10,2) | NOT NULL                   |
+
+---
+
+## 4. Relacionamentos
+
+- `usuarios` 1 : 0..1 `organizadores`
+- `usuarios` 1 : 0..1 `fornecedores`
+- `organizadores` 1 : N `eventos`
+- `fornecedores` 1 : N `servicos`
+- `servicos` 1 : N `precos_servicos`
+- `eventos` N : N `servicos`, por meio de `eventos_servicos`
+
+### Chaves estrangeiras
+
+- `organizadores.id_usuario` → `usuarios.id`
+- `fornecedores.id_usuario` → `usuarios.id`
+- `eventos.id_organizador` → `organizadores.id_usuario`
+- `servicos.id_fornecedor` → `fornecedores.id_usuario`
+- `precos_servicos.id_servico` → `servicos.id`
+- `eventos_servicos.id_evento` → `eventos.id`
+- `eventos_servicos.id_servico` → `servicos.id`
+
+---
+
+## 5. Regras e Restrições
+
+### Valores permitidos
+
+**usuarios.tipo**
 
 - `ORGANIZADOR`
 - `FORNECEDOR`
 - `ADMINISTRADOR`
 
-Os possíveis status são:
+**usuarios.status**
 
 - `PENDENTE`
 - `APROVADO`
 - `REJEITADO`
 
-### organizadores
-
-Armazena os dados específicos dos usuários que possuem perfil de Organizador.
-
-- **PK/FK:** `id_usuario` → `usuarios.id`
-- `tipo_pessoa`
-- **UK:** `documento`
-- `data_nascimento`
-
-O campo `tipo_pessoa` permite:
+**organizadores.tipo_pessoa**
 
 - `PF`
 - `PJ`
 
-### fornecedores
-
-Armazena os dados específicos dos usuários que possuem perfil de Fornecedor.
-
-- **PK/FK:** `id_usuario` → `usuarios.id`
-- **UK:** `CNPJ`
-- `categoria_atuacao`
-
-### eventos
-
-Armazena os eventos planejados pelos organizadores.
-
-- **PK:** `id`
-- **FK:** `id_organizador` → `organizadores.id_usuario`
-- `nome`
-- `descricao`
-- `horario`
-- `data_evento`
-- `publico_min`
-- `publico_max`
-- `local`
-- `status`
-
-Os possíveis status do evento são:
+**eventos.status**
 
 - `PLANEJAMENTO`
 - `CONFIRMADO`
 - `CANCELADO`
 
-### servicos
+### Regras de integridade
 
-Armazena os serviços oferecidos pelos fornecedores.
+- `publico_max > publico_min` em `eventos`
+- `publico_max > publico_min` em `precos_servicos`
+- `usuarios.email` deve ser único
+- `organizadores.documento` deve ser único
+- `fornecedores.CNPJ` deve ser único
+- `eventos_servicos (id_evento, id_servico)` deve ser único
 
-- **PK:** `id`
-- **FK:** `id_fornecedor` → `fornecedores.id_usuario`
-- `nome`
-- `descricao`
-- `categoria`
+---
 
-### precos_servicos
+## 6. Arquivos
 
-Armazena os preços dos serviços de acordo com as faixas de público.
+- [`README.md`](./README.md) — documentação do banco
+- [`schema.sql`](./schema.sql) — script de criação do banco
+- [`diagrama-banco.pdf`](./diagrama-banco.pdf) — diagrama da modelagem
 
-- **PK:** `id`
-- **FK:** `id_servico` → `servicos.id`
-- `preco`
-- `publico_min`
-- `publico_max`
+---
 
-Um mesmo serviço pode possuir diferentes faixas de preço conforme o público esperado.
+## 7. Observação
 
-### eventos_servicos
-
-Relaciona eventos e serviços.
-
-- **PK:** `id`
-- **FK:** `id_evento` → `eventos.id`
-- **FK:** `id_servico` → `servicos.id`
-- `preco_aplicado`
-
-Essa tabela permite o relacionamento muitos-para-muitos entre eventos e serviços.
-
-## Relacionamentos
-
-1. `usuarios` → `organizadores`  
-   Um usuário pode possuir um cadastro de Organizador.
-
-2. `usuarios` → `fornecedores`  
-   Um usuário pode possuir um cadastro de Fornecedor.
-
-3. `organizadores` → `eventos`  
-   Um Organizador pode criar vários eventos.
-
-4. `fornecedores` → `servicos`  
-   Um Fornecedor pode cadastrar vários serviços.
-
-5. `servicos` → `precos_servicos`  
-   Um Serviço pode possuir várias faixas de preço.
-
-6. `eventos` ↔ `servicos`  
-   Eventos e serviços possuem relacionamento muitos-para-muitos, implementado pela tabela `eventos_servicos`.
-
-## Regras e restrições
-
-### Chaves únicas
-
-- `usuarios.email`
-- `organizadores.documento`
-- `fornecedores.CNPJ`
-- `eventos_servicos (id_evento, id_servico)`
-
-A restrição composta em `eventos_servicos` impede que o mesmo serviço seja associado duas vezes ao mesmo evento.
-
-### Restrições CHECK
-
-A modelagem possui validações para garantir que:
-
-```text
-publico_min < publico_max
+O `schema.sql`, o diagrama e esta documentação representam a estrutura do banco de dados utilizada no projeto TrocaTicket.
