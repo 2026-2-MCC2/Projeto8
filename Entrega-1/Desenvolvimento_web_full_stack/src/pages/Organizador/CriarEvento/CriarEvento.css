@@ -1,0 +1,288 @@
+.criar-evento-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cor-fundo);
+}
+
+/* ========================================
+   CABEÇALHO
+======================================== */
+
+.cabecalho-criar-evento {
+  padding: 24px 40px;
+}
+
+.voltar {
+  display: inline-block;
+  color: var(--cor-texto);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.voltar:hover {
+  color: var(--cor-primaria);
+}
+
+.cabecalho-criar-evento .descricao {
+  margin-top: 10px;
+  color: var(--cor-texto-secundario);
+  font-size: 15px;
+}
+
+/* ========================================
+   ÁREA PRINCIPAL
+======================================== */
+
+.criar-evento-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 20px 20px 50px;
+}
+
+/* ========================================
+   CARD
+======================================== */
+
+.card-criar-evento {
+  width: 100%;
+  max-width: 760px;
+  background: var(--cor-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: 18px;
+  padding: 40px;
+  box-shadow: 0 8px 30px rgba(24, 24, 27, 0.08);
+}
+
+.card-criar-evento-conteudo {
+  width: 100%;
+}
+
+.logo-card {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: var(--cor-primaria);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.card-criar-evento h1 {
+  margin: 0;
+  color: var(--cor-texto);
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.descricao-criar-evento {
+  margin: 10px 0 30px;
+  color: var(--cor-texto-secundario);
+  line-height: 1.5;
+}
+
+/* ========================================
+   FORMULÁRIO
+======================================== */
+
+.card-criar-evento form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card-criar-evento label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--cor-texto);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.card-criar-evento input,
+.card-criar-evento textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  background: var(--cor-card);
+  color: var(--cor-texto);
+  font-family: inherit;
+  font-size: 15px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card-criar-evento input {
+  min-height: 48px;
+}
+
+.card-criar-evento textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.card-criar-evento input::placeholder,
+.card-criar-evento textarea::placeholder {
+  color: var(--cor-texto-secundario);
+}
+
+.card-criar-evento input:focus,
+.card-criar-evento textarea:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 3px rgba(91, 69, 245, 0.12);
+}
+
+/* ========================================
+   CAMPOS LADO A LADO
+======================================== */
+
+.linha-campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* ========================================
+   MENSAGENS
+======================================== */
+
+.mensagem-erro {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--cor-erro);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.mensagem-sucesso {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.08);
+  color: var(--cor-sucesso);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* ========================================
+   BOTÕES
+======================================== */
+
+.acoes-formulario {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.acoes-formulario button,
+.botao-cancelar {
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.15s ease;
+}
+
+.acoes-formulario button {
+  border: 1px solid var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: var(--cor-card);
+}
+
+.acoes-formulario button:hover:not(:disabled) {
+  border-color: var(--cor-primaria-hover);
+  background: var(--cor-primaria-hover);
+}
+
+.acoes-formulario button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.acoes-formulario button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.botao-cancelar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-card);
+  color: var(--cor-texto);
+  text-decoration: none;
+}
+
+.botao-cancelar:hover {
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria);
+}
+
+/* ========================================
+   RODAPÉ
+======================================== */
+
+.rodape {
+  padding: 20px;
+  color: var(--cor-texto-secundario);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 700px) {
+  .cabecalho-criar-evento {
+    padding: 20px;
+  }
+
+  .criar-evento-main {
+    padding: 10px 16px 35px;
+  }
+
+  .card-criar-evento {
+    padding: 26px 20px;
+    border-radius: 14px;
+  }
+
+  .card-criar-evento h1 {
+    font-size: 25px;
+  }
+
+  .linha-campos {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .acoes-formulario {
+    flex-direction: column-reverse;
+  }
+
+  .acoes-formulario button,
+  .botao-cancelar {
+    width: 100%;
+  }
+}

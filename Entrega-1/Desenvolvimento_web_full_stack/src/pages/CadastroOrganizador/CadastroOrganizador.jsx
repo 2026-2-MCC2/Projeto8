@@ -1,14 +1,66 @@
 import { useState } from "react";
 import "./CadastroOrganizador.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { apiRequest } from "../../services/api";
 
-function cadastroOrganizador() {
+function CadastroOrganizador() {
+  const navigate = useNavigate();
+
   const [tipoPessoa, setTipoPessoa] = useState("PF");
   const [mostrarSenha, setMostrarSenha] = useState(false);
+
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [documento, setDocumento] = useState("");
+  const [dataNascimento, setDataNascimento] = useState("");
+  const [senha, setSenha] = useState("");
+
+  const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
+  const [carregando, setCarregando] = useState(false);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    console.log("CADASTRO ORGANIZADOR FOI EXECUTADO");
+    setErro("");
+    setSucesso("");
+    setCarregando(true);
+
+    try {
+      await apiRequest("/organizadores", {
+        method: "POST",
+        body: JSON.stringify({
+          nome,
+          email,
+          senha,
+          telefone,
+          tipo_pessoa: tipoPessoa,
+          documento,
+          data_nascimento: tipoPessoa === "PF" ? dataNascimento : null,
+        }),
+      });
+
+      setSucesso(
+        "Cadastro realizado com sucesso! Aguarde a aprovação do administrador.",
+      );
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      setErro(error.message);
+    } finally {
+      setCarregando(false);
+    }
+  }
   return (
     <div className="organizador-container">
       <header className="cabecalho-cadastro">
-        <Link to="/cadastro" className="voltar"> ← Voltar ao cadastro</Link>
+        <Link to="/cadastro" className="voltar">
+          {" "}
+          ← Voltar ao cadastro
+        </Link>
         <p className="descricao">Planeje seu evento. Calcule seu ticket </p>
       </header>
       <main className="cadastroOrganizador-main">
@@ -24,23 +76,40 @@ function cadastroOrganizador() {
               Cadastre-se para planejar seus eventos, gerenciar custos e
               calcular o ticket.
             </p>
-            <form>
+            <form onSubmit={handleSubmit}>
               <label htmlFor="nome">
                 Nome completo
                 <input
-                  id="noe"
+                  id="nome"
                   type="text"
                   placeholder="Digite seu nome completo"
+                  value={nome}
+                  onChange={(event) => setNome(event.target.value)}
+                  required
                 />
               </label>
 
               <label htmlFor="email">
                 E-mail
-                <input id="email" type="email" placeholder="nome@email.com" />
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="nome@email.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                />
               </label>
               <label htmlFor="telefone">
                 Telefone
-                <input id="telefone " type="tel" placeholder="(00)00000-0000" />
+                <input
+                  id="telefone"
+                  type="tel"
+                  placeholder="(00)00000-0000"
+                  value={telefone}
+                  onChange={(event) => setTelefone(event.target.value)}
+                  required
+                />
               </label>
               <div className="tipo-pessoa">
                 <label>
@@ -76,12 +145,21 @@ function cadastroOrganizador() {
                       ? "000.000.000-00"
                       : "00.000.000/0000-00"
                   }
+                  value={documento}
+                  onChange={(event) => setDocumento(event.target.value)}
+                  required
                 />
               </label>
               {tipoPessoa === "PF" && (
                 <label htmlFor="data-nascimento">
                   Data de nascimento
-                  <input type="date" id="data-nascimento" />
+                  <input
+                    type="date"
+                    id="data-nascimento"
+                    value={dataNascimento}
+                    onChange={(event) => setDataNascimento(event.target.value)}
+                    required
+                  />
                 </label>
               )}
               <label htmlFor="senha">
@@ -91,6 +169,10 @@ function cadastroOrganizador() {
                     id="senha"
                     type={mostrarSenha ? "text" : "password"}
                     placeholder="Digite sua senha"
+                    value={senha}
+                    onChange={(event) => setSenha(event.target.value)}
+                    minLength={6}
+                    required
                   />
 
                   <button
@@ -103,7 +185,12 @@ function cadastroOrganizador() {
                 </div>
                 <small>A senha deve ter no mínimo 6 caracteres.</small>
               </label>
-              <button type="submit"> Criar conta</button>
+              {erro && <p className="mensagem-erro">{erro}</p>}
+
+              {sucesso && <p className="mensagem-sucesso">{sucesso}</p>}
+              <button type="submit" disabled={carregando}>
+                {carregando ? "Criando conta..." : "Criar conta"}
+              </button>
               <p className="login">
                 Já tem uma conta?
                 <Link to="/login"> Fazer login</Link>
@@ -120,4 +207,4 @@ function cadastroOrganizador() {
   );
 }
 
-export default cadastroOrganizador;
+export default CadastroOrganizador;
