@@ -1,118 +1,317 @@
-```sh
-Utilize o site <https://www.toptal.com/developers/gitignore> para gerar seu arquivo gitignore e apague este campo.
-
-Vide tutoriais do PI.
-```
-
 # FECAP - Fundação de Comércio Álvares Penteado
 
 <p align="center">
-<a href= "https://www.fecap.br/"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhZPrRa89Kma0ZZogxm0pi-tCn_TLKeHGVxywp-LXAFGR3B1DPouAJYHgKZGV0XTEf4AE&usqp=CAU" alt="FECAP - Fundação de Comércio Álvares Penteado" border="0"></a>
+<a href="https://www.fecap.br/">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhZPrRa89Kma0ZZogxm0pi-tCn_TLKeHGVxywp-LXAFGR3B1DPouAJYHgKZGV0XTEf4AE&usqp=CAU"
+alt="FECAP - Fundação de Comércio Álvares Penteado"
+border="0">
+</a>
 </p>
 
 # TicketLab
 
-## TicketLab: 
+## Projeto Interdisciplinar — Ciência da Computação
 
-## Integrantes: <a href="https://github.com/Brian-Walter">Brian Walter</a>, <a href="https://github.com/maxtq">Max Tocantins Quaglia</a>, <a href="https://github.com/Rafael1285">Rafael Nhocanse</a>
+## Integrantes: <a href="https://github.com/Brian-Walter">Brian Walter</a>, <a href="https://github.com/maxtq">Max Tocantis Quaglia</a>, <a href="https://github.com/Rafael1285">Rafael Nhoncanse</a>
 
-## Professores Orientadores: <a href="https://www.linkedin.com/in/victorbarq/">Dr. Victor Von Doom</a>, <a href="https://www.linkedin.com/in/victorbarq/">Me. Saitama</a>, <a href="https://www.linkedin.com/in/victorbarq/">Dr. Strange</a>, <a href="https://www.linkedin.com/in/victorbarq/">Me. Yoda</a>, <a href="https://www.linkedin.com/in/victorbarq/">Dr. Gero</a>
+## Professores Orientadores: <a href="https://www.linkedin.com/in/cristina-machado-corr%C3%AAa-leite-630309160/">Cristina Machado Corrêa Leite</a>, <a href="https://www.linkedin.com/in/dolemes/">David de Oliveira Lemes</a>, <a href="https://www.linkedin.com/in/francisco-escobar/">Francisco de Souza Escobar</a>, <a href="https://www.linkedin.com/in/j%C3%A9sus-gomes-83b769108/">Jésus Gomes</a>, <a href="https://www.linkedin.com/in/katia-bossi/">Kátia Bossi</a>
+
+Projeto desenvolvido no curso de Ciência da Computação da FECAP.
 
 ## Descrição
 
 <p align="center">
-<img src="https://pix4free.org/assets/library/2021-01-20/originals/game.jpg" alt="NOME DO JOGO" border="0">
-  Game by <a href="http://www.nyphotographic.com/">Nick Youngson</a> <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> <a href="http://pix4free.org/">Pix4free</a>
+<img src="./Imagens/previa-prototipo.png"
+alt="Tela de home do prototipo do TicketLab"
+border="0">
+<br>
+Tela de home do prototipo da plataforma TicketLab.
 </p>
 
+O **TicketLab** é uma plataforma Web desenvolvida como Projeto
+Interdisciplinar do curso de Ciência da Computação da FECAP. O sistema
+tem como objetivo auxiliar na **organização financeira e no planejamento
+de eventos universitários**, conectando organizadores e fornecedores em
+um único ambiente.
 
-De um a dois parágrafos sobre o que é seu projeto e o que ele faz.
-<br><br>
-Meu projeto ajuda estudantes FECAP a configurarem seus githubs.
-<br><br>
-May the force be with you!
-<br><br>
+A plataforma permite que o **Organizador** cadastre eventos, organize
+seus custos e acompanhe propostas de fornecedores. O **Fornecedor** pode
+consultar oportunidades e enviar propostas para os serviços solicitados.
+O **Administrador** é responsável pelo gerenciamento dos usuários,
+aprovação de cadastros e acompanhamento das informações do sistema.
 
-## 🛠 Estrutura de pastas
+A partir dos custos consolidados, do público previsto e da margem de
+lucro definida pelo organizador, o TicketLab permite estimar o valor do
+ingresso necessário para o evento.
 
--Raiz<br>
-|<br>
-|-->documentos<br>
-  &emsp;|-->antigos<br>
-  &emsp;|Documentação.docx<br>
-|-->executáveis<br>
-  &emsp;|-->windows<br>
-  &emsp;|-->android<br>
-  &emsp;|-->HTML<br>
-|-->imagens<br>
-|-->src<br>
-  &emsp;|-->Backend<br>
-  &emsp;|-->Frontend<br>
-|readme.md<br>
+Para o escopo do projeto, cada evento possui apenas um tipo de ingresso.
+O MVP não realiza venda de ingressos nem processamento de pagamentos,
+tendo como foco o **planejamento, a cotação de fornecedores e a
+estimativa do valor do ticket**.
 
-A pasta raiz contem dois arquivos que devem ser alterados:
+## Funcionalidades
 
-<b>README.MD</b>: Arquivo que serve como guia e explicação geral sobre seu projeto. O mesmo que você está lendo agora.
+| ID   | Funcionalidade               | Descrição                                                                                     |
+| ---- | ---------------------------- | --------------------------------------------------------------------------------------------- |
+| RF01 | Autocadastro de Organizador  | Permite que um organizador crie sua conta, que permanece pendente até análise administrativa. |
+| RF02 | Autocadastro de Fornecedor   | Permite que um fornecedor realize seu cadastro e aguarde aprovação.                           |
+| RF03 | Aprovação de cadastros       | Permite ao administrador aprovar ou rejeitar usuários cadastrados.                            |
+| RF04 | Autenticação e perfis        | Controla o acesso conforme o perfil de Administrador, Organizador ou Fornecedor.              |
+| RF05 | Cadastro de eventos          | Permite ao organizador cadastrar informações e características do evento.                     |
+| RF06 | Itens de composição de custo | Permite organizar serviços e produtos que fazem parte do orçamento do evento.                 |
+| RF07 | Custos do evento             | Permite registrar custos operacionais e outros custos não provenientes de propostas.          |
+| RF08 | Publicação para cotação      | Disponibiliza eventos e itens para fornecedores aprovados.                                    |
+| RF09 | Consulta de eventos          | Permite que fornecedores consultem eventos disponíveis para propostas.                        |
+| RF10 | Envio de propostas           | Permite que fornecedores enviem propostas vinculadas aos itens dos eventos.                   |
+| RF11 | Comparação de propostas      | Permite ao organizador comparar propostas recebidas.                                          |
+| RF12 | Consolidação do orçamento    | Permite selecionar propostas e consolidar os custos do evento.                                |
+| RF13 | Cálculo do ticket            | Estima o valor do ingresso com base nos custos, público e margem.                             |
+| RF14 | Visão administrativa         | Permite consultas e acompanhamento gerencial das informações do sistema.                      |
 
-Há também 4 pastas que seguem da seguinte forma:
+### Cálculo do ticket
 
-<b>documentos</b>: Toda a documentação estará nesta pasta.
+O cálculo utilizado pelo projeto considera a margem definida sobre a
+receita:
 
-<b>executáveis</b>: Binários e executáveis do projeto devem estar nesta pasta.
+```text
+Ticket = Custo Total / [Público × (1 − Margem)]
 
-<b>imagens</b>: Imagens do sistema
+O sistema deve realizar as validações necessárias para impedir valores
+inválidos durante o cálculo.
 
-<b>src</b>: Pasta que contém o código fonte.
+🛠 Estrutura de pastas
+Projeto8/
+│
+├── Entrega-1/
+│   ├── Calculo-II/
+│   ├── Desenvolvimento_web_full_stack/
+│   ├── Gestao_empresarial_e_dinamicas_das_organizacoes/
+│   ├── Projeto_em_banco_de_dados/
+│   └── Projeto_Interdisciplinar_programacao_web/
+│
+├── Entrega-2/
+│   ├── Calculo_II/
+│   ├── Desenvolvimento_web_full_stack/
+│   ├── Gestao_empresarial_e_dinamicas_das_organizacoes/
+│   ├── Projeto_em_banco_de_dados/
+│   └── Projeto_Interdisciplinar_programacao_web/
+│
+├── Imagens/
+│
+├── src/
+│   ├── Backend/
+│   │   ├── db.js
+│   │   ├── server.js
+│   │   ├── package.json
+│   │   └── ...
+│   │
+│   └── Frontend/
+│       ├── public/
+│       │
+│       └── src/
+│           ├── assets/
+│           ├── pages/
+│           │   ├── Cadastro/
+│           │   ├── CadastroFornecedor/
+│           │   ├── CadastroOrganizador/
+│           │   ├── Home/
+│           │   ├── Login/
+│           │   └── Organizador/
+│           │       ├── CriarEvento/
+│           │       ├── DashboardOrganizador/
+│           │       └── Meuseventos/
+│           │
+│           └── services/
+│
+└── README.md
 
-## 🛠 Instalação
+Entrega-1/Projeto_Interdisciplinar_programacao_web:
+documentação e materiais relacionados ao Projeto Interdisciplinar,
+incluindo o protótipo navegável e evidências da entrega.
 
-<b>Android:</b>
+Entrega-1/Projeto_em_banco_de_dados:
+documentação da modelagem do banco de dados, scripts SQL,
+diagramas e informações relacionadas à estrutura de dados.
 
-Faça o Download do JOGO.apk no seu celular.
-Execute o APK e siga as instruções de seu telefone.
+src/Backend:
+código-fonte da API desenvolvida com Node.js e Express, responsável
+pela comunicação com o banco de dados e pelas regras de negócio.
 
-```sh
-Coloque código do prompt de comnando se for necessário
+src/Frontend:
+aplicação Web desenvolvida com React e Vite, responsável pela
+interface e interação com o usuário.
+
+README.md:
+documentação principal do projeto.
+
+ ##  Banco de Dados
+
+O TicketLab utiliza **MySQL** como sistema de gerenciamento de banco
+de dados.
+
+A documentação da modelagem do banco de dados está disponível na pasta:
+
+[ Projeto em Banco de Dados](./Entrega-1/Projeto_em_banco_de_dados/)
+
+### Diagrama do Banco de Dados
+
+O diagrama apresenta as principais entidades, atributos e
+relacionamentos utilizados na estrutura do TicketLab.
+
+[ Visualizar Diagrama do Banco de Dados (PDF)](./Entrega-1/Projeto_em_banco_de_dados/diagrama-banco.pdf)
+
+Entre as principais entidades utilizadas estão:
+
+- Usuários
+- Organizadores
+- Fornecedores
+- Eventos
+- Serviços
+- Preços de serviços
+- Serviços associados aos eventos
+
+##  Protótipo
+
+O protótipo navegável do TicketLab foi desenvolvido utilizando o **Bolt**.
+
+Ele apresenta os principais fluxos e telas da plataforma, contemplando os módulos de:
+
+* Administrador
+* Organizador
+* Fornecedor
+
+O protótipo pode ser acessado pelo link abaixo:
+
+[ Acessar protótipo do TicketLab](https://bolt.new/p/71361906)
+
+##  Configuração para Desenvolvimento
+Ferramentas necessárias
+Node.js
+npm
+Git
+MySQL
+Visual Studio Code
+Clonar o repositório
+git clone https://github.com/2026-2-MCC2/Projeto8.git
+cd Projeto8
+Configurar o Backend
+
+Acesse a pasta:
+
+cd src/Backend
+
+Instale as dependências:
+
+npm install
+
+Configure o arquivo .env com as informações necessárias para o
+banco de dados e para o JWT.
+
+Depois, execute:
+
+node server.js
+
+A API será executada na porta:
+
+http://localhost:3000
+Configurar o Frontend
+
+Abra outro terminal e acesse:
+
+cd src/Frontend
+
+Instale as dependências:
+
+npm install
+
+Execute o ambiente de desenvolvimento:
+
+npm run dev
+
+O Vite exibirá no terminal o endereço local da aplicação,
+normalmente:
+
+http://localhost:5173
+ ## Modo Demonstração
+
+O TicketLab possui um Modo Demonstração desenvolvido para facilitar
+a apresentação e avaliação do projeto.
+
+Esse modo permite acessar o fluxo principal do Organizador sem depender
+de uma conta real ou da configuração do banco de dados para o fluxo
+demonstrativo.
+
+Para utilizar
+Inicie o Backend.
+Inicie o Frontend.
+Acesse a aplicação pelo endereço informado pelo Vite.
+Utilize a opção de Modo Demonstração disponível na aplicação.
+
+Os dados utilizados durante o modo demonstração são temporários e
+mantidos em memória enquanto o servidor estiver em execução.
+
+##  Funcionalidades desenvolvidas
+Página inicial
+Login
+Cadastro de Organizador
+Cadastro de Fornecedor
+Autenticação por JWT
+Dashboard do Organizador
+Cadastro de eventos
+Visualização de eventos
+Integração Frontend + Backend
+Integração com MySQL
+Modo Demonstração
+Navegação entre as telas
+Validação de dados
+API REST
+
+##  Tecnologias
+Frontend
+React
+React Router
+Vite
+JavaScript
+CSS
+Backend
+Node.js
+Express
+JWT
+bcrypt
+mysql2
+Banco de dados
+MySQL
+MySQL Workbench
+Desenvolvimento e documentação
+Git
+GitHub
+Postman
+Bolt
+VS Code
+ ## Documentação
+
+A documentação do projeto está organizada de acordo com as etapas
+da Entrega 1.
+
+Projeto Interdisciplinar
+Projeto em Banco de Dados
+Frontend
+Backend
+ ## Equipe
+
+| Integrante |
+|---|
+| Brian Walter |
+| Max Tocantins Quaglia |
+| Rafael Nhoncanse |
+
+ Referências
+https://react.dev/
+https://vite.dev/
+https://expressjs.com/
+https://dev.mysql.com/doc/
+https://nodejs.org/
+https://git-scm.com/
+https://bolt.new/
+https://www.postman.com/
 ```
-
-<b>Windows:</b>
-
-Não há instalação! Apenas executável!
-Encontre o JOGO.exe na pasta executáveis e execute-o como qualquer outro programa.
-
-```sh
-Coloque código do prompt de comnando se for necessário
-```
-
-<b>HTML:</b>
-
-Não há instalação!
-Encontre o index.html na pasta executáveis e execute-o como uma página WEB (através de algum browser).
-
-## 💻 Configuração para Desenvolvimento
-
-Descreva como instalar todas as dependências para desenvolvimento e como rodar um test-suite automatizado de algum tipo. Se necessário, faça isso para múltiplas plataformas.
-
-Para abrir este projeto você necessita das seguintes ferramentas:
-
--<a href="https://godotengine.org/download">GODOT</a>
-
-```sh
-make install
-npm test
-Coloque código do prompt de comnando se for necessário
-```
-
-## 📋 Licença/License
-Utilize o link <https://chooser-beta.creativecommons.org/> para fazer uma licença CC BY 4.0.
-
-## 🎓 Referências
-
-Aqui estão as referências usadas no projeto.
-
-1. <https://github.com/iuricode/readme-template>
-2. <https://github.com/gabrieldejesus/readme-model>
-3. <https://chooser-beta.creativecommons.org/>
-4. <https://freesound.org/>
-5. <https://www.toptal.com/developers/gitignore>
-6. Músicas por: <a href="https://freesound.org/people/DaveJf/sounds/616544/"> DaveJf </a> e <a href="https://freesound.org/people/DRFX/sounds/338986/"> DRFX </a> ambas com Licença CC 0.

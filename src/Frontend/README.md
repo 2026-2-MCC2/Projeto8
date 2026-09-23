@@ -34,7 +34,7 @@ Para executar o projeto, é necessário ter instalado:
 
 ### 1. Instalar as dependências do frontend
 
-Abra um terminal dentro da pasta src/Frontend:
+Abra um terminal dentro desta pasta:
 
 ```bash
 npm install
