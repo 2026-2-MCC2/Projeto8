@@ -15,7 +15,7 @@ function cadastro() {
       <main className="cadastro-main">
         <article className="cadastro-card">
           <div className="card-conteudo">
-            <span className="logo-card">TROCATICKET</span>
+            <span className="logo-card">TICKETLAB</span>
 
             <h2 className="cadastro-title">Escolha seu tipo de cadastro</h2>
 
@@ -46,7 +46,7 @@ function cadastro() {
       </main>
       <footer className="rodape">
         {" "}
-        © 2026 TrocaTicket · Todos os direitos reservados{" "}
+        © 2026 TICKETLAB · Todos os direitos reservados{" "}
       </footer>
     </div>
   );

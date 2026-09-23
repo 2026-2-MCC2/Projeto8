@@ -88,7 +88,7 @@ function CriarEvento() {
       <main className="criar-evento-main">
         <article className="card-criar-evento">
           <div className="card-criar-evento-conteudo">
-            <span className="logo-card">TROCATICKET</span>
+            <span className="logo-card">TICKETLAB</span>
 
             <h1>Criar novo evento</h1>
 
@@ -214,7 +214,7 @@ function CriarEvento() {
       </main>
 
       <footer className="rodape">
-        © 2026 TrocaTicket · Todos os direitos reservados
+        © 2026 TicketLab · Todos os direitos reservados
       </footer>
     </div>
   );

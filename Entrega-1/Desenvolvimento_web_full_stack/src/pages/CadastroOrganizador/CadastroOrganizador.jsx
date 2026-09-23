@@ -66,7 +66,7 @@ function CadastroOrganizador() {
       <main className="cadastroOrganizador-main">
         <article className="card-organizador">
           <div className="card-organizadorConteudo">
-            <span className="logo-card">TROCATICKET</span>
+            <span className="logo-card">TICKETLAB</span>
 
             <h2 className="cadastroOrganizador-title">
               Cria conta de Organizador
@@ -201,7 +201,7 @@ function CadastroOrganizador() {
       </main>
       <footer className="rodape">
         {" "}
-        © 2026 TrocaTicket · Todos os direitos reservados
+        © 2026 TicketLab · Todos os direitos reservados
       </footer>
     </div>
   );

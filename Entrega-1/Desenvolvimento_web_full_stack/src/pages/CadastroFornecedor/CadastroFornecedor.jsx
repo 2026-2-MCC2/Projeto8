@@ -14,7 +14,7 @@ function CadastroFornecedor() {
       <main className="cadastroFornecedor-main">
         <article className="card-fornecedor">
           <div className="card-fornecedorConteudo">
-            <span className="logo-card">TROCATICKET</span>
+            <span className="logo-card">TICKETLAB</span>
             <h2 className="cadastro-fornecedor-title">
               Criar conta de Fornecedor
             </h2>
@@ -90,7 +90,7 @@ function CadastroFornecedor() {
         </article>
       </main>
       <footer className="rodape">
-        © 2026 TrocaTicket · Todos os direitos reservados
+        © 2026 TicketLab · Todos os direitos reservados
       </footer>
     </div>
   );

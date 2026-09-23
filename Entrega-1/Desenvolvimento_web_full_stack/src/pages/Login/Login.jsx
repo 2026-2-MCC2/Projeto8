@@ -41,7 +41,9 @@ function Login() {
   return (
     <div className="login-container">
       <header className="cabecalho">
-        <h1 className="title">TrocaTicket</h1>
+        <Link to="/" className="logo">
+          TicketLab
+        </Link>
 
         <p className="descricao">Planeje seu evento. Calcule seu ticket.</p>
       </header>
@@ -49,7 +51,7 @@ function Login() {
       <main className="login-main">
         <article className="card-login">
           <div className="card-conteudo">
-            <span className="logo-card">TROCATICKET</span>
+            <span className="logo-card">TICKETLAB</span>
 
             <h2 className="login-title">Entrar na sua conta</h2>
 
@@ -102,12 +104,17 @@ function Login() {
               Ainda não possui uma conta?
               <Link to="/cadastro"> Cadastrar-se</Link>
             </p>
+            <div className="card-acesso">
+              <p className="acesso-organizador">
+                <Link to="/dashboard"> Acessar aba de organizador</Link>
+              </p>
+            </div>
           </div>
         </article>
       </main>
 
       <footer className="rodape">
-        © 2026 TrocaTicket · Todos os direitos reservados
+        © 2026 TicketLab · Todos os direitos reservados
       </footer>
     </div>
   );

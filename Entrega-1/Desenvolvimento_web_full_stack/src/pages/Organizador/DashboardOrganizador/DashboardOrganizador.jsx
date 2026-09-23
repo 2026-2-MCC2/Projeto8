@@ -43,7 +43,7 @@ function DashboardOrganizador() {
   return (
     <div className="dashboard-container">
       <aside className="sidebar">
-        <h2>TrocaTicket</h2>
+        <h2>TicketLab</h2>
         <nav>
           <Link to="/dashboard">Dashboard</Link>
           <Link to="/meus-eventos">Meus eventos</Link>

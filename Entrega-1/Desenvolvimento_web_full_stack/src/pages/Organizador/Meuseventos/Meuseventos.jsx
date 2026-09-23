@@ -77,11 +77,11 @@ function MeusEventos() {
   return (
     <div className="meuseventos-container">
       <aside className="sidebar-organizador">
-        <h2>TrocaTicket</h2>
+        <h2>TicketLab</h2>
 
         <nav>
           <Link to="/dashboard">Dashboard</Link>
-          <Link to="/meuseventos">Meus eventos</Link>
+          <Link to="/meus-eventos">Meus eventos</Link>
           <Link to="/buscar-servicos">Buscar serviços</Link>
           <Link to="/cotacoes">Cotações</Link>
           <Link to="/resumo-custos">Resumo de custos</Link>
@@ -227,7 +227,7 @@ function MeusEventos() {
       </main>
 
       <footer className="rodape">
-        © 2026 TrocaTicket · Todos os direitos reservados
+        © 2026 TicketLab · Todos os direitos reservados
       </footer>
     </div>
   );

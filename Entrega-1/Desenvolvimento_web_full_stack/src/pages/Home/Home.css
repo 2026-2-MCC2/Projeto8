@@ -1,0 +1,115 @@
+.home {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: var(--cor-fundo);
+}
+
+.home-container {
+  width: 100%;
+  max-width: 650px;
+  padding: 60px 40px;
+  text-align: center;
+  background-color: var(--cor-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(24, 24, 27, 0.08);
+}
+
+.home-container h1 {
+  margin: 0 0 16px;
+  color: var(--cor-texto);
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.home-subtitle {
+  margin: 0;
+  color: var(--cor-texto);
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.home-description {
+  margin: 14px 0 0;
+  color: var(--cor-texto-secundario);
+  font-size: 16px;
+}
+
+.home-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.home-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  padding: 13px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Botão Entrar */
+.home-button.primary {
+  background-color: var(--cor-primaria);
+  color: var(--cor-card);
+}
+
+.home-button.primary:hover {
+  background-color: var(--cor-primaria-hover);
+}
+
+/* Botão Cadastrar-se */
+.home-button.secondary {
+  background-color: var(--cor-card);
+  color: var(--cor-texto);
+  border: 1px solid var(--cor-borda);
+}
+
+.home-button.secondary:hover {
+  background-color: var(--cor-fundo);
+  border-color: var(--cor-primaria);
+}
+
+/* Rodapé */
+.home-footer {
+  margin: 40px 0 0;
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .home {
+    padding: 16px;
+  }
+
+  .home-container {
+    padding: 40px 24px;
+  }
+
+  .home-container h1 {
+    font-size: 38px;
+  }
+
+  .home-subtitle {
+    font-size: 19px;
+  }
+
+  .home-actions {
+    flex-direction: column;
+  }
+
+  .home-button {
+    width: 100%;
+  }
+}

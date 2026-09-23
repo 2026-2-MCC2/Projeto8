@@ -6,6 +6,7 @@ import CadastroFornecedor from "./pages/CadastroFornecedor/CadastroFornecedor";
 import Meuseventos from "./pages/Organizador/Meuseventos/Meuseventos";
 import DashboardOrganizador from "./pages/Organizador/DashboardOrganizador/DashboardOrganizador";
 import CriarEvento from "./pages/Organizador/CriarEvento/CriarEvento";
+import Home from "./pages/Home/Home";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
 
         <Route path="/cadastro" element={<Cadastro />} />
 
-        <Route path="/" element={<h1>TrocaTicket</h1>} />
+        <Route path="/" element={<Home/>} />
 
         <Route path="/login" element={<Login />} />
 
