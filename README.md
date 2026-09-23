@@ -75,11 +75,14 @@ receita:
 
 ```text
 Ticket = Custo Total / [Público × (1 − Margem)]
+```
 
 O sistema deve realizar as validações necessárias para impedir valores
 inválidos durante o cálculo.
 
-🛠 Estrutura de pastas
+## 🛠️ Estrutura de pastas
+
+```text
 Projeto8/
 │
 ├── Entrega-1/
@@ -124,41 +127,44 @@ Projeto8/
 │           └── services/
 │
 └── README.md
+```
 
-Entrega-1/Projeto_Interdisciplinar_programacao_web:
-documentação e materiais relacionados ao Projeto Interdisciplinar,
+### Organização das principais pastas
+
+**`Entrega-1/Projeto_Interdisciplinar_programacao_web`**  
+Documentação e materiais relacionados ao Projeto Interdisciplinar,
 incluindo o protótipo navegável e evidências da entrega.
 
-Entrega-1/Projeto_em_banco_de_dados:
-documentação da modelagem do banco de dados, scripts SQL,
+**`Entrega-1/Projeto_em_banco_de_dados`**  
+Documentação da modelagem do banco de dados, scripts SQL,
 diagramas e informações relacionadas à estrutura de dados.
 
-src/Backend:
-código-fonte da API desenvolvida com Node.js e Express, responsável
+**`src/Backend`**  
+Código-fonte da API desenvolvida com Node.js e Express, responsável
 pela comunicação com o banco de dados e pelas regras de negócio.
 
-src/Frontend:
-aplicação Web desenvolvida com React e Vite, responsável pela
+**`src/Frontend`**  
+Aplicação Web desenvolvida com React e Vite, responsável pela
 interface e interação com o usuário.
 
-README.md:
-documentação principal do projeto.
+**`README.md`**  
+Documentação principal do projeto.
 
- ##  Banco de Dados
+## 🗄️ Banco de Dados
 
 O TicketLab utiliza **MySQL** como sistema de gerenciamento de banco
 de dados.
 
 A documentação da modelagem do banco de dados está disponível na pasta:
 
-[ Projeto em Banco de Dados](./Entrega-1/Projeto_em_banco_de_dados/)
+[📁 Projeto em Banco de Dados](./Entrega-1/Projeto_em_banco_de_dados/)
 
 ### Diagrama do Banco de Dados
 
 O diagrama apresenta as principais entidades, atributos e
 relacionamentos utilizados na estrutura do TicketLab.
 
-[ Visualizar Diagrama do Banco de Dados (PDF)](./Entrega-1/Projeto_em_banco_de_dados/diagrama-banco.pdf)
+[📄 Visualizar Diagrama do Banco de Dados (PDF)](./Entrega-1/Projeto_em_banco_de_dados/diagrama-banco.pdf)
 
 Entre as principais entidades utilizadas estão:
 
@@ -170,148 +176,187 @@ Entre as principais entidades utilizadas estão:
 - Preços de serviços
 - Serviços associados aos eventos
 
-##  Protótipo
+## 🎨 Protótipo
 
-O protótipo navegável do TicketLab foi desenvolvido utilizando o **Bolt**.
+O protótipo navegável do TicketLab foi desenvolvido utilizando o
+**Bolt**.
 
-Ele apresenta os principais fluxos e telas da plataforma, contemplando os módulos de:
+Ele apresenta os principais fluxos e telas da plataforma, contemplando
+os módulos de:
 
-* Administrador
-* Organizador
-* Fornecedor
+- Administrador
+- Organizador
+- Fornecedor
 
 O protótipo pode ser acessado pelo link abaixo:
 
-[ Acessar protótipo do TicketLab](https://bolt.new/p/71361906)
+[🔗 Acessar protótipo do TicketLab](https://bolt.new/p/71361906)
 
-##  Configuração para Desenvolvimento
-Ferramentas necessárias
-Node.js
-npm
-Git
-MySQL
-Visual Studio Code
-Clonar o repositório
+## ⚙️ Configuração para Desenvolvimento
+
+### Ferramentas necessárias
+
+- Node.js
+- npm
+- Git
+- MySQL
+- Visual Studio Code
+
+### Clonar o repositório
+
+```bash
 git clone https://github.com/2026-2-MCC2/Projeto8.git
 cd Projeto8
-Configurar o Backend
+```
+
+### Configurar o Backend
 
 Acesse a pasta:
 
+```bash
 cd src/Backend
+```
 
 Instale as dependências:
 
+```bash
 npm install
+```
 
-Configure o arquivo .env com as informações necessárias para o
+Configure o arquivo `.env` com as informações necessárias para o
 banco de dados e para o JWT.
 
 Depois, execute:
 
+```bash
 node server.js
+```
 
 A API será executada na porta:
 
+```text
 http://localhost:3000
-Configurar o Frontend
+```
+
+### Configurar o Frontend
 
 Abra outro terminal e acesse:
 
+```bash
 cd src/Frontend
+```
 
 Instale as dependências:
 
+```bash
 npm install
+```
 
 Execute o ambiente de desenvolvimento:
 
+```bash
 npm run dev
+```
 
 O Vite exibirá no terminal o endereço local da aplicação,
 normalmente:
 
+```text
 http://localhost:5173
- ## Modo Demonstração
+```
 
-O TicketLab possui um Modo Demonstração desenvolvido para facilitar
+## 🎬 Modo Demonstração
+
+O TicketLab possui um **Modo Demonstração** desenvolvido para facilitar
 a apresentação e avaliação do projeto.
 
 Esse modo permite acessar o fluxo principal do Organizador sem depender
 de uma conta real ou da configuração do banco de dados para o fluxo
 demonstrativo.
 
-Para utilizar
-Inicie o Backend.
-Inicie o Frontend.
-Acesse a aplicação pelo endereço informado pelo Vite.
-Utilize a opção de Modo Demonstração disponível na aplicação.
+### Para utilizar
+
+1. Inicie o Backend.
+2. Inicie o Frontend.
+3. Acesse a aplicação pelo endereço informado pelo Vite.
+4. Utilize a opção de **Modo Demonstração** disponível na aplicação.
 
 Os dados utilizados durante o modo demonstração são temporários e
 mantidos em memória enquanto o servidor estiver em execução.
 
-##  Funcionalidades desenvolvidas
-Página inicial
-Login
-Cadastro de Organizador
-Cadastro de Fornecedor
-Autenticação por JWT
-Dashboard do Organizador
-Cadastro de eventos
-Visualização de eventos
-Integração Frontend + Backend
-Integração com MySQL
-Modo Demonstração
-Navegação entre as telas
-Validação de dados
-API REST
+## 🚀 Funcionalidades desenvolvidas
 
-##  Tecnologias
-Frontend
-React
-React Router
-Vite
-JavaScript
-CSS
-Backend
-Node.js
-Express
-JWT
-bcrypt
-mysql2
-Banco de dados
-MySQL
-MySQL Workbench
-Desenvolvimento e documentação
-Git
-GitHub
-Postman
-Bolt
-VS Code
- ## Documentação
+- Página inicial
+- Login
+- Cadastro de Organizador
+- Cadastro de Fornecedor
+- Autenticação por JWT
+- Dashboard do Organizador
+- Cadastro de eventos
+- Visualização de eventos
+- Integração Frontend + Backend
+- Integração com MySQL
+- Modo Demonstração
+- Navegação entre as telas
+- Validação de dados
+- API REST
+
+## 🛠️ Tecnologias
+
+### Frontend
+
+- React
+- React Router
+- Vite
+- JavaScript
+- CSS
+
+### Backend
+
+- Node.js
+- Express
+- JWT
+- bcrypt
+- mysql2
+
+### Banco de Dados
+
+- MySQL
+- MySQL Workbench
+
+### Desenvolvimento e documentação
+
+- Git
+- GitHub
+- Postman
+- Bolt
+- Visual Studio Code
+
+## 📚 Documentação
 
 A documentação do projeto está organizada de acordo com as etapas
 da Entrega 1.
 
-Projeto Interdisciplinar
-Projeto em Banco de Dados
-Frontend
-Backend
- ## Equipe
+- [📁 Projeto Interdisciplinar](./Entrega-1/Projeto_Interdisciplinar_programacao_web/)
+- [📁 Projeto em Banco de Dados](./Entrega-1/Projeto_em_banco_de_dados/)
+- [📁 Frontend](./src/Frontend/)
+- [📁 Backend](./src/Backend/)
 
-| Integrante |
-|---|
-| Brian Walter |
+## 👥 Equipe
+
+| Integrante            |
+| --------------------- |
+| Brian Walter          |
 | Max Tocantins Quaglia |
-| Rafael Nhoncanse |
+| Rafael Nhoncanse      |
 
- Referências
-https://react.dev/
-https://vite.dev/
-https://expressjs.com/
-https://dev.mysql.com/doc/
-https://nodejs.org/
-https://git-scm.com/
-https://bolt.new/
-https://www.postman.com/
-```
+## 📖 Referências
+
+1. [React](https://react.dev/)
+2. [Vite](https://vite.dev/)
+3. [Express](https://expressjs.com/)
+4. [MySQL](https://dev.mysql.com/doc/)
+5. [Node.js](https://nodejs.org/)
+6. [Git](https://git-scm.com/)
+7. [Bolt](https://bolt.new/)
+8. [Postman](https://www.postman.com/)
