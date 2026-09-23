@@ -2,114 +2,127 @@
 :root {
     --verde-escuro: #011d11;
     --verde-medio: #004123;
-    --fundo: #a09f9f;
-    --texto: #76e282;
-    --texto-suave: #070707;
-    --borda: #001306;
+    --fundo: #f5f7f6;
+    --texto: #1f2937;
+    --texto-suave: #4b5563;
+    --borda: #d7ded9;
     --aprovado: #2d6a4f;
     --rejeitado: #b5482a;
     --pendente: #c98a1a;
     --concluido: #1d5f8a;
-  }
-  
-  /* reset de estilos */
-  * {
+}
+
+
+/* reset de estilos */
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-  }
-  
-  /*Definição de qual fonte será utilizada e cores de fundo e texto e entre a borda e o conteúdo*/
-  body {
+}
+
+
+/*Definição de qual fonte será utilizada e cores de fundo e texto e entre a borda e o conteúdo*/
+body {
     font-family:
-      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: var(--fundo);
     color: var(--texto);
     padding: 24px 16px 60px;
-  }
-  
-  /*Definição de tamanho máximo do conteúdo e centralização do mesmo*/
-  header { max-width: 760px; margin: 0 auto 24px; }
-  
-  /*Tamanho da fonte do primeiro conteudo la em cima, espaçamento entre as letras, transformação do texto para maiusculo, cor do texto e peso da fonte*/
-  .eyebrown{
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--verde-medio);
-      font-weight: 700;
-  }
-  /*Definição do tamanho da fonte, espaçamento entre as letras, cor do texto e espaçamento entre o titulo e o conteudo*/
-  h1{
-      font-size: 22px;
-      margin-top: 4px;
-      color: var(--verde-escuro);
-  }
-  /*Definição do tamanho da fonte, cor do texto, espaçamento entre o subtítulo e o conteudo e espaçamento entre as letras*/
-  .subtitulo{
-      font-size: 16px;
-      color: var(--texto-suave);
-      margin-top: 4px;
-      letter-spacing: 0.02em;
-  }
-  
-     /* São os dois botões lá em cima que trocam entre "Cadastros pendentes" e
+}
+
+
+/*Definição de tamanho máximo do conteúdo e centralização do mesmo*/
+header {
+    max-width: 760px;
+    margin: 0 auto 24px;
+}
+
+
+/*Tamanho da fonte do primeiro conteudo la em cima, espaçamento entre as letras, transformação do texto para maiusculo, cor do texto e peso da fonte*/
+.eyebrown {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--verde-medio);
+    font-weight: 700;
+}
+/*Definição do tamanho da fonte, espaçamento entre as letras, cor do texto e espaçamento entre o titulo e o conteudo*/
+h1 {
+    font-size: 22px;
+    margin-top: 4px;
+    color: var(--verde-escuro);
+}
+/*Definição do tamanho da fonte, cor do texto, espaçamento entre o subtítulo e o conteudo e espaçamento entre as letras*/
+.subtitulo {
+    font-size: 16px;
+    color: var(--texto-suave);
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+}
+
+
+/* São os dois botões lá em cima que trocam entre "Cadastros pendentes" e
      "Relatório gerencial". É diferente das ".aba" porque essa aqui troca a
      TELA inteira, e as abas só filtram a lista dentro de uma tela. */
-  .area-principal {
-      display: flex;
-      gap: 10px;
-      max-width: 760px;
-      margin: 0 auto 24px;
-  }
-  .area-btn {
-      flex: 1;
-      padding: 12px 14px;
-      background: #fff;
-      color: var(--texto-suave);
-      border: 2px solid var(--borda);
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 14px;
-  }
-  .area-btn.ativa {
-      background: var(--verde-escuro);
-      color: #fff;
-      border-color: var(--verde-escuro);
-  }
-  
-  /*  O atributo [hidden] do próprio HTML já esconde o elemento, então aqui só é pra garantir
-     que, quando ela some, some por completo. */
-  .view[hidden] { display: none; }
-  
-  /*Define a exibição das abas como flex, define o espaçamento entre as abas, define a margem inferior, define a borda inferior, define a margem superior e centraliza o conteúdo, define a largura máxima dos abas de inicio como um todo*/
-  .abas{
-      display: flex;
-      gap:16px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--borda);
-      margin: 20px auto 0;
-      max-width: 760px;
-      flex-wrap: wrap;
-  }
-  /*Define o espaçamento interno das abas, define o cursor como pointer, define a cor de fundo, define a cor do texto, define a borda inferior como transparente, define a seleção do usuário como não selecionável, define o peso da fonte e define o tamanho da fonte*/
-  .aba{
-      padding: 10px 14px;
-      cursor: pointer;
-      background: var(--fundo);
-      color: var(--texto-suave);
-      border-bottom: 2px solid transparent;
-      user-select: none;
-      font-weight: 600;
-      font-size: 16px;
-  }
-  /*Define a cor do texto da aba ativa, define a cor da borda inferior da aba ativa*/
-  .aba.ativa{
-      color: var(--verde-escuro);
-      border-bottom-color: var(--verde-medio);
-  }
+.area-principal {
+    display: flex;
+    gap: 10px;
+    max-width: 760px;
+    margin: 0 auto 24px;
+}
+.area-btn {
+    flex: 1;
+    padding: 12px 14px;
+    background: #fff;
+    color: var(--texto-suave);
+    border: 2px solid var(--borda);
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+}
+.area-btn.ativa {
+    background: var(--verde-escuro);
+    color: #fff;
+    border-color: var(--verde-escuro);
+}
 
-  /* o número entre parênteses dentro de cada aba (ex: "Pendentes (2)") fica um
+
+/*  O atributo [hidden] do próprio HTML já esconde o elemento, então aqui só é pra garantir
+     que, quando ela some, some por completo. */
+.view[hidden] {
+    display: none;
+}
+
+
+/*Define a exibição das abas como flex, define o espaçamento entre as abas, define a margem inferior, define a borda inferior, define a margem superior e centraliza o conteúdo, define a largura máxima dos abas de inicio como um todo*/
+.abas {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--borda);
+    margin: 20px auto 0;
+    max-width: 760px;
+    flex-wrap: wrap;
+}
+/*Define o espaçamento interno das abas, define o cursor como pointer, define a cor de fundo, define a cor do texto, define a borda inferior como transparente, define a seleção do usuário como não selecionável, define o peso da fonte e define o tamanho da fonte*/
+.aba {
+    padding: 10px 14px;
+    cursor: pointer;
+    background: var(--fundo);
+    color: var(--texto-suave);
+    border-bottom: 2px solid transparent;
+    user-select: none;
+    font-weight: 600;
+    font-size: 16px;
+}
+/*Define a cor do texto da aba ativa, define a cor da borda inferior da aba ativa*/
+.aba.ativa {
+    color: var(--verde-escuro);
+    border-bottom-color: var(--verde-medio);
+}
+
+
+/* o número entre parênteses dentro de cada aba (ex: "Pendentes (2)") fica um
    pouco mais claro que o texto da aba, pra não competir com o rótulo */
 .contagem-aba {
     color: inherit;
@@ -117,305 +130,388 @@
     font-weight: 700;
 }
 
-  /*Define a largura máxima da lista, define a margem superior e inferior da lista, define a exibição da lista como flex, define a direção do flex como coluna e define o espaçamento entre os itens da lista*/
-  .lista{
-      max-width: 760px;
-      margin: 16px auto 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-  }
-  /*Define a cor de fundo do cartão, define o espaçamento interno do cartão, define a borda do cartão, define o raio da borda do cartão e define o espaçamento interno inferior do cartão*/
-  .cartao{
-      background: #fff;
-      padding: 14px 16px;
-      border: 2px solid var(--borda);
-      border-radius: 10px;
-      padding-bottom: 15px;
-      }
-      /*Define a exibição do topo do cartão como flex, define o espaçamento entre os itens do topo do cartão, define o alinhamento dos itens do topo do cartão e define o espaçamento entre os itens do topo do cartão*/
-      .cartao-topo{
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          gap: 12px;
-      }
-      /*Define o tamanho da fonte do nome, define a cor do texto do nome e define o peso da fonte do nome quer aparece no cartão*/
-      .nome {
-          font-size: 16px;
-          color: var(--verde-escuro);
-          font-weight: 700;
-      }
-      /*Define a exibição do tipo como inline-block, define o tamanho da fonte do tipo, define o peso da fonte do tipo, define o espaçamento entre as letras do tipo, define a transformação do texto do tipo para maiúsculo, define o espaçamento interno do tipo, define o raio da borda do tipo, define a margem esquerda do tipo e define o alinhamento para ficar alinhado com o nome*/
-      .tipo {
-          display: inline-block;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.03em;
-          text-transform: uppercase;
-          padding: 2px 8px;
-          border-radius: 999px;
-          margin-left: 8px;
-          vertical-align: middle;
-      }
-      /*Define a cor de fundo e a cor do texto do tipo organizador e fornecedor*/
-      .tipo.organizador {
-          background: #e3f0e9;
-          color: var(--verde-escuro);
-      }
-      .tipo.fornecedor {
-          background: #fde8dc;
-          color:  #a1490f;
-      }
-      /*Define a cor do texto, o tamanho da fonte e a margem superior do email e da data que aparecem no cartão*/
-      .email, .data {
-          font-size: 15px;
-          color: var(--texto-suave);
-          margin-top: 2px;
-      }
 
-          /* estilo compartilhado entre .status e .cotacao-badge — a única diferença
+/*Define a largura máxima da lista, define a margem superior e inferior da lista, define a exibição da lista como flex, define a direção do flex como coluna e define o espaçamento entre os itens da lista*/
+.lista {
+    max-width: 760px;
+    margin: 16px auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+/*Define a cor de fundo do cartão, define o espaçamento interno do cartão, define a borda do cartão, define o raio da borda do cartão e define o espaçamento interno inferior do cartão*/
+.cartao {
+    background: #fff;
+    padding: 16px;
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.cartao:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.07);
+}
+/*Define a exibição do topo do cartão como flex, define o espaçamento entre os itens do topo do cartão, define o alinhamento dos itens do topo do cartão e define o espaçamento entre os itens do topo do cartão*/
+.cartao-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+/*Define o tamanho da fonte do nome, define a cor do texto do nome e define o peso da fonte do nome quer aparece no cartão*/
+.nome {
+    font-size: 16px;
+    color: var(--verde-escuro);
+    font-weight: 700;
+}
+/*Define a exibição do tipo como inline-block, define o tamanho da fonte do tipo, define o peso da fonte do tipo, define o espaçamento entre as letras do tipo, define a transformação do texto do tipo para maiúsculo, define o espaçamento interno do tipo, define o raio da borda do tipo, define a margem esquerda do tipo e define o alinhamento para ficar alinhado com o nome*/
+.tipo {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+/*Define a cor de fundo e a cor do texto do tipo organizador e fornecedor*/
+.tipo.organizador {
+    background: #e3f0e9;
+    color: var(--verde-escuro);
+}
+.tipo.fornecedor {
+    background: #fde8dc;
+    color: #a1490f;
+}
+/*Define a cor do texto, o tamanho da fonte e a margem superior do email e da data que aparecem no cartão*/
+.email,
+.data,
+.localizacao-cadastro,
+.categoria-cadastro {
+    font-size: 15px;
+    color: var(--texto-suave);
+    margin-top: 2px;
+}
+
+
+/* estilo compartilhado entre .status e .cotacao-badge — a única diferença
        real entre os dois selos é o tamanho da fonte, que cada um mantém. */
-    .selo {
-        font-weight: 700;
-        padding: 3px 8px;
-        border-radius: 999px;
-        white-space: nowrap;
-    }
-    .status {
-        font-size: 13px;
-    }
-
-      /*Define a cor de fundo e a cor do texto do status pendente, aprovado e rejeitado*/
-      .status.pendente,
-      .status.planejamento {
-          background: #fbeed4;
-          color: var(--pendente); }
-  
-      .status.aprovado,
-      .status.confirmado {
-          background: #d8f3dc;
-          color: #1b7a45; }
-  
-      .status.rejeitado,
-      .status.cancelado {
-          background: #f8ddd4;
-          color: var(--rejeitado); }
-  
-      /* "Concluído" usa a cor azul */
-      .status.concluido {
-          background: #dceaf2;
-          color: var(--concluido); }
-  
-          /*Define a exibição das ações como flex, define o espaçamento entre as ações e define a margem superior das ações*/
-      .acoes {
-          display: flex;
-          gap: 8px;
-          margin-top: 12px;
-      }
-      /*Define o espaçamento interno do botão, define a borda do botão como none, define o raio da borda do botão, define o cursor do botão como pointer, define o peso da fonte do botão e define o tamanho da fonte do botão (valido pra todos os botoes da pagina)*/
-      button {
-          padding: 8px 14px;
-          border: none;
-          border-radius: 7px;
-          cursor: pointer;
-          font-weight: 600;
-          font-size: 13px;
-      }
-      /*Define a cor de fundo e a cor do texto do botão aprovar, rejeitar e desfazer*/
-      .btn-aprovar {
-          background: var(--verde-medio);
-          color: #fff;
-      }
-      .btn-rejeitar {
-          background: #fff;
-          color: var(--rejeitado);
-          border: 1px solid var(--rejeitado);
-      }
-      .btn-desfazer {
-          background: #fff;
-          color: var(--texto-suave);
-          border: 1px solid var(--borda);
-      }
-      .vazio {
-          text-align: center;
-          color: var(--texto-suave);
-          font-size: 16px;
-          padding: 40px 0;
-      }
-  
-  /* RELATÓRIO GERENCIAL
-
-      /* Barra com o campo de busca e o seletor de ordenação, acima da lista de
-   eventos. flex-wrap deixa os dois empilharem em telas bem estreitas. */
-    .controles-eventos {
-      display: flex;
-      gap: 10px;
-      max-width: 760px;
-      margin: 20px auto 16px;
-      flex-wrap: wrap;
-  }
-    .busca-eventos {
-      flex: 1;
-      min-width: 200px;
-      padding: 10px 12px;
-      border: 2px solid var(--borda);
-      border-radius: 8px;
-      font-size: 14px;
-  }
-    .ordenar-eventos {
-      padding: 10px 12px;
-      border: 2px solid var(--borda);
-      border-radius: 8px;
-      font-size: 14px;
-      background: #fff;
-      color: var(--texto-suave);
-  }
+.selo {
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+.status {
+    font-size: 13px;
+}
 
 
+/*Define a cor de fundo e a cor do texto do status pendente, aprovado e rejeitado*/
+.status.pendente,
+.status.planejamento {
+    background: #fbeed4;
+    color: var(--pendente);
+}
 
-  /* Grade dos cartões de resumo (KPIs) lá no topo da tela de eventos.
+
+.status.aprovado,
+.status.confirmado {
+    background: #d8f3dc;
+    color: #1b7a45;
+}
+
+
+.status.rejeitado,
+.status.cancelado {
+    background: #f8ddd4;
+    color: var(--rejeitado);
+}
+
+
+/* "Concluído" usa a cor azul */
+.status.concluido {
+    background: #dceaf2;
+    color: var(--concluido);
+}
+
+
+/*Define a exibição das ações como flex, define o espaçamento entre as ações e define a margem superior das ações*/
+.acoes {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+
+.btn-detalhes-cadastro {
+    order: 3;
+    margin-left: auto;
+}
+
+
+.btn-aprovar {
+    order: 1;
+}
+
+
+.btn-rejeitar {
+    order: 2;
+}
+
+
+.btn-desfazer {
+    order: 1;
+}
+
+
+/*Define o espaçamento interno do botão, define a borda do botão como none, define o raio da borda do botão, define o cursor do botão como pointer, define o peso da fonte do botão e define o tamanho da fonte do botão (valido pra todos os botoes da pagina)*/
+button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+/*Define a cor de fundo e a cor do texto do botão aprovar, rejeitar e desfazer*/
+.btn-aprovar {
+    background: var(--verde-medio);
+    color: #fff;
+}
+.btn-rejeitar {
+    background: var(--rejeitado);
+    color: #fff;
+    border: 1px solid var(--rejeitado);
+}
+.btn-desfazer {
+    background: #fff;
+    color: var(--verde-escuro);
+    border: 1px solid var(--verde-medio);
+}
+.vazio {
+    text-align: center;
+    color: var(--texto-suave);
+    font-size: 16px;
+    padding: 40px 0;
+}
+
+
+/* RELATÓRIO GERENCIAL */
+
+
+/* Barra com o campo de busca e o seletor de ordenação — usada na tela de
+     eventos e também na de cadastros, por isso a regra tem os dois
+     seletores. flex-wrap deixa os dois empilharem em telas bem estreitas. */
+.controles-eventos,
+.controles-cadastros {
+    display: flex;
+    gap: 10px;
+    max-width: 760px;
+    margin: 20px auto 16px;
+    flex-wrap: wrap;
+}
+.busca-eventos,
+.busca-cadastros {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 12px;
+    border: 2px solid var(--borda);
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    color: var(--texto);
+}
+.ordenar-eventos,
+.filtro-tipo-cadastro {
+    padding: 10px 12px;
+    border: 2px solid var(--borda);
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    color: var(--texto-suave);
+}
+
+
+/* Grade dos cartões de resumo (KPIs) lá no topo da tela de eventos.
      auto-fit + minmax faz ela quebrar linha sozinha em telas pequenas,
      sem precisar de media query. */
 
-  .kpis {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 10px;
-      max-width: 760px;
-      margin: 0 auto 20px;
-  }
-  .kpi {
-      background: #fff;
-      border: 2px solid var(--borda);
-      border-radius: 10px;
-      padding: 14px 16px;
-  }
-  .kpi-rotulo {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--texto-suave);
-      font-weight: 700;
-  }
-  .kpi-valor {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--verde-escuro);
-      margin-top: 4px;
-  }
-  /* usado no KPI de cotações, pra avisar em vermelho quando tem pendência alta */
-  .kpi-valor.alerta { color: var(--rejeitado); }
-  
-  /* Linha com organizador e data do evento, no mesmo estilo de .email/.data */
-  .evento-organizador, .evento-data {
-      font-size: 15px;
-      color: var(--texto-suave);
-      margin-top: 2px;
-  }
-  
-  /* Bloco financeiro dentro do cartão do evento: mostra "custo atual / orçamento
-     previsto" e a barrinha de progresso embaixo. */
-  .resumo-financeiro {
-      margin-top: 12px;
-  }
-  .resumo-financeiro-linha {
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-      color: var(--texto-suave);
-      margin-bottom: 4px;
-  }
-  .resumo-financeiro-linha strong {
-      color: var(--verde-escuro);
-  }
-  
-  /* Barra de progresso genérica: usada tanto para custo/orçamento quanto para
-     percentual de cotações respondidas. */
-  .barra-progresso {
-      background: #eee;
-      border-radius: 999px;
-      height: 8px;
-      overflow: hidden;
-  }
-  .barra-progresso-preenchimento {
-      height: 100%;
-      background: var(--verde-medio);
-      border-radius: 999px;
-  }
-  /* quando o custo já passou do orçamento previsto, a barra fica vermelha
-     pra chamar atenção do administrador */
-  .barra-progresso-preenchimento.estourou {
-      background: var(--rejeitado);
-  }
-  
-  /* Linha de "cotações: X de Y respondidas", com sua própria barra de progresso */
-  .resumo-cotacoes {
-      margin-top: 10px;
-  }
-  
-  /* Botão que abre/fecha os detalhes do evento (custos por categoria e
-     cotações por fornecedor). */
-  .btn-detalhes {
-      background: #fff;
-      color: var(--verde-escuro);
-      border: 1px solid var(--verde-medio);
-      margin-top: 12px;
-  }
-  
-  /* Área de detalhes: fica escondida por padrão (display:none) e só aparece
-     quando o JS adiciona a classe .aberto no clique do botão. */
-  .detalhes-evento {
-      display: none;
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--borda);
-  }
-  .detalhes-evento.aberto {
-      display: block;
-  }
-  
-  .detalhes-titulo {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--texto-suave);
-      font-weight: 700;
-      margin-bottom: 8px;
-  }
-  .detalhes-titulo:not(:first-child) {
-      margin-top: 16px;
-  }
-  
-  /* Tabela de custos por categoria (ex: Buffet, Decoração, Som e Iluminação) */
-  .tabela-custos {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-  }
-  .tabela-custos th {
-      text-align: left;
-      font-size: 12px;
-      text-transform: uppercase;
-      color: var(--texto-suave);
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--borda);
-  }
-  .tabela-custos td {
-      padding: 6px 4px;
-      border-bottom: 1px solid #eee;
-      color: var(--texto-suave);
-  }
-  
-  .tabela-custos tfoot td {
-      border-bottom: none;
-      border-top: 2px solid var(--borda);
-      font-weight: 700;
-      color: var(--verde-escuro);
-      padding-top: 8px;
-  }
 
-  
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    max-width: 760px;
+    margin: 0 auto 20px;
+}
+.kpi {
+    background: #fff;
+    border: 2px solid var(--borda);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+.kpi-rotulo {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--texto-suave);
+    font-weight: 700;
+}
+.kpi-valor {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--verde-escuro);
+    margin-top: 4px;
+}
+/* usado no KPI de cotações, pra avisar em vermelho quando tem pendência alta */
+.kpi-valor.alerta {
+    color: var(--rejeitado);
+}
+
+
+/* Linha com organizador e data do evento, no mesmo estilo de .email/.data */
+.evento-organizador,
+.evento-data {
+    font-size: 15px;
+    color: var(--texto-suave);
+    margin-top: 2px;
+}
+
+
+/* Bloco financeiro dentro do cartão do evento: mostra "custo atual / orçamento
+     previsto" e a barrinha de progresso embaixo. */
+.resumo-financeiro {
+    margin-top: 12px;
+}
+.resumo-financeiro-linha {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--texto-suave);
+    margin-bottom: 4px;
+}
+.resumo-financeiro-linha strong {
+    color: var(--verde-escuro);
+}
+
+
+/* Barra de progresso genérica: usada tanto para custo/orçamento quanto para
+     percentual de cotações respondidas. */
+.barra-progresso {
+    background: #eee;
+    border-radius: 999px;
+    height: 8px;
+    overflow: hidden;
+}
+.barra-progresso-preenchimento {
+    height: 100%;
+    background: var(--verde-medio);
+    border-radius: 999px;
+}
+/* quando o custo já passou do orçamento previsto, a barra fica vermelha
+     pra chamar atenção do administrador */
+.barra-progresso-preenchimento.estourou {
+    background: var(--rejeitado);
+}
+
+
+/* Linha de "cotações: X de Y respondidas", com sua própria barra de progresso */
+.resumo-cotacoes {
+    margin-top: 10px;
+}
+
+
+/* Botão que abre/fecha os detalhes do evento (custos por categoria e
+     cotações por fornecedor). */
+.btn-detalhes {
+    background: #fff;
+    color: var(--verde-escuro);
+    border: 1px solid var(--verde-medio);
+    margin-top: 12px;
+}
+
+
+/* Área de detalhes: fica escondida por padrão (display:none) e só aparece
+     quando o JS adiciona a classe .aberto no clique do botão. */
+.detalhes-evento {
+    display: none;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--borda);
+}
+.detalhes-evento.aberto {
+    display: block;
+}
+
+
+.detalhes-titulo {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--texto-suave);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.detalhes-titulo:not(:first-child) {
+    margin-top: 16px;
+}
+
+
+/* Tabela de custos por categoria (ex: Buffet, Decoração, Som e Iluminação) */
+/* Tabela de custos por categoria (ex: Buffet, Decoração, Som e Iluminação).
+   table-layout:fixed + largura fixa na 1ª coluna é o que mantém "Previsto"
+   e "Atual" sempre alinhados, mesmo com nomes de categoria de tamanhos
+   diferentes. */
+.tabela-custos {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+.tabela-custos th {
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--borda);
+}
+.tabela-custos td {
+    padding: 6px 4px;
+    border-bottom: 1px solid #eee;
+    color: var(--texto-suave);
+}
+.tabela-custos th:first-child,
+.tabela-custos td:first-child {
+    width: 50%;
+}
+.tabela-custos th.numero,
+.tabela-custos td.numero {
+    width: 25%;
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+.tabela-custos tfoot td {
+    border-bottom: none;
+    border-top: 2px solid var(--borda);
+    font-weight: 700;
+    color: var(--verde-escuro);
+    padding-top: 8px;
+}
+
+
 /* linha da categoria que passou do valor previsto: fundo levemente
    avermelhado, e a coluna "Atual" (a última) fica em negrito vermelho pra
    chamar atenção do administrador. */
@@ -427,6 +523,7 @@
     font-weight: 700;
 }
 
+
 /* o aviso "⚠ acima do previsto" que aparece do lado do nome da categoria */
 .aviso-estouro {
     display: block;
@@ -437,55 +534,221 @@
     letter-spacing: 0.02em;
     margin-top: 2px;
 }
-  
-  /* Lista de cotações por fornecedor dentro do evento */
-  .cotacao-item {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(90px, auto) auto;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 0;
-      border-bottom: 1px solid #f2f2f2;
-      font-size: 14px;
-  }
-  .cotacao-item:last-child { border-bottom: none; }
-  .cotacao-fornecedor {
-      color: var(--verde-escuro);
-      font-weight: 600;
-  }
-  .cotacao-categoria {
-      color: var(--texto-suave);
-      font-size: 12px;
-  }
-  .cotacao-valor {
-      min-width: 90px;
-      font-variant-numeric: tabular-nums;
-      color: var(--texto-suave);
-      white-space: nowrap;
-  }
-  .cotacao-badge {
-      font-size: 12px;
-  }
-  .cotacao-badge.aprovado   { background: #dcefe4; color: var(--aprovado); }
-  .cotacao-badge.pendente   { background: #fbeed4; color: var(--pendente); }
-  .cotacao-badge.recusada   { background: #f8ddd4; color: var(--rejeitado); }
-  
-  .tabela-custos {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      font-size: 14px;
-  }
-  
-  .tabela-custos th:first-child,
-  .tabela-custos td:first-child {
-      width: 50%;
-  }
 
-  .tabela-custos th.numero,
-  .tabela-custos td.numero {
-      width: 25%;
-      text-align: right;
-      white-space: nowrap;
-      font-variant-numeric: tabular-nums;
-  }  
+
+/* Lista de cotações por fornecedor dentro do evento */
+.cotacao-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(90px, auto) auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f2f2f2;
+    font-size: 14px;
+}
+.cotacao-item:last-child {
+    border-bottom: none;
+}
+.cotacao-fornecedor {
+    color: var(--verde-escuro);
+    font-weight: 600;
+}
+.cotacao-categoria {
+    color: var(--texto-suave);
+    font-size: 12px;
+}
+.cotacao-valor {
+    min-width: 90px;
+    font-variant-numeric: tabular-nums;
+    color: var(--texto-suave);
+    white-space: nowrap;
+}
+.cotacao-badge {
+    font-size: 12px;
+}
+.cotacao-badge.aprovado {
+    background: #dcefe4;
+    color: var(--aprovado);
+}
+.cotacao-badge.pendente {
+    background: #fbeed4;
+    color: var(--pendente);
+}
+.cotacao-badge.recusada {
+    background: #f8ddd4;
+    color: var(--rejeitado);
+}
+
+
+.btn-detalhes-cadastro {
+    background: #fff;
+    color: var(--verde-escuro);
+    border: 1px solid var(--verde-medio);
+}
+
+
+.btn-aprovar:hover,
+.btn-rejeitar:hover,
+.btn-desfazer:hover,
+.btn-detalhes-cadastro:hover,
+.btn-detalhes:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.97);
+}
+
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid rgba(0, 65, 35, 0.2);
+    outline-offset: 2px;
+}
+
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(1, 29, 17, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+
+.modal-cadastro {
+    width: min(680px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+
+.modal-cadastro-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+
+.modal-cadastro-topo h2 {
+    color: var(--verde-escuro);
+    margin-top: 5px;
+}
+
+
+.modal-tipo {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: var(--verde-medio);
+}
+
+
+.btn-fechar-modal {
+    background: transparent;
+    color: var(--texto-suave);
+    font-size: 24px;
+    padding: 2px 8px;
+}
+
+
+.detalhes-cadastro-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+
+.detalhes-cadastro-grid > div {
+    padding: 12px;
+    background: #f7f9f8;
+    border-radius: 8px;
+}
+
+
+.detalhes-cadastro-grid span {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+
+.detalhes-cadastro-grid strong {
+    color: var(--verde-escuro);
+    font-size: 14px;
+}
+
+
+.detalhe-completo {
+    grid-column: 1 / -1;
+}
+
+
+.historico-analise {
+    margin-top: 18px;
+    padding: 14px;
+    border-left: 3px solid var(--verde-medio);
+    background: #f3f7f4;
+    color: var(--texto-suave);
+}
+
+
+.historico-analise p {
+    margin-top: 5px;
+}
+
+
+.texto-modal {
+    color: var(--texto-suave);
+    margin-bottom: 16px;
+}
+
+
+.modal-cadastro label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--verde-escuro);
+    margin: 12px 0 6px;
+}
+
+
+.modal-cadastro select,
+.modal-cadastro textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    font: inherit;
+    color: var(--texto);
+    background: #fff;
+}
+
+
+.modal-acoes {
+    justify-content: flex-end;
+}
+
+
+@media (max-width: 600px) {
+    .detalhes-cadastro-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .detalhe-completo {
+        grid-column: auto;
+    }
+}

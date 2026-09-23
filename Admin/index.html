@@ -1,74 +1,178 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TicketLab - Administrador</title>
-    <link rel="stylesheet" href="css/admin.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TicketLab - Administrador</title>
+        <link rel="stylesheet" href="css/admin.css" />
+    </head>
+    <body>
+        <header>
+            <div class="eyebrown">TicketLab - Painel do Administrador</div>
+            <h1 id="tituloPagina">Cadastros pendentes</h1>
+            <p class="subtitulo" id="subtituloPagina">
+                Aprove ou rejeite os cadastros de Organizadores e Fornecedores.
+            </p>
+        </header>
 
-<header>
-    <div class="eyebrown">TicketLab - Painel do Administrador</div>
-    <h1 id="tituloPagina">Cadastros pendentes</h1>
-    <p class="subtitulo" id="subtituloPagina">Aprove ou rejeite os cadastros de Organizadores e Fornecedores.</p>
-</header>
 
-<!-- Navegação principal: alterna entre as duas telas do administrador. -->
-<!-- data-area é lido pelo JS pra saber qual seção mostrar. -->
-<nav class="area-principal" id="areaPrincipal">
-    <button class="area-btn ativa" data-area="cadastros">Cadastros pendentes</button>
-    <button class="area-btn" data-area="eventos">Relatório gerencial</button>
-</nav>
+        <!-- Navegação principal: alterna entre as duas telas do administrador. -->
+        <!-- data-area é lido pelo JS pra saber qual seção mostrar. -->
+        <nav class="area-principal" id="areaPrincipal">
+            <button class="area-btn ativa" data-area="cadastros">
+                Cadastros pendentes
+            </button>
+            <button class="area-btn" data-area="eventos">
+                Relatório gerencial
+            </button>
+        </nav>
 
-<!-- TELA 1: CADASTROS -->
-<section class="view" id="view-cadastros">
 
-    <nav class="abas" id="abas">
-        <button type="button" class="aba ativa" data-filtro="pendente" aria-selected="true">Pendentes <span class="contagem-aba" data-contagem="pendente"></span></button>
-        <button type="button" class="aba" data-filtro="aprovado" aria-selected="false">Aprovados <span class="contagem-aba" data-contagem="aprovado"></span></button>
-        <button type="button" class="aba" data-filtro="rejeitado" aria-selected="false">Rejeitados <span class="contagem-aba" data-contagem="rejeitado"></span></button>
-        <button type="button" class="aba" data-filtro="todos" aria-selected="false">Todos <span class="contagem-aba" data-contagem="todos"></span></button>
-    </nav>
-    <!--retorna o conteudo que o JS vai colocar dentro da lista, sem esse id a pagina quebra e nao retorna nada-->
-    <div class="lista" id="lista"></div>
+        <!-- TELA 1: CADASTROS -->
+        <section class="view" id="view-cadastros">
+            <nav class="abas" id="abas">
+                <button
+                    type="button"
+                    class="aba ativa"
+                    data-filtro="pendente"
+                    aria-selected="true"
+                >
+                    Pendentes
+                    <span class="contagem-aba" data-contagem="pendente"></span>
+                </button>
+                <button
+                    type="button"
+                    class="aba"
+                    data-filtro="aprovado"
+                    aria-selected="false"
+                >
+                    Aprovados
+                    <span class="contagem-aba" data-contagem="aprovado"></span>
+                </button>
+                <button
+                    type="button"
+                    class="aba"
+                    data-filtro="rejeitado"
+                    aria-selected="false"
+                >
+                    Rejeitados
+                    <span class="contagem-aba" data-contagem="rejeitado"></span>
+                </button>
+                <button
+                    type="button"
+                    class="aba"
+                    data-filtro="todos"
+                    aria-selected="false"
+                >
+                    Todos
+                    <span class="contagem-aba" data-contagem="todos"></span>
+                </button>
+            </nav>
 
-</section>
 
-<!--  TELA 2: RELATÓRIO GERENCIAL -->
-<section class="view" id="view-eventos" hidden>
+            <div class="controles-cadastros">
+                <input
+                    type="search"
+                    id="busca-cadastros"
+                    class="busca-cadastros"
+                    placeholder="Buscar por nome ou e-mail..."
+                />
 
-    <!-- Cartões de resumo geral: somam TODOS os eventos, sem depender do filtro selecionado abaixo. -->
-    <div class="kpis" id="kpis"></div>
 
-    <!-- Filtro por status do evento, no mesmo padrão das abas de cadastros. -->
-    <nav class="abas" id="abas-eventos">
-        <button type="button" class="aba ativa" data-filtro="todos" aria-selected="true">Todos <span class="contagem-aba" data-contagem="todos"></span></button>
-        <button type="button" class="aba" data-filtro="planejamento" aria-selected="false">Em planejamento <span class="contagem-aba" data-contagem="planejamento"></span></button>
-        <button type="button" class="aba" data-filtro="confirmado" aria-selected="false">Confirmado <span class="contagem-aba" data-contagem="confirmado"></span></button>
-        <button type="button" class="aba" data-filtro="concluido" aria-selected="false">Concluído <span class="contagem-aba" data-contagem="concluido"></span></button>
-        <button type="button" class="aba" data-filtro="cancelado" aria-selected="false">Cancelado <span class="contagem-aba" data-contagem="cancelado"></span></button>
-    </nav>
-        <!-- Busca por nome do evento ou do organizador, e escolha de ordenação. -->
-    <div class="controles-eventos">
-        <input
-            type="search"
-            id="busca-eventos"
-            class="busca-eventos"
-            placeholder="Buscar por evento ou organizador..."
-        >
-        <select id="ordenar-eventos" class="ordenar-eventos">
-            <option value="data">Data mais próxima</option>
-            <option value="cadastro">Cadastro mais recente</option>
-        </select>
-    </div>
+                <select id="filtro-tipo-cadastro" class="filtro-tipo-cadastro">
+                    <option value="todos">Todos os tipos</option>
+                    <option value="organizador">Organizadores</option>
+                    <option value="fornecedor">Fornecedores</option>
+                </select>
+            </div>
 
-    <!-- Lista de eventos, preenchida pelo JS. -->
-    <div class="lista" id="lista-eventos"></div>
 
-</section>
+            <!--retorna o conteudo que o JS vai colocar dentro da lista, sem esse id a pagina quebra e nao retorna nada-->
+            <div class="lista" id="lista"></div>
+        </section>
 
-<!--liga o script JavaScript ao HTML-->
-<script src="js/admin.js"></script>
-</body>
+
+        <!--  TELA 2: RELATÓRIO GERENCIAL -->
+        <section class="view" id="view-eventos" hidden>
+            <!-- Cartões de resumo geral: somam TODOS os eventos, sem depender do filtro selecionado abaixo. -->
+            <div class="kpis" id="kpis"></div>
+
+
+            <!-- Filtro por status do evento, no mesmo padrão das abas de cadastros. -->
+            <nav class="abas" id="abas-eventos">
+                <button
+                    type="button"
+                    class="aba ativa"
+                    data-filtro="todos"
+                    aria-selected="true"
+                >
+                    Todos
+                    <span class="contagem-aba" data-contagem="todos"></span>
+                </button>
+                <button
+                    type="button"
+                    class="aba"
+                    data-filtro="planejamento"
+                    aria-selected="false"
+                >
+                    Em planejamento
+                    <span
+                        class="contagem-aba"
+                        data-contagem="planejamento"
+                    ></span>
+                </button>
+                <button
+                    type="button"
+                    class="aba"
+                    data-filtro="confirmado"
+                    aria-selected="false"
+                >
+                    Confirmado
+                    <span class="contagem-aba" data-contagem="confirmado"></span>
+                </button>
+                <button
+                    type="button"
+                    class="aba"
+                    data-filtro="concluido"
+                    aria-selected="false"
+                >
+                    Concluído
+                    <span class="contagem-aba" data-contagem="concluido"></span>
+                </button>
+                <button
+                    type="button"
+                    class="aba"
+                    data-filtro="cancelado"
+                    aria-selected="false"
+                >
+                    Cancelado
+                    <span class="contagem-aba" data-contagem="cancelado"></span>
+                </button>
+            </nav>
+            <!-- Busca por nome do evento ou do organizador, e escolha de ordenação. -->
+            <div class="controles-eventos">
+                <input
+                    type="search"
+                    id="busca-eventos"
+                    class="busca-eventos"
+                    placeholder="Buscar por evento ou organizador..."
+                />
+                <select id="ordenar-eventos" class="ordenar-eventos">
+                    <option value="data">Data mais próxima</option>
+                    <option value="cadastro">Cadastro mais recente</option>
+                </select>
+            </div>
+
+
+            <!-- Lista de eventos, preenchida pelo JS. -->
+            <div class="lista" id="lista-eventos"></div>
+        </section>
+
+
+        <!--liga o script JavaScript ao HTML-->
+        <script src="js/admin.js"></script>
+    </body>
 </html>
+
+
+
