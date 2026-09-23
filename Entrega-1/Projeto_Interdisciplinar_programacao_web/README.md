@@ -1,6 +1,6 @@
-# Protótipo TrocaTicket
+# Protótipo TicketLab*
 
-Protótipo navegável do sistema **TrocaTicket**, desenvolvido no **Bolt.new** para representar visualmente os principais fluxos, telas e funcionalidades da plataforma.
+Protótipo navegável do sistema **TicketLab**, desenvolvido no **Bolt.new** para representar visualmente os principais fluxos, telas e funcionalidades da plataforma.
 
 O protótipo contempla os três principais perfis de utilização do sistema:
 
@@ -132,7 +132,7 @@ Caso o Vite apresente uma porta diferente, utilize o endereço informado pelo pr
 
 O protótipo foi desenvolvido utilizando o **Bolt.new** como ferramenta de prototipação e desenvolvimento.
 
-Durante a criação do protótipo, foi utilizado um prompt com instruções para orientar a construção das telas, funcionalidades, navegação e identidade visual do sistema **TrocaTicket**.
+Durante a criação do protótipo, foi utilizado um prompt com instruções para orientar a construção das telas, funcionalidades, navegação e identidade visual do sistema **TicketLab**.
 
 O prompt utilizado no desenvolvimento está disponível no arquivo:
 

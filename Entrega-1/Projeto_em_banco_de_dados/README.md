@@ -1,8 +1,8 @@
-# Banco de Dados — TrocaTicket
+# Banco de Dados — TicketLab
 
 ## 1. Objetivo
 
-O banco de dados do TrocaTicket foi desenvolvido em MySQL para armazenar os usuários da plataforma, os dados específicos de Organizadores e Fornecedores, os eventos, os serviços oferecidos e as associações entre eventos e serviços.
+O banco de dados do TicketLab foi desenvolvido em MySQL para armazenar os usuários da plataforma, os dados específicos de Organizadores e Fornecedores, os eventos, os serviços oferecidos e as associações entre eventos e serviços.
 
 ## 2. Estrutura do Banco
 
@@ -162,4 +162,4 @@ O banco de dados do TrocaTicket foi desenvolvido em MySQL para armazenar os usu�
 
 ## 7. Observação
 
-O `schema.sql`, o diagrama e esta documentação representam a estrutura do banco de dados utilizada no projeto TrocaTicket.
+O `schema.sql`, o diagrama e esta documentação representam a estrutura do banco de dados utilizada no projeto TicketLab.
