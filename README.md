@@ -131,24 +131,55 @@ Projeto8/
 
 ### Organização das principais pastas
 
-**`Entrega-1/Projeto_Interdisciplinar_programacao_web`**  
-Documentação e materiais relacionados ao Projeto Interdisciplinar,
-incluindo o protótipo navegável e evidências da entrega.
+O projeto está organizado de acordo com as disciplinas e etapas
+acadêmicas envolvidas no desenvolvimento do TicketLab.
+
+**`Entrega-1/Calculo-II`**  
+Contém os materiais relacionados à disciplina de **Cálculo II**
+desenvolvidos para a primeira entrega do projeto.
+
+**`Entrega-1/Desenvolvimento_web_full_stack`**  
+Contém a documentação e os materiais relacionados à disciplina de
+**Desenvolvimento Web Full Stack** referentes à primeira entrega.
+
+O código-fonte atual da aplicação Web foi organizado posteriormente
+em `src/Frontend`.
+
+**`Entrega-1/Gestao_empresarial_e_dinamicas_das_organizacoes`**  
+Contém os documentos e materiais desenvolvidos para a disciplina de
+**Gestão Empresarial e Dinâmicas das Organizações**, incluindo os
+conteúdos relacionados ao planejamento e à proposta de valor do
+TicketLab.
 
 **`Entrega-1/Projeto_em_banco_de_dados`**  
-Documentação da modelagem do banco de dados, scripts SQL,
+Contém a documentação da modelagem do banco de dados, scripts SQL,
 diagramas e informações relacionadas à estrutura de dados.
 
+**`Entrega-1/Projeto_Interdisciplinar_programacao_web`**  
+Contém a documentação e os materiais relacionados ao Projeto
+Interdisciplinar, incluindo o protótipo navegável e as evidências
+da entrega.
+
+**`Entrega-2`**  
+Área destinada aos materiais das disciplinas e atividades
+correspondentes à segunda etapa de entrega do projeto.
+
 **`src/Backend`**  
-Código-fonte da API desenvolvida com Node.js e Express, responsável
-pela comunicação com o banco de dados e pelas regras de negócio.
+Código-fonte da API desenvolvida com **Node.js e Express**, responsável
+pela comunicação com o banco de dados, autenticação e regras de negócio.
 
 **`src/Frontend`**  
-Aplicação Web desenvolvida com React e Vite, responsável pela
-interface e interação com o usuário.
+Código-fonte atual da aplicação de **Desenvolvimento Web Full Stack**,
+desenvolvida com **React e Vite**, responsável pela interface e
+interação com o usuário.
+
+**`Imagens`**  
+Contém imagens utilizadas na documentação e apresentação do projeto.
 
 **`README.md`**  
-Documentação principal do projeto.
+Documentação principal do projeto, reunindo informações sobre as
+disciplinas, estrutura, tecnologias, funcionalidades e documentação
+do TicketLab.
 
 ## 🗄️ Banco de Dados
 
@@ -334,13 +365,35 @@ mantidos em memória enquanto o servidor estiver em execução.
 
 ## 📚 Documentação
 
-A documentação do projeto está organizada de acordo com as etapas
-da Entrega 1.
+A documentação do projeto está organizada de acordo com as disciplinas,
+etapas e entregas do TicketLab.
 
-- [📁 Projeto Interdisciplinar](./Entrega-1/Projeto_Interdisciplinar_programacao_web/)
-- [📁 Projeto em Banco de Dados](./Entrega-1/Projeto_em_banco_de_dados/)
-- [📁 Frontend](./src/Frontend/)
-- [📁 Backend](./src/Backend/)
+### 📦 Entrega 1
+
+- [📐 Cálculo II](./Entrega-1/Calculo-II/)
+- [💼 Gestão Empresarial e Dinâmicas das Organizações](./Entrega-1/Gestao_empresarial_e_dinamicas_das_organizacoes/)
+- [💻 Desenvolvimento Web Full Stack](./Entrega-1/Desenvolvimento_web_full_stack/)
+- [🗄️ Projeto em Banco de Dados](./Entrega-1/Projeto_em_banco_de_dados/)
+- [🎨 Projeto Interdisciplinar](./Entrega-1/Projeto_Interdisciplinar_programacao_web/)
+
+### 📦 Entrega 2
+
+- [📐 Cálculo II](./Entrega-2/Calculo_II/)
+- [💼 Gestão Empresarial e Dinâmicas das Organizações](./Entrega-2/Gestao_empresarial_e_dinamicas_das_organizacoes/)
+- [💻 Desenvolvimento Web Full Stack](./Entrega-2/Desenvolvimento_web_full_stack/)
+- [🗄️ Projeto em Banco de Dados](./Entrega-2/Projeto_em_banco_de_dados/)
+- [🎨 Projeto Interdisciplinar](./Entrega-2/Projeto_Interdisciplinar_programacao_web/)
+
+### 💻 Código-fonte da aplicação
+
+O código desenvolvido para a aplicação Web está atualmente organizado
+na pasta `src/Frontend`:
+
+[📁 Frontend](./src/Frontend/)
+
+A API e as regras de negócio estão organizadas em:
+
+[📁 Backend](./src/Backend/)
 
 ## 👥 Equipe
 
