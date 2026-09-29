@@ -7,11 +7,15 @@ import Meuseventos from "./pages/Organizador/Meuseventos/Meuseventos";
 import DashboardOrganizador from "./pages/Organizador/DashboardOrganizador/DashboardOrganizador";
 import CriarEvento from "./pages/Organizador/CriarEvento/CriarEvento";
 import Home from "./pages/Home/Home";
+import BuscarServicos from "./pages/Organizador/Buscar-Servicos/buscar-servicos"
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+
+      <Route path="/buscar-servicos" element={<BuscarServicos/>} /> 
+
         <Route path="/criar-evento" element={<CriarEvento />} />
 
         <Route path="/dashboard" element={<DashboardOrganizador />} />
