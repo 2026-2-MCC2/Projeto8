@@ -22,7 +22,6 @@ function CadastroOrganizador() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log("CADASTRO ORGANIZADOR FOI EXECUTADO");
     setErro("");
     setSucesso("");
     setCarregando(true);

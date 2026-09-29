@@ -31,7 +31,6 @@ function Login() {
       sessionStorage.setItem("token", data.token);
       sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
 
-      console.log("Login realizado:", data);
 
       navigate("/dashboard");
     } catch (error) {
