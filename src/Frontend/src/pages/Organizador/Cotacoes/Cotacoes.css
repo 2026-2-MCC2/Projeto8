@@ -1,0 +1,109 @@
+.cotacoes-page {
+  min-height: 100%;
+  padding: 34px 36px 48px;
+  background: #f7f9fc;
+}
+
+.cotacoes-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.cotacoes-label {
+  display: block;
+  margin-bottom: 10px;
+  color: #68789b;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.3px;
+}
+
+.cotacoes-header h1 {
+  margin: 0;
+  color: #101c35;
+  font-size: 31px;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+
+.cotacoes-header p {
+  margin: 10px 0 0;
+  color: #71809a;
+  font-size: 13px;
+}
+
+.cotacoes-comparar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 17px;
+  border: 1px solid #dce3ed;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #15213b;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cotacoes-comparar:hover {
+  border-color: #5264e8;
+}
+
+.cotacoes-comparar span {
+  color: #5264e8;
+  font-size: 18px;
+}
+
+.cotacoes-tabs {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin: 28px 0 20px;
+}
+
+.cotacoes-tabs button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #8190a9;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.cotacoes-tabs button:hover,
+.cotacoes-tabs .cotacoes-tab-ativa {
+  color: #5264e8;
+  font-weight: 600;
+}
+
+.cotacoes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 800px) {
+  .cotacoes-page {
+    padding: 24px 18px 40px;
+  }
+
+  .cotacoes-header {
+    flex-direction: column;
+  }
+
+  .cotacoes-comparar {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cotacoes-tabs {
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+}

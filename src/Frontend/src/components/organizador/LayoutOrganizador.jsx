@@ -1,104 +1,203 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import Icon from "./Icon";
 import "./LayoutOrganizador.css";
 
-const navItems = [
-  { to: "/dashboard", label: "Dashboard", icon: "dashboard", active: "dashboard" },
-  { to: "/meus-eventos", label: "Meus eventos", icon: "calendar", active: "meus-eventos" },
-  { to: "/buscar-servicos", label: "Buscar serviços", icon: "search", active: "buscar-servicos" },
-  { label: "Cotações", icon: "quote", badge: "3" },
-  { label: "Resumo de custos", icon: "chart" },
-  { label: "Cálculo do ticket", icon: "ticket" },
-  { label: "Minha conta", icon: "settings" },
-];
+function obterUsuario() {
+  try {
+    const usuario = sessionStorage.getItem("usuario");
 
-function initials(nome) {
-  return (nome || "Organizador")
+    if (!usuario) {
+      return null;
+    }
+
+    return JSON.parse(usuario);
+  } catch {
+    return null;
+  }
+}
+
+function obterIniciais(nome) {
+  const partes = String(nome || "Organizador")
     .trim()
     .split(/\s+/)
-    .slice(0, 2)
-    .map((parte) => parte[0])
+    .filter(Boolean)
+    .slice(0, 2);
+
+  if (!partes.length) {
+    return "OR";
+  }
+
+  return partes
+    .map((parte) => parte.charAt(0))
     .join("")
     .toUpperCase();
 }
 
-function NavigationItem({ item, active }) {
-  const className = `organizador-nav-link ${item.active === active ? "active" : ""} ${!item.to ? "disabled" : ""}`.trim();
-  const content = (
-    <>
-      <Icon name={item.icon} />
-      <span>{item.label}</span>
-      {item.badge && <span className="organizador-nav-badge">{item.badge}</span>}
-      {!item.to && <small>Em breve</small>}
-    </>
-  );
+export default function LayoutOrganizador({ children, active = "" }) {
+  const navigate = useNavigate();
 
-  if (!item.to) {
-    return <span className={className} aria-disabled="true">{content}</span>;
+  const usuario = useMemo(() => obterUsuario(), []);
+
+  const nomeUsuario = usuario?.nome?.trim() || "Organizador";
+
+  const iniciais = obterIniciais(nomeUsuario);
+
+  function handleLogout() {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("usuario");
+    navigate("/login", { replace: true });
   }
 
-  return <Link to={item.to} className={className}>{content}</Link>;
-}
-
-export default function LayoutOrganizador({ active, children }) {
-  const usuario = JSON.parse(sessionStorage.getItem("usuario") || "null");
-  const nome = usuario?.nome || "Organizador";
+  const menu = [
+    {
+      path: "/dashboard",
+      label: "Dashboard",
+      icon: "dashboard",
+      id: "dashboard",
+    },
+    {
+      path: "/meus-eventos",
+      label: "Meus eventos",
+      icon: "calendar",
+      id: "meus-eventos",
+    },
+    {
+      path: "/buscar-servicos",
+      label: "Buscar serviços",
+      icon: "search",
+      id: "buscar-servicos",
+    },
+    {
+      path: "/cotacoes",
+      label: "Cotações",
+      icon: "quote",
+      id: "cotacoes",
+      badge: 3,
+    },
+    {
+      path: "/resumo-custos",
+      label: "Resumo de custos",
+      icon: "chart",
+      id: "resumo-custos",
+    },
+    {
+      path: "/calculo-ticket",
+      label: "Cálculo do ticket",
+      icon: "ticket",
+      id: "calculo-ticket",
+    },
+    {
+      path: "/minha-conta",
+      label: "Minha conta",
+      icon: "settings",
+      id: "minha-conta",
+    },
+  ];
 
   return (
-    <div className="organizador-layout">
-      <aside className="organizador-sidebar">
-        <Link to="/" className="organizador-logo">
-          <span className="organizador-logo-mark">✦</span>
-          TicketLab
+    <div className="org-layout">
+      <aside className="org-sidebar">
+        <Link to="/" className="org-logo">
+          <span className="org-logo-mark">✦</span>
+          <span>TicketLab</span>
         </Link>
 
-        <div className="organizador-role">
-          <span className="organizador-role-dot" />
+        <div className="org-role">
+          <span className="org-role-dot" />
+
           <strong>Organizador</strong>
-          <span className="organizador-role-chevron">⌄</span>
+
+          <span className="org-role-chevron">⌄</span>
         </div>
 
-        <nav className="organizador-nav" aria-label="Navegação principal">
-          {navItems.map((item) => (
-            <NavigationItem key={item.label} item={item} active={active} />
-          ))}
+        <nav className="org-sidebar-nav" aria-label="Navegação principal">
+          {menu.map((item) => {
+            const isActive = active === item.id;
+
+            if (item.disabled) {
+              return (
+                <div
+                  key={item.id}
+                  className="org-nav-item org-nav-disabled"
+                  aria-disabled="true"
+                >
+                  <Icon name={item.icon} />
+
+                  <span>{item.label}</span>
+
+                  <small>Em breve</small>
+                </div>
+              );
+            }
+
+            return (
+              <Link
+                key={item.id}
+                to={item.path}
+                className={`org-nav-item ${isActive ? "active" : ""}`}
+              >
+                <Icon name={item.icon} />
+
+                <span>{item.label}</span>
+
+                {item.badge && (
+                  <span className="org-nav-badge">{item.badge}</span>
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="organizador-help">
-          <Icon name="help" />
-          <div>
-            <strong>Precisa de ajuda?</strong>
-            <span>Fale com nosso suporte</span>
+        <div className="org-sidebar-footer">
+          <div className="org-help">
+            <Icon name="help" />
+
+            <div>
+              <strong>Precisa de ajuda?</strong>
+              <span>Fale com nosso suporte</span>
+            </div>
           </div>
+
+          <button type="button" className="org-logout" onClick={handleLogout}>
+            <span>↪</span>
+            Sair
+          </button>
         </div>
       </aside>
 
-      <div className="organizador-main">
-        <header className="organizador-topbar">
-          <div className="organizador-breadcrumb">
+      <div className="org-main">
+        <header className="org-topbar">
+          <div className="org-breadcrumb">
             <span>Workspace</span>
             <span>/</span>
             <strong>Organizador</strong>
           </div>
 
-          <div className="organizador-topbar-user">
-            <button type="button" className="organizador-notification" aria-label="Notificações">
+          <div className="org-topbar-user">
+            <button
+              type="button"
+              className="org-notification"
+              aria-label="Notificações"
+            >
               <Icon name="bell" />
               <span />
             </button>
 
-            <div className="organizador-user-profile">
-              <div className="organizador-user-avatar">{initials(nome)}</div>
-              <div className="organizador-user-data">
-                <strong>{nome}</strong>
+            <div className="org-user">
+              <div className="org-avatar">{iniciais}</div>
+
+              <div className="org-user-data">
+                <strong>{nomeUsuario}</strong>
                 <span>Organizador</span>
               </div>
-              <span className="organizador-user-chevron">⌄</span>
+
+              <span className="org-user-chevron">⌄</span>
             </div>
           </div>
         </header>
 
-        {children}
+        <div className="org-content">{children}</div>
       </div>
     </div>
   );

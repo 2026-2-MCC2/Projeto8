@@ -1,0 +1,45 @@
+export const cotacoes = [
+    {
+        id: 1,
+        iniciais: "PE",
+        fornecedor: "Pulse Eventos",
+        servico: "DJ + curadoria musical",
+        categoria: "Música",
+        valor: 3200,
+        valorFormatado: "R$ 3.200,00",
+        prazo: "7 dias",
+        publico: "Até 1.500",
+        status: "Recebida",
+        observacao:
+            "Inclui equipamento de backup e reunião de briefing.",
+    },
+    {
+        id: 2,
+        iniciais: "LD",
+        fornecedor: "Lumi Decor",
+        servico: "Ambientação completa",
+        categoria: "Decoração",
+        valor: 4800,
+        valorFormatado: "R$ 4.800,00",
+        prazo: "15 dias",
+        publico: "Até 1.500",
+        status: "Em análise",
+        observacao:
+            "Projeto visual personalizado conforme identidade do evento.",
+    },
+    {
+        id: 3,
+        iniciais: "SP",
+        fornecedor: "SoundWave Produções",
+        servico: "Som e iluminação",
+        categoria: "Som e iluminação",
+        valor: 6100,
+        valorFormatado: "R$ 6.100,00",
+        prazo: "10 dias",
+        publico: "Até 1.500",
+        status: "Selecionada",
+        observacao:
+            "Palco, luz cênica e técnico durante todo o evento.",
+        recomendado: true,
+    },
+];
