@@ -2,7 +2,7 @@ import "./Cadastro.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-function cadastro() {
+function Cadastro() {
   const navigate = useNavigate();
   return (
     <div className="cadastro-container">
@@ -52,4 +52,4 @@ function cadastro() {
   );
 }
 
-export default cadastro;
+export default Cadastro;

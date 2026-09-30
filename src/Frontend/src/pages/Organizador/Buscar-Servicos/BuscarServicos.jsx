@@ -169,13 +169,7 @@ function BuscarServicos() {
                 <div className="servico-card-topo">
                   <div className="servico-iniciais">{servico.iniciais}</div>
 
-                  <button
-                    type="button"
-                    className="servico-menu"
-                    aria-label={`Mais opções para ${servico.nome}`}
-                  >
-                    •••
-                  </button>
+
                 </div>
 
                 <span className="servico-categoria">{servico.categoria}</span>

@@ -1,25 +1,3 @@
-:root {
-  /* Cores principais */
-  --cor-primaria: #5b45f5;
-  --cor-primaria-hover: #4935d4;
-
-  /* Fundos */
-  --cor-fundo: #f7f7f9;
-  --cor-card: #ffffff;
-
-  /* Textos */
-  --cor-texto: #18181b;
-  --cor-texto-secundario: #71717a;
-
-  /* Bordas */
-  --cor-borda: #dedee3;
-
-  /* Estados */
-  --cor-sucesso: #22c55e;
-  --cor-erro: #ef4444;
-
-  --cor-botao: #d3d3d3;
-}
 .cadastro-container {
   background-color: var(--cor-fundo);
   min-height: 100vh;

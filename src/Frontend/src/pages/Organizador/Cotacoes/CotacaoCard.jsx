@@ -50,7 +50,8 @@ function CotacaoCard({ cotacao, selecionada, onSelecionar }) {
         <button
           type="button"
           className="cotacao-ver-proposta"
-          onClick={() => {}}
+          disabled
+          title="Detalhe da proposta em breve"
         >
           ◉ Ver proposta
         </button>
@@ -65,7 +66,12 @@ function CotacaoCard({ cotacao, selecionada, onSelecionar }) {
           {selecionada ? "Selecionada" : "Selecionar"}
         </button>
 
-        <button type="button" className="cotacao-recusar" onClick={() => {}}>
+        <button
+          type="button"
+          className="cotacao-recusar"
+          disabled
+          title="Recusa de proposta em breve"
+        >
           ⊗ Recusar
         </button>
       </div>

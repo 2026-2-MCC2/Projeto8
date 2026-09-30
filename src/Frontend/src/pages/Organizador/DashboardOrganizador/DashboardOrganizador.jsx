@@ -4,6 +4,7 @@ import LayoutOrganizador from "../../../components/organizador/LayoutOrganizador
 import Icon from "../../../components/organizador/Icon";
 import { useEffect, useState } from "react";
 import { apiRequest } from "../../../services/api";
+import { formatarDataEvento } from "../../../utils/datas";
 
 function DashboardOrganizador() {
   const [eventos, setEventos] = useState([]);
@@ -55,27 +56,7 @@ function DashboardOrganizador() {
     .toUpperCase();
 
   function eventoData(data) {
-    const dataFormatada = new Date(`${data}T00:00:00`);
-
-    if (Number.isNaN(dataFormatada.getTime())) {
-      return {
-        dia: "--",
-        mes: "---",
-      };
-    }
-
-    return {
-      dia: dataFormatada.toLocaleDateString("pt-BR", {
-        day: "2-digit",
-      }),
-
-      mes: dataFormatada
-        .toLocaleDateString("pt-BR", {
-          month: "short",
-        })
-        .replace(".", "")
-        .toUpperCase(),
-    };
+    return formatarDataEvento(data);
   }
 
   function statusLabel(status) {
@@ -279,13 +260,7 @@ function DashboardOrganizador() {
                   <p>Últimas movimentações.</p>
                 </div>
 
-                <button
-                  type="button"
-                  className="panel-menu"
-                  aria-label="Mais opções"
-                >
-                  <Icon name="menu" />
-                </button>
+
               </div>
 
               {atividades.length === 0 ? (
@@ -348,7 +323,7 @@ function DashboardOrganizador() {
                 <Icon name="arrow" />
               </Link>
 
-              <button type="button" className="quick-action">
+              <Link to="/buscar-servicos" className="quick-action">
                 <span className="quick-icon orange">
                   <Icon name="search" />
                 </span>
@@ -360,9 +335,9 @@ function DashboardOrganizador() {
                 </span>
 
                 <Icon name="arrow" />
-              </button>
+              </Link>
 
-              <button type="button" className="quick-action">
+              <Link to="/cotacoes" className="quick-action">
                 <span className="quick-icon green">
                   <Icon name="quote" />
                 </span>
@@ -374,7 +349,7 @@ function DashboardOrganizador() {
                 </span>
 
                 <Icon name="arrow" />
-              </button>
+              </Link>
             </div>
           </section>
       </main>

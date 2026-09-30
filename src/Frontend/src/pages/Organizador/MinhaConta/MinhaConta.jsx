@@ -1,76 +1,142 @@
 import { useMemo, useState } from "react";
 import LayoutOrganizador from "../../../components/organizador/LayoutOrganizador";
+import { apiRequest } from "../../../services/api";
 import "./MinhaConta.css";
-
-const USUARIO_PADRAO = {
-  nome: "Brian Costa",
-  telefone: "(11) 99999-0000",
-  email: "brian@trocaticket.com",
-};
 
 function obterUsuario() {
   try {
     const dados = sessionStorage.getItem("usuario");
 
     if (!dados) {
-      return USUARIO_PADRAO;
+      return null;
     }
 
     const usuario = JSON.parse(dados);
 
-    return {
-      nome: usuario?.nome || USUARIO_PADRAO.nome,
-      telefone: usuario?.telefone || USUARIO_PADRAO.telefone,
-      email: usuario?.email || USUARIO_PADRAO.email,
-    };
+    if (!usuario?.id) {
+      return null;
+    }
+
+    return usuario;
   } catch {
-    return USUARIO_PADRAO;
+    return null;
   }
 }
 
 function obterIniciais(nome) {
-  const partes = String(nome).trim().split(/\s+/).filter(Boolean).slice(0, 2);
+  const partes = String(nome || "Organizador")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2);
 
-  return (partes.map((parte) => parte[0]).join("") || "BC").toUpperCase();
+  return (partes.map((parte) => parte[0]).join("") || "OR").toUpperCase();
+}
+
+function formatarTelefone(valor) {
+  const digitos = String(valor || "").replace(/\D/g, "").slice(0, 11);
+
+  if (digitos.length <= 10) {
+    return digitos
+      .replace(/^(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{4})(\d)/, "$1-$2");
+  }
+
+  return digitos
+    .replace(/^(\d{2})(\d)/, "($1) $2")
+    .replace(/(\d{5})(\d)/, "$1-$2");
+}
+
+function apenasDigitos(valor) {
+  return String(valor || "").replace(/\D/g, "");
 }
 
 export default function MinhaConta() {
   const usuarioInicial = useMemo(() => obterUsuario(), []);
 
-  const [nome, setNome] = useState(usuarioInicial.nome);
-  const [telefone, setTelefone] = useState(usuarioInicial.telefone);
-  const [email, setEmail] = useState(usuarioInicial.email);
+  const [nome, setNome] = useState(usuarioInicial?.nome || "");
+  const [telefone, setTelefone] = useState(
+    formatarTelefone(usuarioInicial?.telefone || "")
+  );
+  const [email, setEmail] = useState(usuarioInicial?.email || "");
 
   const [propostas, setPropostas] = useState(true);
   const [oportunidades, setOportunidades] = useState(true);
   const [resumoSemanal, setResumoSemanal] = useState(false);
 
-  const [salvo, setSalvo] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [mensagem, setMensagem] = useState("");
+  const [erro, setErro] = useState("");
 
   const iniciais = obterIniciais(nome);
+  const modoDemonstracao = sessionStorage.getItem("modoDemonstracao") === "true";
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    setErro("");
+    setMensagem("");
+
+    const nomeNormalizado = nome.trim();
+    const emailNormalizado = email.trim();
+    const telefoneNormalizado = apenasDigitos(telefone);
+
+    if (!nomeNormalizado || !emailNormalizado) {
+      setErro("Nome e e-mail são obrigatórios.");
+      return;
+    }
+
+    if (
+      telefoneNormalizado &&
+      (telefoneNormalizado.length < 10 || telefoneNormalizado.length > 11)
+    ) {
+      setErro("Informe um telefone válido com 10 ou 11 dígitos.");
+      return;
+    }
 
     const dadosAtualizados = {
       ...usuarioInicial,
-      nome: nome.trim(),
-      telefone: telefone.trim(),
-      email: email.trim(),
+      nome: nomeNormalizado,
+      telefone: telefoneNormalizado,
+      email: emailNormalizado,
     };
 
-    sessionStorage.setItem("usuario", JSON.stringify(dadosAtualizados));
+    setSalvando(true);
 
-    setSalvo(true);
+    try {
+      if (modoDemonstracao) {
+        sessionStorage.setItem("usuario", JSON.stringify(dadosAtualizados));
+        setMensagem("Alterações salvas apenas nesta demonstração.");
+      } else {
+        const resposta = await apiRequest(`/usuarios/${usuarioInicial.id}`, {
+          method: "PATCH",
+          body: JSON.stringify({
+            nome: nomeNormalizado,
+            email: emailNormalizado,
+            telefone: telefoneNormalizado,
+          }),
+        });
 
-    window.setTimeout(() => {
-      setSalvo(false);
-    }, 3000);
-  }
+        const usuarioResposta = resposta?.usuario || resposta?.dados || {};
+        const usuarioPersistido = {
+          ...usuarioInicial,
+          ...usuarioResposta,
+          nome: usuarioResposta.nome || nomeNormalizado,
+          email: usuarioResposta.email || emailNormalizado,
+          telefone: usuarioResposta.telefone ?? telefoneNormalizado,
+        };
 
-  function handleFoto() {
-    // A interface já está preparada para a futura integração
-    // de upload de foto. Não enviamos arquivos sem API definida.
+        sessionStorage.setItem("usuario", JSON.stringify(usuarioPersistido));
+        setMensagem("Alterações salvas com sucesso.");
+      }
+    } catch (error) {
+      setErro(error.message);
+    } finally {
+      setSalvando(false);
+
+      window.setTimeout(() => {
+        setMensagem("");
+      }, 3000);
+    }
   }
 
   return (
@@ -93,14 +159,15 @@ export default function MinhaConta() {
                 <div>
                   <h2>{nome || "Organizador"}</h2>
 
-                  <p>Organizador desde agosto de 2026</p>
+                  <p>Dados do perfil do organizador</p>
                 </div>
               </div>
 
               <button
                 type="button"
                 className="alterar-foto-button"
-                onClick={handleFoto}
+                disabled
+                title="Upload de foto ainda não está disponível"
               >
                 Alterar foto
               </button>
@@ -134,9 +201,9 @@ export default function MinhaConta() {
                     type="tel"
                     value={telefone}
                     onChange={(event) =>
-                      setTelefone(event.target.value.slice(0, 20))
+                      setTelefone(formatarTelefone(event.target.value))
                     }
-                    maxLength={20}
+                    maxLength={16}
                     autoComplete="tel"
                   />
                 </div>
@@ -158,10 +225,14 @@ export default function MinhaConta() {
                 />
               </div>
 
+              {erro && <p className="conta-mensagem conta-mensagem-erro">{erro}</p>}
+              {mensagem && (
+                <p className="conta-mensagem conta-mensagem-sucesso">{mensagem}</p>
+              )}
+
               <div className="form-actions">
-                <button type="submit" className="salvar-button">
-                  Salvar alterações
-                  {salvo && <span aria-label="Alterações salvas">✓</span>}
+                <button type="submit" className="salvar-button" disabled={salvando}>
+                  {salvando ? "Salvando..." : "Salvar alterações"}
                 </button>
               </div>
             </form>
@@ -196,6 +267,11 @@ export default function MinhaConta() {
                 onChange={setResumoSemanal}
               />
             </div>
+
+            <p className="preferencias-observacao">
+              As preferências ficam locais nesta entrega e ainda não são
+              persistidas pela API.
+            </p>
           </article>
         </section>
       </main>

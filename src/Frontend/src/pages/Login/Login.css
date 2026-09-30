@@ -519,3 +519,8 @@
     padding: 40px 20px;
   }
 }
+
+.login-recovery-disabled {
+  color: #9aa3b2;
+  text-align: right;
+}

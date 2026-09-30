@@ -186,3 +186,9 @@
     justify-content: flex-start;
   }
 }
+
+.cotacao-ver-proposta:disabled,
+.cotacao-recusar:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}

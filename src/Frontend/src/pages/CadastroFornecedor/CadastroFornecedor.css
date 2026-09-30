@@ -1,14 +1,3 @@
-:root {
-  --cor-primaria: #5b45f5;
-  --cor-primaria-hover: #4935d4;
-  --cor-fundo: #f7f7f9;
-  --cor-card: #ffffff;
-  --cor-texto: #18181b;
-  --cor-texto-secundario: #71717a;
-  --cor-borda: #dedee3;
-  --cor-sucesso: #22c55e;
-  --cor-erro: #ef4444;
-}
 
 /* Container principal da página */
 .fornecedor-container {
@@ -277,4 +266,31 @@ label small {
     width: 100%;
     padding: 24px 20px;
   }
+}
+
+.mensagem-erro,
+.mensagem-sucesso {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.mensagem-erro {
+  color: #b42318;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+}
+
+.mensagem-sucesso {
+  color: #027a48;
+  background: #ecfdf3;
+  border: 1px solid #abefc6;
+}
+
+.card-fornecedor form > button[type="submit"]:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
 }

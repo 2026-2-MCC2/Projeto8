@@ -4,6 +4,7 @@ import LayoutOrganizador from "../../../components/organizador/LayoutOrganizador
 import Icon from "../../../components/organizador/Icon";
 import { useEffect, useMemo, useState } from "react";
 import { apiRequest } from "../../../services/api";
+import { formatarDataEvento, formatarDataCompleta } from "../../../utils/datas";
 
 function Meuseventos() {
   const [eventos, setEventos] = useState([]);
@@ -47,51 +48,12 @@ function Meuseventos() {
   }, [eventos, busca, filtro]);
 
   function formatarData(data) {
-    if (!data) {
-      return {
-        dia: "--",
-        mes: "---",
-      };
-    }
-
-    const dataObj = new Date(`${data}T00:00:00`);
-
-    if (Number.isNaN(dataObj.getTime())) {
-      return {
-        dia: "--",
-        mes: "---",
-      };
-    }
+    const dataFormatada = formatarDataEvento(data);
 
     return {
-      dia: dataObj.toLocaleDateString("pt-BR", {
-        day: "2-digit",
-      }),
-
-      mes: dataObj.toLocaleDateString("pt-BR", {
-        month: "2-digit",
-      }),
+      dia: dataFormatada.dia,
+      mes: dataFormatada.mes,
     };
-  }
-
-  function formatarDataCompleta(data, horario) {
-    if (!data) {
-      return "Data não informada";
-    }
-
-    const dataObj = new Date(`${data}T00:00:00`);
-
-    if (Number.isNaN(dataObj.getTime())) {
-      return "Data não informada";
-    }
-
-    const dataFormatada = dataObj.toLocaleDateString("pt-BR");
-
-    if (!horario) {
-      return dataFormatada;
-    }
-
-    return `${dataFormatada} às ${horario.slice(0, 5)}`;
   }
 
   function statusLabel(status) {
@@ -256,13 +218,13 @@ function Meuseventos() {
                         )}
                       </span>
 
-                      <Link
-                        to={`/meus-eventos/${evento.id}`}
-                        className="evento-card-arrow"
-                        aria-label={`Ver ${evento.nome}`}
+                      <span
+                        className="evento-card-arrow evento-card-arrow-disabled"
+                        aria-label="Detalhes do evento em breve"
+                        title="Detalhes do evento em breve"
                       >
                         <Icon name="arrow" />
-                      </Link>
+                      </span>
                     </div>
                   </article>
                 );

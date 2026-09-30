@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import LayoutOrganizador from "../../../components/organizador/LayoutOrganizador";
@@ -8,6 +9,7 @@ import "./CompararPropostas.css";
 
 function CompararPropostas() {
   const recomendada = cotacoes.find((cotacao) => cotacao.recomendado);
+  const [selecionadaId, setSelecionadaId] = useState(recomendada?.id || null);
 
   return (
     <LayoutOrganizador active="cotacoes">
@@ -76,12 +78,13 @@ function CompararPropostas() {
                 <button
                   type="button"
                   className={
-                    cotacao.recomendado
+                    selecionadaId === cotacao.id
                       ? "comparar-selecionada"
                       : "comparar-selecionar"
                   }
+                  onClick={() => setSelecionadaId(cotacao.id)}
                 >
-                  {cotacao.recomendado ? "Selecionada" : "Selecionar"}
+                  {selecionadaId === cotacao.id ? "Selecionada" : "Selecionar"}
                 </button>
               </div>
             ))}

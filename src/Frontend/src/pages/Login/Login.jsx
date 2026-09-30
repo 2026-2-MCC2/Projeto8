@@ -1,6 +1,6 @@
 import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
-import { apiRequest } from "../../services/api";
+import { apiRequest, iniciarModoDemonstracao } from "../../services/api";
 import { useState } from "react";
 import festa from "../../assets/festa.png";
 
@@ -28,11 +28,26 @@ function Login() {
         }),
       });
 
+      sessionStorage.removeItem("modoDemonstracao");
       sessionStorage.setItem("token", data.token);
       sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
 
+      if (data.usuario?.tipo === "ORGANIZADOR") {
+        navigate("/dashboard");
+        return;
+      }
 
-      navigate("/dashboard");
+      if (data.usuario?.tipo === "FORNECEDOR") {
+        setErro("O acesso de Fornecedor ainda está em desenvolvimento.");
+        return;
+      }
+
+      if (data.usuario?.tipo === "ADMINISTRADOR") {
+        setErro("O acesso de Administrador ainda está em desenvolvimento.");
+        return;
+      }
+
+      setErro("Perfil de usuário não reconhecido.");
     } catch (error) {
       setErro(error.message);
     } finally {
@@ -40,19 +55,24 @@ function Login() {
     }
   }
 
-  function handleAcessoPerfil(tipo) {
-    if (tipo === "ORGANIZADOR") {
+  async function handleAcessoPerfil(tipo) {
+    if (tipo !== "ORGANIZADOR") {
+      setErro(
+        `O acesso de ${tipo === "FORNECEDOR" ? "Fornecedor" : "Administrador"} ainda está em desenvolvimento.`
+      );
+      return;
+    }
+
+    setErro("");
+    setCarregando(true);
+
+    try {
+      await iniciarModoDemonstracao();
       navigate("/dashboard");
-      return;
-    }
-
-    if (tipo === "FORNECEDOR") {
-      setErro("O acesso de Fornecedor ainda está em desenvolvimento.");
-      return;
-    }
-
-    if (tipo === "ADMINISTRADOR") {
-      setErro("O acesso de Administrador ainda está em desenvolvimento.");
+    } catch (error) {
+      setErro(error.message);
+    } finally {
+      setCarregando(false);
     }
   }
 
@@ -154,15 +174,13 @@ function Login() {
             {/* Opções */}
 
             <div className="login-options">
-              <label className="remember-option">
-                <input id="lembrar" type="checkbox" />
+              <span className="remember-option">
+                A sessão permanece ativa enquanto esta aba estiver aberta.
+              </span>
 
-                <span>Lembrar-me</span>
-              </label>
-
-              <a href="#" onClick={(event) => event.preventDefault()}>
-                Esqueci minha senha
-              </a>
+              <span className="login-recovery-disabled">
+                Recuperação de senha em breve
+              </span>
             </div>
 
             {/* Erro */}

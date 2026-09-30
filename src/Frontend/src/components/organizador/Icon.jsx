@@ -123,6 +123,22 @@ const ICONS = {
     </>
   ),
 
+
+  filter: (
+    <>
+      <path d="M4 5h16l-6.5 7.5V18l-5 2v-7.5L4 5Z" />
+    </>
+  ),
+
+  chevron: <path d="m7 10 5 5 5-5" />,
+
+  location: (
+    <>
+      <path d="M20 10c0 5.5-8 11-8 11S4 15.5 4 10a8 8 0 1 1 16 0Z" />
+      <circle cx="12" cy="10" r="2.5" />
+    </>
+  ),
+
   lightbulb: (
     <>
       <path d="M9 18h6" />
@@ -132,7 +148,7 @@ const ICONS = {
   ),
 };
 
-export default function Icon({ name, className = "" }) {
+export default function Icon({ name, className = "", size }) {
   const icon = ICONS[name];
 
   if (!icon) {
@@ -142,6 +158,8 @@ export default function Icon({ name, className = "" }) {
   return (
     <svg
       className={`organizador-icon ${className}`}
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

@@ -115,22 +115,6 @@ export default function LayoutOrganizador({ children, active = "" }) {
           {menu.map((item) => {
             const isActive = active === item.id;
 
-            if (item.disabled) {
-              return (
-                <div
-                  key={item.id}
-                  className="org-nav-item org-nav-disabled"
-                  aria-disabled="true"
-                >
-                  <Icon name={item.icon} />
-
-                  <span>{item.label}</span>
-
-                  <small>Em breve</small>
-                </div>
-              );
-            }
-
             return (
               <Link
                 key={item.id}
@@ -178,7 +162,9 @@ export default function LayoutOrganizador({ children, active = "" }) {
             <button
               type="button"
               className="org-notification"
-              aria-label="Notificações"
+              aria-label="Notificações (em breve)"
+              disabled
+              title="Notificações em breve"
             >
               <Icon name="bell" />
               <span />

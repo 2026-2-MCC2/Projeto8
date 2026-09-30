@@ -1,10 +1,10 @@
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // ======================================================
-// INICIA MODO DEMONSTRAÇÃO
+// MODO DEMONSTRAÇÃO
 // ======================================================
 
-async function iniciarModoDemonstracao() {
+export async function iniciarModoDemonstracao() {
   const response = await fetch(`${API_URL}/demo-login`, {
     method: "POST",
     headers: {
@@ -12,21 +12,16 @@ async function iniciarModoDemonstracao() {
     },
   });
 
-  const data = await response.json();
+  const data = await lerResposta(response);
 
   if (!response.ok) {
     throw new Error(
-      data.mensagem || "Não foi possível iniciar o modo demonstração."
+      data?.mensagem || "Não foi possível iniciar o modo demonstração."
     );
   }
 
-  // Salva o token da demonstração
   sessionStorage.setItem("token", data.token);
-
-  // Salva os dados do usuário
   sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
-
-  // Identifica que a sessão atual é de demonstração
   sessionStorage.setItem("modoDemonstracao", "true");
 
   return data;
@@ -36,45 +31,51 @@ async function iniciarModoDemonstracao() {
 // REQUISIÇÕES PARA A API
 // ======================================================
 
-export async function apiRequest(endpoint, options = {}) {
-  let token = sessionStorage.getItem("token");
+async function lerResposta(response) {
+  const tipoConteudo = response.headers.get("content-type") || "";
+  const texto = await response.text();
 
-  // ==================================================
-  // MODO DEMONSTRAÇÃO
-  // ==================================================
-  // Se não existe token e estamos acessando uma rota
-  // de eventos, iniciamos automaticamente uma sessão
-  // temporária para a Entrega 1.
-
-  if (!token && endpoint.startsWith("/eventos")) {
-    const demonstracao = await iniciarModoDemonstracao();
-
-    token = demonstracao.token;
+  if (!texto) {
+    return {};
   }
 
-  // ==================================================
-  // REQUISIÇÃO
-  // ==================================================
+  if (tipoConteudo.includes("application/json")) {
+    try {
+      return JSON.parse(texto);
+    } catch {
+      return { mensagem: "A API retornou uma resposta JSON inválida." };
+    }
+  }
+
+  return { mensagem: texto };
+}
+
+export async function apiRequest(endpoint, options = {}) {
+  const token = sessionStorage.getItem("token");
 
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
-
     headers: {
       "Content-Type": "application/json",
-
-      // Só envia Authorization quando existe token
       ...(token && {
         Authorization: `Bearer ${token}`,
       }),
-
       ...options.headers,
     },
   });
 
-  const data = await response.json();
+  const data = await lerResposta(response);
+
+  if (response.status === 401) {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("usuario");
+    sessionStorage.removeItem("modoDemonstracao");
+
+    throw new Error(data?.mensagem || "Sua sessão expirou. Faça login novamente.");
+  }
 
   if (!response.ok) {
-    throw new Error(data.mensagem || "Ocorreu um erro na requisição.");
+    throw new Error(data?.mensagem || "Ocorreu um erro na requisição.");
   }
 
   return data;
