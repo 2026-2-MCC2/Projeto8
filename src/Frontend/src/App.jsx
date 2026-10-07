@@ -15,6 +15,9 @@ import ResumoCustos from "./pages/Organizador/ResumoCustos/ResumoCustos";
 import CalculoTicket from "./pages/Organizador/CalculoTicket/CalculoTicket";
 import MinhaConta from "./pages/Organizador/MinhaConta/MinhaConta";
 import RotaPrivada from "./components/organizador/RotaPrivada";
+import RotaPrivadaAdmin from "./components/admin/RotaPrivadaAdmin";
+import Cadastros from "./pages/admin/Cadastros/Cadastros";
+import Relatorio from "./pages/admin/Relatorio/Relatorio";
 
 function App() {
   return (
@@ -37,6 +40,10 @@ function App() {
           <Route path="/criar-evento" element={<CriarEvento />} />
           <Route path="/dashboard" element={<DashboardOrganizador />} />
           <Route path="/meus-eventos" element={<Meuseventos />} />
+        </Route>
+        <Route element={<RotaPrivadaAdmin />}>
+          <Route path="/admin/cadastros" element={<Cadastros />} />
+          <Route path="/admin/relatorio" element={<Relatorio />} />
         </Route>
 
         <Route path="*" element={<h1>Página não encontrada</h1>} />
