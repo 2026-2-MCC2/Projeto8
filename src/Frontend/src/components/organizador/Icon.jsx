@@ -165,6 +165,14 @@ const ICONS = {
       <path d="M15 7h6v6" />
     </>
   ),
+    x: <path d="M6 6l12 12M18 6 6 18" />,
+
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </>
+  ),
 };
 
 export default function Icon({ name, className = "", size }) {
