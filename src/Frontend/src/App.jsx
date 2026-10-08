@@ -16,8 +16,12 @@ import CalculoTicket from "./pages/Organizador/CalculoTicket/CalculoTicket";
 import MinhaConta from "./pages/Organizador/MinhaConta/MinhaConta";
 import RotaPrivada from "./components/organizador/RotaPrivada";
 import RotaPrivadaAdmin from "./components/admin/RotaPrivadaAdmin";
-import Cadastros from "./pages/admin/Cadastros/Cadastros";
-import Relatorio from "./pages/admin/Relatorio/Relatorio";
+import AdminDashboard from "./pages/admin/Dashboard/Dashboard";
+import AdminAprovacoes from "./pages/admin/Aprovacoes/Aprovacoes";
+import AdminUsuarios from "./pages/admin/Usuarios/Usuarios";
+import AdminEventos from "./pages/admin/Eventos/Eventos";
+import AdminRelatorios from "./pages/admin/Relatorios/Relatorios";
+import AdminMinhaConta from "./pages/admin/MinhaConta/MinhaConta";
 
 function App() {
   return (
@@ -42,8 +46,12 @@ function App() {
           <Route path="/meus-eventos" element={<Meuseventos />} />
         </Route>
         <Route element={<RotaPrivadaAdmin />}>
-          <Route path="/admin/cadastros" element={<Cadastros />} />
-          <Route path="/admin/relatorio" element={<Relatorio />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/aprovacoes" element={<AdminAprovacoes />} />
+          <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+          <Route path="/admin/eventos" element={<AdminEventos />} />
+          <Route path="/admin/relatorios" element={<AdminRelatorios />} />
+          <Route path="/admin/minha-conta" element={<AdminMinhaConta />} />
         </Route>
 
         <Route path="*" element={<h1>Página não encontrada</h1>} />

@@ -146,6 +146,12 @@ const ICONS = {
       <path d="M8.5 14.5A7 7 0 1 1 15.5 14c-.9.8-1.5 1.7-1.5 3h-4c0-1.3-.6-2.2-1.5-3Z" />
     </>
   ),
+       check: (
+       <>
+         <circle cx="12" cy="12" r="9" />
+         <path d="m8.5 12.5 2.5 2.5 4.5-5" />
+       </>
+     ),
 };
 
 export default function Icon({ name, className = "", size }) {

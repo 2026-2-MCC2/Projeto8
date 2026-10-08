@@ -49,18 +49,42 @@ export default function LayoutAdmin({ children, active = "" }) {
     navigate("/login", { replace: true });
   }
 
-  const menu = [
+    const menu = [
     {
-      path: "/admin/cadastros",
-      label: "Cadastros",
-      icon: "users",
-      id: "cadastros",
+      path: "/admin/dashboard",
+      label: "Dashboard",
+      icon: "dashboard",
+      id: "dashboard",
     },
     {
-      path: "/admin/relatorio",
-      label: "Relatório gerencial",
+      path: "/admin/aprovacoes",
+      label: "Aprovar cadastros",
+      icon: "check",
+      id: "aprovacoes",
+    },
+    {
+      path: "/admin/usuarios",
+      label: "Usuários",
+      icon: "users",
+      id: "usuarios",
+    },
+    {
+      path: "/admin/eventos",
+      label: "Eventos",
+      icon: "calendar",
+      id: "eventos",
+    },
+    {
+      path: "/admin/relatorios",
+      label: "Relatórios",
       icon: "chart",
-      id: "relatorio",
+      id: "relatorios",
+    },
+    {
+      path: "/admin/minha-conta",
+      label: "Minha conta",
+      icon: "settings",
+      id: "minha-conta",
     },
   ];
 
