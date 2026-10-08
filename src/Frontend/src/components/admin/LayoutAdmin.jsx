@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 import Icon from "../organizador/Icon";
 import "../organizador/LayoutOrganizador.css";
+import "../../styles/admin.css";
 
 function obterUsuario() {
   try {

@@ -152,6 +152,19 @@ const ICONS = {
          <path d="m8.5 12.5 2.5 2.5 4.5-5" />
        </>
      ),
+       briefcase: (
+    <>
+      <rect x="3" y="7" width="18" height="13" rx="2" />
+      <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18" />
+    </>
+  ),
+
+  trend: (
+    <>
+      <path d="m3 17 6-6 4 4 8-8" />
+      <path d="M15 7h6v6" />
+    </>
+  ),
 };
 
 export default function Icon({ name, className = "", size }) {

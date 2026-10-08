@@ -1,0 +1,499 @@
+/* ==========================================================
+   Estilos compartilhados da área do administrador
+   Baseado no protótipo do Bolt. Todas as classes usam "adm-"
+   para não interferir nas telas do organizador.
+========================================================== */
+
+.adm-main {
+  --adm-ink: #172033;
+  --adm-muted: #657086;
+  --adm-line: #e6eaf1;
+  --adm-primary: #5064e8;
+  --adm-primary-dark: #3f52d1;
+
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px;
+  color: var(--adm-ink);
+}
+
+/* ---------- Cabeçalho da página ---------- */
+
+.adm-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.adm-eyebrow {
+  display: block;
+  color: #607097;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.adm-page-header h1 {
+  margin: 13px 0 8px;
+  color: #17233d;
+  font-size: 31px;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -1.2px;
+}
+
+.adm-page-header p {
+  margin: 0;
+  color: #6f7e99;
+  font-size: 11px;
+}
+
+/* ---------- Botões ---------- */
+
+.adm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.adm-btn-primary {
+  background: var(--adm-primary);
+  color: #fff;
+  box-shadow: 0 7px 18px rgba(80, 100, 232, 0.22);
+}
+
+.adm-btn-primary:hover {
+  background: var(--adm-primary-dark);
+}
+
+.adm-btn-secondary {
+  background: #fff;
+  border-color: var(--adm-line);
+  color: var(--adm-ink);
+}
+
+.adm-btn-secondary:hover {
+  border-color: #bcc7ef;
+  background: #fbfcff;
+  color: var(--adm-primary);
+}
+
+.adm-btn-danger {
+  background: #fff0f0;
+  color: #d74747;
+}
+
+.adm-btn-small {
+  padding: 9px 13px;
+  border-radius: 8px;
+  font-size: 11px;
+}
+
+.adm-text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px;
+  border: 0;
+  background: none;
+  color: var(--adm-primary);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.adm-text-button.danger {
+  color: #d76262;
+}
+
+/* ---------- Selos (status e tipo) ---------- */
+
+.adm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: max-content;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.35px;
+  line-height: 1.2;
+}
+
+.adm-badge-blue {
+  background: #eaf0ff;
+  color: #4b5ed5;
+}
+
+.adm-badge-orange {
+  background: #fff1e5;
+  color: #c97a37;
+}
+
+.adm-badge-green {
+  background: #e5f7ef;
+  color: #248860;
+}
+
+.adm-badge-red {
+  background: #fff0f0;
+  color: #c34d50;
+}
+
+.adm-badge-dark {
+  background: #ebedf1;
+  color: #586174;
+}
+
+/* ---------- Cartões de número ---------- */
+
+.adm-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.adm-stat-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 17px;
+  border: 1px solid var(--adm-line);
+  border-radius: 11px;
+  background: #fff;
+}
+
+.adm-stat-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #edf1ff;
+  color: var(--adm-primary);
+}
+
+.adm-stat-icon.green {
+  background: #e6f7ef;
+  color: #2da576;
+}
+
+.adm-stat-icon.orange {
+  background: #fff0e1;
+  color: #da8b45;
+}
+
+.adm-stat-icon.violet {
+  background: #f0edff;
+  color: #7560c9;
+}
+
+.adm-stat-label {
+  margin: 0;
+  color: var(--adm-muted);
+  font-size: 11px;
+}
+
+.adm-stat-value {
+  display: block;
+  margin: 5px 0 3px;
+  font-size: 20px;
+  letter-spacing: -0.8px;
+}
+
+.adm-stat-change {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin: 0;
+  color: #2da575;
+  font-size: 9px;
+}
+
+/* ---------- Painéis e grades ---------- */
+
+.adm-panel {
+  border: 1px solid var(--adm-line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.adm-panel-padded {
+  padding: 23px;
+}
+
+.adm-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.adm-panel-heading h2 {
+  margin: 0 0 5px;
+  font-size: 15px;
+  letter-spacing: -0.5px;
+}
+
+.adm-panel-heading p {
+  margin: 0;
+  color: #8a95a6;
+  font-size: 11px;
+}
+
+.adm-text-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--adm-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.adm-grid-2 {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+/* ---------- Busca, filtros e abas ---------- */
+
+.adm-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 21px;
+}
+
+.adm-search {
+  height: 38px;
+  flex: 1;
+  max-width: 350px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--adm-line);
+  border-radius: 8px;
+  background: #fff;
+  color: #9da7b7;
+}
+
+.adm-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--adm-ink);
+  font-size: 11px;
+}
+
+.adm-select {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px;
+  border: 1px solid var(--adm-line);
+  border-radius: 8px;
+  background: #fff;
+  color: #8994a5;
+}
+
+.adm-select select {
+  border: 0;
+  outline: 0;
+  background: #fff;
+  color: #637087;
+  font-size: 11px;
+}
+
+.adm-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--adm-line);
+}
+
+.adm-tab {
+  margin-bottom: -1px;
+  padding: 0 0 13px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: #8a95a6;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.adm-tab:hover {
+  color: var(--adm-ink);
+}
+
+.adm-tab.active {
+  border-bottom-color: var(--adm-primary);
+  color: var(--adm-primary);
+  font-weight: 700;
+}
+
+/* ---------- Tabelas ---------- */
+
+.adm-table-panel {
+  overflow: hidden;
+}
+
+.adm-table-scroll {
+  overflow: auto;
+  padding: 4px 23px 8px;
+}
+
+.adm-table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.adm-table th {
+  padding: 12px;
+  border-bottom: 1px solid #edf0f4;
+  color: #9aa3b2;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.adm-table td {
+  padding: 15px 12px;
+  border-bottom: 1px solid #f0f1f5;
+  color: #6e798c;
+  font-size: 11px;
+  vertical-align: middle;
+}
+
+.adm-table td strong {
+  color: #38445a;
+}
+
+.adm-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.adm-table-name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.adm-mini-avatar {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: #edf1ff;
+  color: #5264dd;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.adm-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------- Avisos ---------- */
+
+.adm-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 17px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.adm-alert-error {
+  background: #fff0f0;
+  color: #c34d50;
+}
+
+.adm-alert-success {
+  background: #e9f8f1;
+  color: #237c5a;
+}
+
+.adm-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 17px;
+  padding: 15px 17px;
+  border: 1px solid #ffe6c5;
+  border-radius: 9px;
+  background: #fff5e8;
+  color: #bd7434;
+}
+
+.adm-banner strong,
+.adm-banner p {
+  display: block;
+}
+
+.adm-banner strong {
+  font-size: 12px;
+}
+
+.adm-banner p {
+  margin: 4px 0 0;
+  color: #ae8762;
+  font-size: 10px;
+}
+
+/* ---------- Telas menores ---------- */
+
+@media (max-width: 1050px) {
+  .adm-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .adm-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .adm-main {
+    padding: 22px 16px;
+  }
+
+  .adm-page-header {
+    flex-direction: column;
+  }
+
+  .adm-stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
