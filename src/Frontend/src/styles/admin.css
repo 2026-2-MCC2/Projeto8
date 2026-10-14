@@ -11,7 +11,7 @@
   --adm-primary: #5064e8;
   --adm-primary-dark: #3f52d1;
 
-  /* Neutraliza o button:hover global do Cadastro.css (levantar + sombra) */
+ /* Neutraliza o button:hover global do Cadastro.css (levantar + sombra) */
 .adm-main :where(button):hover {
   transform: none;
   box-shadow: none;
@@ -133,9 +133,12 @@
 .adm-text-button:hover {
   background: none;
   border-color: transparent;
+  box-shadow: none;
+  transform: none;
   color: var(--adm-primary-dark);
   text-decoration: underline;
 }
+  
 
 .adm-text-button.danger {
   color: #d76262;
@@ -362,25 +365,27 @@
 .adm-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 22px;
-  margin-bottom: 20px;
+  gap: 30px;
+  margin-bottom: 24px;
   border-bottom: 1px solid var(--adm-line);
 }
 
 .adm-tab {
   margin-bottom: -1px;
-  padding: 0 0 13px;
+  padding: 0 2px 15px;
   border: 0;
   border-bottom: 2px solid transparent;
   background: none;
   color: #8a95a6;
-  font-size: 11px;
+  font-size: 14px;
   cursor: pointer;
 }
 
 .adm-tab:hover {
   background: none;
   border-bottom-color: transparent;
+  box-shadow: none;
+  transform: none;
   color: var(--adm-ink);
 }
 
@@ -688,3 +693,204 @@
   }
 }
 
+/* ---------- Eventos: cartões e barras de progresso ---------- */
+
+.adm-event-list {
+  display: grid;
+  gap: 14px;
+}
+
+.adm-event-card {
+  padding: 21px 22px;
+  border: 1px solid var(--adm-line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.adm-event-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.adm-event-name {
+  margin: 0 0 6px;
+  color: #16243f;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.adm-event-meta {
+  margin: 2px 0 0;
+  color: var(--adm-muted);
+  font-size: 11px;
+}
+
+.adm-finance {
+  margin-bottom: 14px;
+}
+
+.adm-finance-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+  color: var(--adm-muted);
+  font-size: 11px;
+}
+
+.adm-finance-row strong {
+  color: #38445a;
+}
+
+.adm-progress {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #edf0f6;
+}
+
+.adm-progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--adm-primary);
+  transition: width 0.3s ease;
+}
+
+.adm-progress-fill.over {
+  background: #d85d59;
+}
+
+.adm-event-toggle {
+  margin-top: 4px;
+  padding: 9px 13px;
+  border: 1px solid var(--adm-line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--adm-primary);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.adm-event-toggle:hover {
+  border-color: #bcc7ef;
+  background: #fbfcff;
+  color: var(--adm-primary-dark);
+}
+
+.adm-event-details {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #edf0f4;
+}
+
+.adm-details-title {
+  margin: 0 0 10px;
+  color: #17233d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.adm-cost-table {
+  width: 100%;
+  margin-bottom: 22px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.adm-cost-table th {
+  padding: 8px 0;
+  border-bottom: 1px solid #edf0f4;
+  color: #9aa3b2;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.adm-cost-table td {
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f1f5;
+  color: #6e798c;
+  font-size: 11px;
+}
+
+.adm-cost-table .num {
+  text-align: right;
+}
+
+.adm-cost-table tfoot td {
+  border-bottom: 0;
+  color: #38445a;
+  font-weight: 700;
+}
+
+.adm-cost-table tr.over td:last-child {
+  color: #d85d59;
+  font-weight: 700;
+}
+
+.adm-over-note {
+  margin-left: 8px;
+  color: #d85d59;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.adm-quote-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f0f1f5;
+}
+
+.adm-quote-item:last-child {
+  border-bottom: 0;
+}
+
+.adm-quote-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.adm-quote-info strong {
+  display: block;
+  color: #38445a;
+  font-size: 12px;
+}
+
+.adm-quote-info span {
+  color: #8e98a8;
+  font-size: 10px;
+}
+
+.adm-quote-value {
+  color: #38445a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.adm-empty {
+  padding: 40px 20px;
+  border: 1px solid var(--adm-line);
+  border-radius: 12px;
+  background: #fff;
+  color: #8a95a6;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .adm-event-top {
+    flex-direction: column;
+  }
+
+  .adm-quote-item {
+    flex-wrap: wrap;
+  }
+}
