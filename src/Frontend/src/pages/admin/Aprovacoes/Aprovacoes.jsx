@@ -185,7 +185,7 @@ export default function AdminAprovacoes() {
 
                         <button
                           type="button"
-                          className="adm-text-button danger"
+                          className="adm-btn adm-btn-danger adm-btn-small"
                           onClick={() => setRejeitando(c)}
                         >
                           <Icon name="x" size={14} /> Rejeitar
