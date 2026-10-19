@@ -11,16 +11,16 @@
   --adm-primary: #5064e8;
   --adm-primary-dark: #3f52d1;
 
- /* Neutraliza o button:hover global do Cadastro.css (levantar + sombra) */
-.adm-main :where(button):hover {
-  transform: none;
-  box-shadow: none;
-}
-
   max-width: 1120px;
   margin: 0 auto;
   padding: 36px;
   color: var(--adm-ink);
+}
+
+/* Neutraliza o button:hover global do Cadastro.css (levantar + sombra) */
+.adm-main :where(button):hover {
+  transform: none;
+  box-shadow: none;
 }
 
 /* ---------- Cabeçalho da página ---------- */
@@ -533,7 +533,8 @@
   .adm-page-header {
     flex-direction: column;
   }
-
+}
+@media (max-width: 480px) {
   .adm-stats-grid {
     grid-template-columns: 1fr;
   }
@@ -892,5 +893,98 @@
 
   .adm-quote-item {
     flex-wrap: wrap;
+  }
+}
+
+/* ---------- Relatórios: gráfico de barras e lista ---------- */
+
+.adm-report-bars {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  gap: 18px;
+  height: 240px;
+}
+
+.adm-report-bar {
+  flex: 1;
+  max-width: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-report-bar strong {
+  color: #38445a;
+  font-size: 13px;
+}
+
+.adm-report-bar small {
+  color: var(--adm-muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.adm-report-track {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 8px;
+  background: #f4f6fb;
+}
+
+.adm-report-fill {
+  width: 100%;
+  min-height: 4px;
+  border-radius: 8px;
+  transition: height 0.3s ease;
+}
+
+.adm-report-fill.planejamento {
+  background: #e88b43;
+}
+
+.adm-report-fill.confirmado {
+  background: #2da576;
+}
+
+.adm-report-fill.concluido {
+  background: #8a95b0;
+}
+
+.adm-report-fill.cancelado {
+  background: #d85d59;
+}
+
+.adm-report-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 44px;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f0f1f5;
+  color: #6e798c;
+  font-size: 12px;
+}
+
+.adm-report-row:last-child {
+  border-bottom: 0;
+}
+
+.adm-report-row strong {
+  color: #38445a;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .adm-report-bars {
+    gap: 10px;
+  }
+
+  .adm-report-row {
+    grid-template-columns: 100px 1fr 40px;
+    gap: 10px;
   }
 }

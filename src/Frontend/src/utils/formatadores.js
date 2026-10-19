@@ -36,3 +36,22 @@ export function obterIniciais(nome) {
     .join("")
     .toUpperCase();
 }
+
+
+export function formatarMoedaCompacta(valor) {
+  const numero = Number(valor || 0);
+
+  if (numero >= 1000000) {
+    return `R$ ${(numero / 1000000).toLocaleString("pt-BR", {
+      maximumFractionDigits: 1,
+    })} mi`;
+  }
+
+  if (numero >= 1000) {
+    return `R$ ${(numero / 1000).toLocaleString("pt-BR", {
+      maximumFractionDigits: 1,
+    })} mil`;
+  }
+
+  return formatarMoeda(numero);
+}
