@@ -55,3 +55,32 @@ export function formatarMoedaCompacta(valor) {
 
   return formatarMoeda(numero);
 }
+
+
+export function formatarTempoRelativo(data) {
+  const dataObj = new Date(data);
+
+  if (Number.isNaN(dataObj.getTime())) {
+    return "";
+  }
+
+  const minutos = Math.round((Date.now() - dataObj.getTime()) / 60000);
+
+  if (minutos < 1) {
+    return "agora";
+  }
+
+  if (minutos < 60) {
+    return `há ${minutos} min`;
+  }
+
+  const horas = Math.floor(minutos / 60);
+
+  if (horas < 24) {
+    return `há ${horas} h`;
+  }
+
+  const dias = Math.floor(horas / 24);
+
+  return dias === 1 ? "ontem" : `há ${dias} dias`;
+}

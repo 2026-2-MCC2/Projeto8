@@ -988,3 +988,66 @@
     gap: 10px;
   }
 }
+
+/* ---------- Dashboard: atividade recente ---------- */
+
+.adm-activity-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 13px 0;
+  border-bottom: 1px solid #f0f1f5;
+}
+
+.adm-activity-item:first-of-type {
+  padding-top: 0;
+}
+
+.adm-activity-item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.adm-activity-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #edf1ff;
+  color: var(--adm-primary);
+}
+
+.adm-activity-icon.green {
+  background: #e6f7ef;
+  color: #2da576;
+}
+
+.adm-activity-icon.orange {
+  background: #fff0e1;
+  color: #da8b45;
+}
+
+.adm-activity-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.adm-activity-text strong {
+  display: block;
+  color: #38445a;
+  font-size: 12px;
+}
+
+.adm-activity-text p {
+  margin: 3px 0 0;
+  color: #8e98a8;
+  font-size: 11px;
+}
+
+.adm-activity-time {
+  color: #9aa3b2;
+  font-size: 10px;
+  white-space: nowrap;
+}
