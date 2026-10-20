@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --env-file=.env.test --test tests/fornecedor.integration.test.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
