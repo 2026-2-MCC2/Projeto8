@@ -1,4 +1,5 @@
 import Modal from "./Modal";
+import { formatarDataCompleta } from "../../utils/datas";
 import { formatarDataHora, formatarTelefone } from "../../utils/formatadores";
 import { formatarCategoria, formatarCnpj } from "../../utils/cadastros";
 

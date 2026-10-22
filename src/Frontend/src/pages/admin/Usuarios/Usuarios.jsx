@@ -6,7 +6,8 @@ import ModalDetalhesCadastro from "../../../components/admin/ModalDetalhesCadast
 import Icon from "../../../components/organizador/Icon";
 import { formatarDataCompleta } from "../../../utils/datas";
 import { obterIniciais } from "../../../utils/formatadores";
-import { cadastrosExemplo } from "../cadastrosData";
+import { adminApi } from "../../../services/admin";
+import useCarregar from "../../../hooks/useCarregar";
 
 const ABAS = [
   { valor: "TODOS", rotulo: "Todos" },
@@ -18,17 +19,26 @@ const COR_STATUS = { APROVADO: "green", REJEITADO: "red" };
 const ROTULO_STATUS = { APROVADO: "Aprovado", REJEITADO: "Rejeitado" };
 
 export default function AdminUsuarios() {
-  const [cadastros, setCadastros] = useState(cadastrosExemplo);
+  // Busca todos os cadastros na API. "dados" é null até a primeira resposta.
+  const { dados, carregando, erro, recarregar } = useCarregar(
+    () => adminApi.listarCadastros(),
+    []
+  );
+
   const [aba, setAba] = useState("TODOS");
   const [busca, setBusca] = useState("");
   const [tipo, setTipo] = useState("TODOS");
   const [detalhes, setDetalhes] = useState(null);
   const [feedback, setFeedback] = useState("");
+  const [erroAcao, setErroAcao] = useState("");
+  const [salvando, setSalvando] = useState(null); // id do cadastro em andamento
+
+  const primeiraCarga = carregando && dados === null;
 
   // Esta página só mostra quem já foi analisado (PENDENTE fica em Aprovações)
   const analisados = useMemo(
-    () => cadastros.filter((c) => c.status !== "PENDENTE"),
-    [cadastros]
+    () => (dados ?? []).filter((c) => c.status !== "PENDENTE"),
+    [dados]
   );
 
   // Contadores das abas, calculados a partir da lista
@@ -53,25 +63,24 @@ export default function AdminUsuarios() {
     });
   }, [analisados, aba, tipo, busca]);
 
-  // Atualização imutável: map + spread, igual fizemos em Aprovações
-  function reabrirAnalise(cadastro) {
-    setCadastros((lista) =>
-      lista.map((c) =>
-        c.id === cadastro.id
-          ? {
-              ...c,
-              status: "PENDENTE",
-              analisado_por_nome: null,
-              data_analise: null,
-              motivo_rejeicao: null,
-            }
-          : c
-      )
-    );
+  // Pede à API para voltar o cadastro para PENDENTE e recarrega a lista:
+  // ele deixa de aparecer aqui e volta para Aprovações.
+  async function reabrirAnalise(cadastro) {
+    setSalvando(cadastro.id);
+    setFeedback("");
+    setErroAcao("");
 
-    setFeedback(
-      `A análise de ${cadastro.nome} foi reaberta e voltou para Aprovações.`
-    );
+    try {
+      await adminApi.analisarCadastro(cadastro.id, "PENDENTE");
+      await recarregar();
+      setFeedback(
+        `A análise de ${cadastro.nome} foi reaberta e voltou para Aprovações.`
+      );
+    } catch (error) {
+      setErroAcao(error.message);
+    } finally {
+      setSalvando(null);
+    }
   }
 
   return (
@@ -85,6 +94,21 @@ export default function AdminUsuarios() {
 
         {feedback && (
           <div className="adm-alert adm-alert-success">{feedback}</div>
+        )}
+
+        {(erro || erroAcao) && (
+          <div className="adm-alert adm-alert-error">
+            {erroAcao || erro}{" "}
+            {erro && !erroAcao && (
+              <button
+                type="button"
+                className="adm-text-button"
+                onClick={recarregar}
+              >
+                Tentar novamente
+              </button>
+            )}
+          </div>
         )}
 
         <div className="adm-tabs">
@@ -141,7 +165,13 @@ export default function AdminUsuarios() {
               </thead>
 
               <tbody>
-                {filtrados.length === 0 && (
+                {primeiraCarga && (
+                  <tr>
+                    <td colSpan={6}>Carregando usuários...</td>
+                  </tr>
+                )}
+
+                {!primeiraCarga && !erro && filtrados.length === 0 && (
                   <tr>
                     <td colSpan={6}>Nenhum usuário encontrado.</td>
                   </tr>
@@ -188,6 +218,7 @@ export default function AdminUsuarios() {
                           type="button"
                           className="adm-btn adm-btn-secondary adm-btn-small"
                           onClick={() => reabrirAnalise(c)}
+                          disabled={salvando !== null}
                         >
                           Reabrir análise
                         </button>
