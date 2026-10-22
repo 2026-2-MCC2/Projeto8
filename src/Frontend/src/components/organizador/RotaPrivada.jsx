@@ -8,7 +8,8 @@ function obterUsuario() {
   }
 }
 
-export default function RotaPrivada() {
+// tipo: perfil exigido para acessar o grupo de rotas (padrão: ORGANIZADOR).
+export default function RotaPrivada({ tipo = "ORGANIZADOR" }) {
   const location = useLocation();
   const token = sessionStorage.getItem("token");
   const usuario = obterUsuario();
@@ -17,7 +18,7 @@ export default function RotaPrivada() {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
-  if (usuario.tipo !== "ORGANIZADOR") {
+  if (usuario.tipo !== tipo) {
     return <Navigate to="/login" replace />;
   }
 

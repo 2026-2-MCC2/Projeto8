@@ -15,6 +15,13 @@ import ResumoCustos from "./pages/Organizador/ResumoCustos/ResumoCustos";
 import CalculoTicket from "./pages/Organizador/CalculoTicket/CalculoTicket";
 import MinhaConta from "./pages/Organizador/MinhaConta/MinhaConta";
 import RotaPrivada from "./components/organizador/RotaPrivada";
+import DashboardFornecedor from "./pages/Fornecedor/DashboardFornecedor/DashboardFornecedor";
+import MeusServicos from "./pages/Fornecedor/MeusServicos/MeusServicos";
+import FormularioServico from "./pages/Fornecedor/FormularioServico/FormularioServico";
+import Oportunidades from "./pages/Fornecedor/Oportunidades/Oportunidades";
+import DetalheOportunidade from "./pages/Fornecedor/DetalheOportunidade/DetalheOportunidade";
+import MinhasPropostas from "./pages/Fornecedor/MinhasPropostas/MinhasPropostas";
+import MinhaContaFornecedor from "./pages/Fornecedor/MinhaContaFornecedor/MinhaContaFornecedor";
 
 function App() {
   return (
@@ -37,6 +44,17 @@ function App() {
           <Route path="/criar-evento" element={<CriarEvento />} />
           <Route path="/dashboard" element={<DashboardOrganizador />} />
           <Route path="/meus-eventos" element={<Meuseventos />} />
+        </Route>
+
+        <Route element={<RotaPrivada tipo="FORNECEDOR" />}>
+          <Route path="/fornecedor/dashboard" element={<DashboardFornecedor />} />
+          <Route path="/fornecedor/servicos" element={<MeusServicos />} />
+          <Route path="/fornecedor/servicos/novo" element={<FormularioServico />} />
+          <Route path="/fornecedor/servicos/:id/editar" element={<FormularioServico />} />
+          <Route path="/fornecedor/oportunidades" element={<Oportunidades />} />
+          <Route path="/fornecedor/oportunidades/:id" element={<DetalheOportunidade />} />
+          <Route path="/fornecedor/propostas" element={<MinhasPropostas />} />
+          <Route path="/fornecedor/minha-conta" element={<MinhaContaFornecedor />} />
         </Route>
 
         <Route path="*" element={<h1>Página não encontrada</h1>} />

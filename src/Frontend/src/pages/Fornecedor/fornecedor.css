@@ -1,0 +1,738 @@
+/* ==========================================================
+   Módulo do Fornecedor
+   Mantém a linguagem visual do Organizador (LayoutOrganizador.css).
+========================================================== */
+
+.forn-content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px;
+}
+
+/* ---------- Cabeçalho ---------- */
+
+.forn-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 28px;
+}
+
+.forn-eyebrow {
+  color: #607097;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.forn-heading h1 {
+  margin: 13px 0 8px;
+  color: #17233d;
+  font-size: 31px;
+  line-height: 1.05;
+  font-weight: 500;
+  letter-spacing: -1.2px;
+}
+
+.forn-heading p {
+  margin: 0;
+  color: #6f7e99;
+  font-size: 11px;
+}
+
+/* ---------- Botões ---------- */
+
+.forn-btn {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.forn-btn:hover,
+.forn-voltar:hover {
+  text-decoration: none;
+}
+
+.forn-btn .organizador-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.forn-btn-primario {
+  background: #5264e8;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(82, 100, 232, 0.18);
+}
+
+.forn-btn-primario:hover:not(:disabled) {
+  background: #4557d6;
+}
+
+.forn-btn-secundario {
+  background: #fff;
+  border-color: #dfe4ed;
+  color: #34415c;
+}
+
+.forn-btn-secundario:hover:not(:disabled) {
+  background: #f3f5fa;
+}
+
+.forn-btn-perigo {
+  background: #fff;
+  border-color: #f3c9cf;
+  color: #c0334a;
+}
+
+.forn-btn-perigo:hover:not(:disabled) {
+  background: #fdf1f3;
+}
+
+.forn-btn-pequeno {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 10px;
+}
+
+.forn-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.forn-btn-total {
+  width: 100%;
+}
+
+/* ---------- Avisos e estados ---------- */
+
+.forn-aviso {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: 9px;
+  font-size: 11px;
+}
+
+.forn-aviso.erro {
+  border: 1px solid #f3c9cf;
+  background: #fdf1f3;
+  color: #a62a3f;
+}
+
+.forn-aviso.sucesso {
+  border: 1px solid #bfe6cf;
+  background: #effaf3;
+  color: #1c7a47;
+}
+
+.forn-aviso.info {
+  border: 1px solid #cfd8f7;
+  background: #f1f4ff;
+  color: #3c4fc4;
+}
+
+.forn-aviso button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.forn-estado {
+  padding: 48px 20px;
+  text-align: center;
+  color: #6f7e99;
+  font-size: 12px;
+}
+
+.forn-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 56px 20px;
+  border: 1px dashed #d5dbe8;
+  border-radius: 14px;
+  background: #fff;
+  text-align: center;
+}
+
+.forn-vazio-icone {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  background: #eef1ff;
+  color: #5264e8;
+}
+
+.forn-vazio-icone .organizador-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.forn-vazio h2 {
+  margin: 0 0 6px;
+  color: #17233d;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.forn-vazio p {
+  max-width: 380px;
+  margin: 0 0 18px;
+  color: #6f7e99;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* ---------- Badges ---------- */
+
+.forn-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.forn-badge.azul { background: #e9edff; color: #3c4fc4; }
+.forn-badge.laranja { background: #fff0e0; color: #b8650c; }
+.forn-badge.verde { background: #e3f6ec; color: #1c7a47; }
+.forn-badge.vermelho { background: #fde8eb; color: #b3283e; }
+.forn-badge.cinza { background: #eceff5; color: #4a5875; }
+
+/* ---------- Painéis ---------- */
+
+.forn-painel {
+  border: 1px solid #e5e9f1;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.forn-painel-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px 0;
+}
+
+.forn-painel-topo h2 {
+  margin: 0 0 4px;
+  color: #17233d;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.forn-painel-topo p {
+  margin: 0;
+  color: #6f7e99;
+  font-size: 10px;
+}
+
+.forn-link {
+  color: #5264e8;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.forn-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Cards de números ---------- */
+
+.forn-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.forn-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #e5e9f1;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.forn-stat-icone {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: #eef1ff;
+  color: #5264e8;
+}
+
+.forn-stat-icone.laranja { background: #fff0e0; color: #d9791a; }
+.forn-stat-icone.verde { background: #e3f6ec; color: #20a05f; }
+.forn-stat-icone.roxo { background: #f1eaff; color: #7a4fe0; }
+
+.forn-stat-icone .organizador-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.forn-stat small {
+  display: block;
+  margin-bottom: 4px;
+  color: #6f7e99;
+  font-size: 10px;
+}
+
+.forn-stat strong {
+  color: #17233d;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+}
+
+/* ---------- Lista de oportunidades recentes ---------- */
+
+.forn-lista {
+  padding: 8px 12px 14px;
+}
+
+.forn-linha {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 10px;
+  border-bottom: 1px solid #eef1f6;
+  color: inherit;
+  text-decoration: none;
+}
+
+.forn-linha:last-child {
+  border-bottom: 0;
+}
+
+.forn-linha:hover {
+  background: #f8f9fd;
+  text-decoration: none;
+}
+
+.forn-linha-data {
+  width: 46px;
+  flex-shrink: 0;
+  padding: 6px 0;
+  border-radius: 10px;
+  background: #eef1ff;
+  color: #3c4fc4;
+  text-align: center;
+}
+
+.forn-linha-data strong {
+  display: block;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.forn-linha-data span {
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.forn-linha-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.forn-linha-info strong {
+  display: block;
+  color: #17233d;
+  font-size: 12px;
+}
+
+.forn-linha-info span {
+  color: #6f7e99;
+  font-size: 10px;
+}
+
+/* ---------- Tabelas ---------- */
+
+.forn-tabela-wrap {
+  overflow-x: auto;
+  padding: 8px 0 4px;
+}
+
+.forn-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.forn-tabela th {
+  padding: 12px 22px;
+  border-bottom: 1px solid #e5e9f1;
+  color: #6f7e99;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.forn-tabela td {
+  padding: 15px 22px;
+  border-bottom: 1px solid #eef1f6;
+  color: #34415c;
+  vertical-align: middle;
+}
+
+.forn-tabela tr:last-child td {
+  border-bottom: 0;
+}
+
+.forn-tabela td strong {
+  color: #17233d;
+}
+
+.forn-tabela small {
+  display: block;
+  margin-top: 3px;
+  color: #8c98ad;
+  font-size: 10px;
+}
+
+.forn-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ---------- Filtros ---------- */
+
+.forn-filtros {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.forn-busca,
+.forn-select {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px;
+  border: 1px solid #dfe4ed;
+  border-radius: 8px;
+  background: #fff;
+  color: #8c98ad;
+}
+
+.forn-busca {
+  width: 350px;
+  max-width: 100%;
+}
+
+.forn-busca .organizador-icon,
+.forn-select .organizador-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.forn-busca input,
+.forn-select select {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #26344f;
+  font-size: 10px;
+}
+
+/* ---------- Cards de oportunidade ---------- */
+
+.forn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.forn-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid #e5e9f1;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.forn-card-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.forn-card-topo > span:first-child {
+  color: #8c98ad;
+  font-size: 10px;
+}
+
+.forn-card h3 {
+  margin: 0;
+  color: #17233d;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.forn-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  color: #6f7e99;
+  font-size: 10px;
+}
+
+.forn-card-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.forn-card-meta .organizador-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.forn-card-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #eef1f6;
+  color: #6f7e99;
+  font-size: 10px;
+}
+
+/* ---------- Formulários ---------- */
+
+.forn-form {
+  padding: 26px;
+}
+
+.forn-campos {
+  display: grid;
+  gap: 18px;
+}
+
+.forn-campos.dois { grid-template-columns: repeat(2, 1fr); }
+.forn-campos.tres { grid-template-columns: repeat(3, 1fr); }
+
+.forn-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #34415c;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.forn-campo input,
+.forn-campo select,
+.forn-campo textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #dfe4ed;
+  border-radius: 8px;
+  background: #fff;
+  color: #17233d;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.forn-campo textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.forn-campo input:focus,
+.forn-campo select:focus,
+.forn-campo textarea:focus {
+  border-color: #5264e8;
+  outline: 3px solid rgba(82, 100, 232, 0.12);
+}
+
+.forn-campo input:disabled,
+.forn-campo input[readonly] {
+  background: #f3f5fa;
+  color: #6f7e99;
+}
+
+.forn-campo small {
+  color: #8c98ad;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.forn-form-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+/* ---------- Detalhe da oportunidade / conta ---------- */
+
+.forn-duas-colunas {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.forn-bloco {
+  padding: 24px;
+}
+
+.forn-bloco h2 {
+  margin: 0 0 8px;
+  color: #17233d;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.forn-bloco p {
+  margin: 0 0 18px;
+  color: #6f7e99;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.forn-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.forn-info-grid small {
+  display: block;
+  margin-bottom: 4px;
+  color: #8c98ad;
+  font-size: 10px;
+}
+
+.forn-info-grid strong {
+  color: #17233d;
+  font-size: 12px;
+}
+
+.forn-voltar {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #5264e8;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.forn-propostas-evento {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #eef1f6;
+}
+
+.forn-propostas-evento h3 {
+  margin: 0 0 10px;
+  color: #17233d;
+  font-size: 12px;
+}
+
+.forn-propostas-evento div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  color: #34415c;
+  font-size: 11px;
+}
+
+.forn-conta-avatar {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #eef1ff;
+  color: #5264e8;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.forn-conta-topo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.forn-conta-topo h2 { margin: 0 0 3px; }
+.forn-conta-topo p { margin: 0; color: #6f7e99; font-size: 11px; }
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 1000px) {
+  .forn-stats { grid-template-columns: repeat(2, 1fr); }
+  .forn-duas-colunas { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .forn-content { padding: 20px 16px; }
+  .forn-heading { flex-direction: column; }
+  .forn-campos.dois,
+  .forn-campos.tres,
+  .forn-info-grid { grid-template-columns: 1fr; }
+  .forn-stats { grid-template-columns: 1fr; }
+}
+
+.forn-titulo-form {
+  margin: 0 0 18px;
+  color: #17233d;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.forn-linha > .organizador-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #8c98ad;
+}

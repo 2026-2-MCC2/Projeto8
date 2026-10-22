@@ -38,7 +38,7 @@ function Login() {
       }
 
       if (data.usuario?.tipo === "FORNECEDOR") {
-        setErro("O acesso de Fornecedor ainda está em desenvolvimento.");
+        navigate("/fornecedor/dashboard");
         return;
       }
 
@@ -58,7 +58,9 @@ function Login() {
   async function handleAcessoPerfil(tipo) {
     if (tipo !== "ORGANIZADOR") {
       setErro(
-        `O acesso de ${tipo === "FORNECEDOR" ? "Fornecedor" : "Administrador"} ainda está em desenvolvimento.`
+        tipo === "FORNECEDOR"
+          ? "O modo demonstração está disponível apenas para o Organizador. Entre com uma conta de fornecedor aprovada."
+          : "O acesso de Administrador ainda está em desenvolvimento."
       );
       return;
     }
