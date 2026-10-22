@@ -22,6 +22,13 @@ import AdminUsuarios from "./pages/admin/Usuarios/Usuarios";
 import AdminEventos from "./pages/admin/Eventos/Eventos";
 import AdminRelatorios from "./pages/admin/Relatorios/Relatorios";
 import AdminMinhaConta from "./pages/admin/MinhaConta/MinhaConta";
+import DashboardFornecedor from "./pages/Fornecedor/DashboardFornecedor/DashboardFornecedor";
+import MeusServicos from "./pages/Fornecedor/MeusServicos/MeusServicos";
+import FormularioServico from "./pages/Fornecedor/FormularioServico/FormularioServico";
+import Oportunidades from "./pages/Fornecedor/Oportunidades/Oportunidades";
+import DetalheOportunidade from "./pages/Fornecedor/DetalheOportunidade/DetalheOportunidade";
+import MinhasPropostas from "./pages/Fornecedor/MinhasPropostas/MinhasPropostas";
+import MinhaContaFornecedor from "./pages/Fornecedor/MinhaContaFornecedor/MinhaContaFornecedor";
 
 function App() {
   return (
@@ -52,6 +59,32 @@ function App() {
           <Route path="/admin/eventos" element={<AdminEventos />} />
           <Route path="/admin/relatorios" element={<AdminRelatorios />} />
           <Route path="/admin/minha-conta" element={<AdminMinhaConta />} />
+        </Route>
+
+        <Route element={<RotaPrivada tipo="FORNECEDOR" />}>
+          <Route
+            path="/fornecedor/dashboard"
+            element={<DashboardFornecedor />}
+          />
+          <Route path="/fornecedor/servicos" element={<MeusServicos />} />
+          <Route
+            path="/fornecedor/servicos/novo"
+            element={<FormularioServico />}
+          />
+          <Route
+            path="/fornecedor/servicos/:id/editar"
+            element={<FormularioServico />}
+          />
+          <Route path="/fornecedor/oportunidades" element={<Oportunidades />} />
+          <Route
+            path="/fornecedor/oportunidades/:id"
+            element={<DetalheOportunidade />}
+          />
+          <Route path="/fornecedor/propostas" element={<MinhasPropostas />} />
+          <Route
+            path="/fornecedor/minha-conta"
+            element={<MinhaContaFornecedor />}
+          />
         </Route>
 
         <Route path="*" element={<h1>Página não encontrada</h1>} />

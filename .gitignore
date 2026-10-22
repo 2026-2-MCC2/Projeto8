@@ -142,3 +142,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 Entrega-1/Calculo-II/~$linomio Taylor.docx
+
+# Backup local do banco de dados
+backup_antes_001.sql

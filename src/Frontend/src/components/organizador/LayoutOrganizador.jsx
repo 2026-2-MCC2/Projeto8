@@ -34,12 +34,19 @@ function obterIniciais(nome) {
     .toUpperCase();
 }
 
-export default function LayoutOrganizador({ children, active = "" }) {
+// Por padrão renderiza o menu do Organizador. O LayoutFornecedor reutiliza este
+// layout informando seu próprio rótulo de perfil e menu.
+export default function LayoutOrganizador({
+  children,
+  active = "",
+  perfil = "Organizador",
+  menu: menuPersonalizado,
+}) {
   const navigate = useNavigate();
 
   const usuario = useMemo(() => obterUsuario(), []);
 
-  const nomeUsuario = usuario?.nome?.trim() || "Organizador";
+  const nomeUsuario = usuario?.nome?.trim() || perfil;
 
   const iniciais = obterIniciais(nomeUsuario);
 
@@ -49,7 +56,7 @@ export default function LayoutOrganizador({ children, active = "" }) {
     navigate("/login", { replace: true });
   }
 
-  const menu = [
+  const menuOrganizador = [
     {
       path: "/dashboard",
       label: "Dashboard",
@@ -95,6 +102,8 @@ export default function LayoutOrganizador({ children, active = "" }) {
     },
   ];
 
+  const menu = menuPersonalizado || menuOrganizador;
+
   return (
     <div className="org-layout">
       <aside className="org-sidebar">
@@ -106,7 +115,7 @@ export default function LayoutOrganizador({ children, active = "" }) {
         <div className="org-role">
           <span className="org-role-dot" />
 
-          <strong>Organizador</strong>
+          <strong>{perfil}</strong>
 
           <span className="org-role-chevron">⌄</span>
         </div>
@@ -155,7 +164,7 @@ export default function LayoutOrganizador({ children, active = "" }) {
           <div className="org-breadcrumb">
             <span>Workspace</span>
             <span>/</span>
-            <strong>Organizador</strong>
+            <strong>{perfil}</strong>
           </div>
 
           <div className="org-topbar-user">
@@ -175,7 +184,7 @@ export default function LayoutOrganizador({ children, active = "" }) {
 
               <div className="org-user-data">
                 <strong>{nomeUsuario}</strong>
-                <span>Organizador</span>
+                <span>{perfil}</span>
               </div>
 
               <span className="org-user-chevron">⌄</span>
