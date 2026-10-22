@@ -61,6 +61,7 @@ export default function ModalRejeicao({ cadastro, onConfirmar, onCancelar }) {
         Observação
         <textarea
           rows="4"
+          maxLength={400}
           placeholder="Escreva uma observação adicional..."
           value={observacao}
           onChange={(evento) => setObservacao(evento.target.value)}

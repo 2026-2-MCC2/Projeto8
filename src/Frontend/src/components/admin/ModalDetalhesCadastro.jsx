@@ -1,6 +1,6 @@
 import Modal from "./Modal";
-import { formatarDataCompleta } from "../../utils/datas";
-import { formatarDataHora } from "../../utils/formatadores";
+import { formatarDataHora, formatarTelefone } from "../../utils/formatadores";
+import { formatarCategoria, formatarCnpj } from "../../utils/cadastros";
 
 function Campo({ rotulo, valor, completo = false }) {
   return (
@@ -28,10 +28,10 @@ export default function ModalDetalhesCadastro({ cadastro, onFechar }) {
         <div className="adm-detail-grid">
           <Campo rotulo="Razão social" valor={cadastro.razao_social} />
           <Campo rotulo="Nome fantasia" valor={cadastro.nome} />
-          <Campo rotulo="CNPJ" valor={cadastro.cnpj} />
-          <Campo rotulo="Categoria" valor={cadastro.categoria_atuacao} />
+          <Campo rotulo="CNPJ" valor={formatarCnpj(cadastro.cnpj)} />
+          <Campo rotulo="Categoria" valor={formatarCategoria(cadastro.categoria_atuacao)} />
           <Campo rotulo="E-mail" valor={cadastro.email} />
-          <Campo rotulo="Telefone" valor={cadastro.telefone} />
+          <Campo rotulo="Telefone" valor={formatarTelefone(cadastro.telefone)} />
           <Campo rotulo="Localização" valor={localizacao} />
           <Campo
             rotulo="Área de atendimento"
@@ -44,7 +44,7 @@ export default function ModalDetalhesCadastro({ cadastro, onFechar }) {
         <div className="adm-detail-grid">
           <Campo rotulo="Nome completo" valor={cadastro.nome} />
           <Campo rotulo="E-mail" valor={cadastro.email} />
-          <Campo rotulo="Telefone" valor={cadastro.telefone} />
+          <Campo rotulo="Telefone" valor={formatarTelefone(cadastro.telefone)} />
           <Campo rotulo="Localização" valor={localizacao} />
           <Campo
             rotulo="Eventos cadastrados"

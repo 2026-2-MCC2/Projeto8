@@ -7,62 +7,75 @@ import ModalRejeicao from "../../../components/admin/ModalRejeicao";
 import Icon from "../../../components/organizador/Icon";
 import { formatarDataCompleta } from "../../../utils/datas";
 import { obterIniciais } from "../../../utils/formatadores";
-import { cadastrosExemplo } from "../cadastrosData";
+import { adminApi } from "../../../services/admin";
+import useCarregar from "../../../hooks/useCarregar";
 
 export default function AdminAprovacoes() {
-  const [cadastros, setCadastros] = useState(cadastrosExemplo);
+  // Busca os cadastros PENDENTES na API. "dados" é null até a primeira resposta.
+  const { dados, carregando, erro, recarregar } = useCarregar(
+    () => adminApi.listarCadastros("PENDENTE"),
+    []
+  );
+
+  const cadastros = useMemo(() => dados ?? [], [dados]);
+  const primeiraCarga = carregando && dados === null;
+
   const [busca, setBusca] = useState("");
   const [tipo, setTipo] = useState("TODOS");
   const [detalhes, setDetalhes] = useState(null);
   const [rejeitando, setRejeitando] = useState(null);
   const [feedback, setFeedback] = useState("");
+  const [erroAcao, setErroAcao] = useState("");
+  const [salvando, setSalvando] = useState(null); // id do cadastro em análise
 
-  const totalPendentes = cadastros.filter(
-    (c) => c.status === "PENDENTE"
-  ).length;
+  const totalPendentes = cadastros.length;
 
   const pendentes = useMemo(() => {
     const texto = busca.trim().toLowerCase();
 
     return cadastros.filter((c) => {
-      const correspondeStatus = c.status === "PENDENTE";
       const correspondeTipo = tipo === "TODOS" || c.tipo === tipo;
       const correspondeBusca =
         !texto ||
         c.nome.toLowerCase().includes(texto) ||
         c.email.toLowerCase().includes(texto);
 
-      return correspondeStatus && correspondeTipo && correspondeBusca;
+      return correspondeTipo && correspondeBusca;
     });
   }, [cadastros, busca, tipo]);
 
-  function atualizarStatus(id, novoStatus, motivo = "") {
-    setCadastros((lista) =>
-      lista.map((c) =>
-        c.id !== id
-          ? c
-          : {
-              ...c,
-              status: novoStatus,
-              analisado_por_nome: "Administrador",
-              data_analise: new Date().toISOString(),
-              motivo_rejeicao: novoStatus === "REJEITADO" ? motivo : null,
-            }
-      )
-    );
+  // Envia a decisão para a API e, se der certo, recarrega a lista:
+  // o cadastro analisado deixa de ser PENDENTE e some da tela.
+  async function analisar(cadastro, status, motivo, mensagemSucesso) {
+    setSalvando(cadastro.id);
+    setFeedback("");
+    setErroAcao("");
+
+    try {
+      await adminApi.analisarCadastro(cadastro.id, status, motivo);
+      await recarregar();
+      setFeedback(mensagemSucesso);
+    } catch (error) {
+      setErroAcao(error.message);
+    } finally {
+      setSalvando(null);
+    }
   }
 
   function aprovar(cadastro) {
-    atualizarStatus(cadastro.id, "APROVADO");
-    setFeedback(`${cadastro.nome} foi aprovado com sucesso.`);
+    analisar(
+      cadastro,
+      "APROVADO",
+      "",
+      `${cadastro.nome} foi aprovado com sucesso.`
+    );
   }
 
   function confirmarRejeicao(id, motivo) {
     const cadastro = cadastros.find((c) => c.id === id);
 
-    atualizarStatus(id, "REJEITADO", motivo);
     setRejeitando(null);
-    setFeedback(`${cadastro.nome} foi rejeitado.`);
+    analisar(cadastro, "REJEITADO", motivo, `${cadastro.nome} foi rejeitado.`);
   }
 
   return (
@@ -79,10 +92,13 @@ export default function AdminAprovacoes() {
 
           <div>
             <strong>
-              {totalPendentes}{" "}
-              {totalPendentes === 1
-                ? "cadastro aguardando revisão"
-                : "cadastros aguardando revisão"}
+              {primeiraCarga
+                ? "Carregando cadastros..."
+                : `${totalPendentes} ${
+                    totalPendentes === 1
+                      ? "cadastro aguardando revisão"
+                      : "cadastros aguardando revisão"
+                  }`}
             </strong>
             <p>Uma análise cuidadosa mantém a comunidade confiável.</p>
           </div>
@@ -91,6 +107,21 @@ export default function AdminAprovacoes() {
         {feedback && (
           <div className="adm-alert adm-alert-success">
             <Icon name="check" size={16} /> {feedback}
+          </div>
+        )}
+
+        {(erro || erroAcao) && (
+          <div className="adm-alert adm-alert-error">
+            {erroAcao || erro}{" "}
+            {erro && !erroAcao && (
+              <button
+                type="button"
+                className="adm-text-button"
+                onClick={recarregar}
+              >
+                Tentar novamente
+              </button>
+            )}
           </div>
         )}
 
@@ -134,7 +165,13 @@ export default function AdminAprovacoes() {
               </thead>
 
               <tbody>
-                {pendentes.length === 0 && (
+                {primeiraCarga && (
+                  <tr>
+                    <td colSpan="5">Carregando cadastros...</td>
+                  </tr>
+                )}
+
+                {!primeiraCarga && !erro && pendentes.length === 0 && (
                   <tr>
                     <td colSpan="5">
                       {totalPendentes === 0
@@ -179,6 +216,7 @@ export default function AdminAprovacoes() {
                           type="button"
                           className="adm-btn adm-btn-primary adm-btn-small"
                           onClick={() => aprovar(c)}
+                          disabled={salvando !== null}
                         >
                           <Icon name="check" size={14} /> Aprovar
                         </button>
@@ -187,6 +225,7 @@ export default function AdminAprovacoes() {
                           type="button"
                           className="adm-btn adm-btn-danger adm-btn-small"
                           onClick={() => setRejeitando(c)}
+                          disabled={salvando !== null}
                         >
                           <Icon name="x" size={14} /> Rejeitar
                         </button>
