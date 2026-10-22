@@ -162,6 +162,112 @@ router.patch("/cadastros/:id/status", async (req, res) => {
   });
 });
 
+// ------------------------------------------------------
+// GET /admin/dashboard
+// Números da visão geral: totais, atividade recente e saúde da plataforma.
+// Tudo é calculado na hora a partir do banco (nada fica guardado à parte).
+// ------------------------------------------------------
+
+// Percentual inteiro; sem base de comparação (0 itens) vira 0%.
+function percentual(parte, total) {
+  return total > 0 ? Math.round((parte / total) * 100) : 0;
+}
+
+const TITULO_ATIVIDADE = {
+  CADASTRO_PENDENTE: (detalhe) =>
+    detalhe === "FORNECEDOR"
+      ? "Novo fornecedor aguardando aprovação"
+      : "Novo organizador aguardando aprovação",
+  CADASTRO_APROVADO: (detalhe) =>
+    detalhe === "FORNECEDOR"
+      ? "Fornecedor aprovado"
+      : "Organizador aprovado",
+  PROPOSTA_ENVIADA: () => "Nova proposta enviada",
+  PROPOSTA_SELECIONADA: () => "Proposta selecionada",
+};
+
+router.get("/dashboard", async (req, res) => {
+  const [[usuarios]] = await pool.query(`
+    SELECT
+      COALESCE(SUM(tipo = 'ORGANIZADOR' AND status = 'APROVADO'), 0) AS organizadores,
+      COALESCE(SUM(tipo = 'FORNECEDOR' AND status = 'APROVADO'), 0) AS fornecedores,
+      COALESCE(SUM(status = 'APROVADO'
+                   AND criado_em >= NOW() - INTERVAL 30 DAY), 0) AS novos_usuarios_30d,
+      COALESCE(SUM(status = 'APROVADO'), 0) AS aprovados,
+      COALESCE(SUM(status = 'REJEITADO'), 0) AS rejeitados
+    FROM usuarios
+    WHERE tipo IN ('ORGANIZADOR', 'FORNECEDOR')
+  `);
+
+  const [[eventos]] = await pool.query(`
+    SELECT
+      COALESCE(SUM(e.status IN ('PLANEJAMENTO', 'CONFIRMADO')), 0) AS ativos,
+      COALESCE(SUM(e.status = 'CONFIRMADO'), 0) AS confirmados,
+      COALESCE(SUM(e.status <> 'CANCELADO'), 0) AS nao_cancelados,
+      COALESCE(SUM(e.status <> 'CANCELADO' AND EXISTS (
+        SELECT 1 FROM eventos_servicos es WHERE es.id_evento = e.id
+      )), 0) AS com_orcamento,
+      COALESCE(SUM(e.status IN ('PLANEJAMENTO', 'CONFIRMADO') AND EXISTS (
+        SELECT 1 FROM propostas p WHERE p.id_evento = e.id
+      )), 0) AS ativos_com_proposta
+    FROM eventos e
+  `);
+
+  const [atividades] = await pool.query(`
+    SELECT * FROM (
+      SELECT 'CADASTRO_PENDENTE' AS tipo, u.id AS ref, u.nome AS descricao,
+             u.tipo AS detalhe, u.criado_em AS quando
+        FROM usuarios u
+       WHERE u.status = 'PENDENTE' AND u.tipo IN ('ORGANIZADOR', 'FORNECEDOR')
+      UNION ALL
+      SELECT 'CADASTRO_APROVADO', u.id, u.nome, u.tipo, u.data_analise
+        FROM usuarios u
+       WHERE u.status = 'APROVADO' AND u.data_analise IS NOT NULL
+      UNION ALL
+      SELECT 'PROPOSTA_ENVIADA', p.id, e.nome, NULL, p.criado_em
+        FROM propostas p JOIN eventos e ON e.id = p.id_evento
+      UNION ALL
+      SELECT 'PROPOSTA_SELECIONADA', p.id, e.nome, NULL, p.atualizado_em
+        FROM propostas p JOIN eventos e ON e.id = p.id_evento
+       WHERE p.status = 'SELECIONADA'
+    ) AS atividades
+    ORDER BY quando DESC
+    LIMIT 6
+  `);
+
+  const analisados = Number(usuarios.aprovados) + Number(usuarios.rejeitados);
+
+  res.json({
+    totais: {
+      organizadores: Number(usuarios.organizadores),
+      fornecedores: Number(usuarios.fornecedores),
+      eventos_ativos: Number(eventos.ativos),
+      novos_usuarios_30d: Number(usuarios.novos_usuarios_30d),
+      eventos_confirmados: Number(eventos.confirmados),
+    },
+    atividades: atividades.map((a) => ({
+      id: `${a.tipo}-${a.ref}`,
+      tipo: a.tipo,
+      titulo: TITULO_ATIVIDADE[a.tipo](a.detalhe),
+      descricao: a.descricao,
+      criado_em: paraIso(a.quando),
+    })),
+    saude: {
+      eventos_orcamento_completo: percentual(
+        Number(eventos.com_orcamento),
+        Number(eventos.nao_cancelados)
+      ),
+      eventos_com_propostas: percentual(
+        Number(eventos.ativos_com_proposta),
+        Number(eventos.ativos)
+      ),
+      cadastros_aprovados: percentual(Number(usuarios.aprovados), analisados),
+    },
+  });
+});
+
+
+
 // ======================================================
 // TRATAMENTO DE ERROS DO MÓDULO
 // ======================================================
