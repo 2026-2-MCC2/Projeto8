@@ -1,5 +1,5 @@
 -- ============================================================
--- Migração 001 - Área do administrador (cadastros)
+-- Migração 002 - Área do administrador (cadastros)
 -- Rodar UMA vez, depois do schema.sql.
 -- ============================================================
 USE trocaticket;
