@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import LayoutAdmin from "../../../components/admin/LayoutAdmin";
 import PageHeader from "../../../components/admin/PageHeader";
 import Badge from "../../../components/admin/Badge";
@@ -25,7 +26,12 @@ export default function AdminUsuarios() {
     []
   );
 
-  const [aba, setAba] = useState("TODOS");
+    // Permite abrir a página já numa aba: /admin/usuarios?aba=APROVADO
+  const [parametros] = useSearchParams();
+  const abaDaUrl = parametros.get("aba");
+  const abaInicial = ABAS.some((a) => a.valor === abaDaUrl) ? abaDaUrl : "TODOS";
+
+  const [aba, setAba] = useState(abaInicial);
   const [busca, setBusca] = useState("");
   const [tipo, setTipo] = useState("TODOS");
   const [detalhes, setDetalhes] = useState(null);

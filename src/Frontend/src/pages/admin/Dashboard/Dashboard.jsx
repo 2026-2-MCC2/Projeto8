@@ -9,9 +9,18 @@ import { formatarTempoRelativo } from "../../../utils/formatadores";
 import { baixarCsv } from "../../../utils/exportarCsv";
 
 // Ícone e cor de cada tipo de atividade
+// "destino" é a página aberta ao clicar na atividade (sem destino = não clicável)
 const TIPO_ATIVIDADE = {
-  CADASTRO_PENDENTE: { icone: "users", tom: "orange" },
-  CADASTRO_APROVADO: { icone: "check", tom: "green" },
+  CADASTRO_PENDENTE: {
+    icone: "users",
+    tom: "orange",
+    destino: "/admin/aprovacoes",
+  },
+  CADASTRO_APROVADO: {
+    icone: "check",
+    tom: "green",
+    destino: "/admin/usuarios?aba=APROVADO",
+  },
   PROPOSTA_ENVIADA: { icone: "quote", tom: "" },
   PROPOSTA_SELECIONADA: { icone: "check", tom: "green" },
 };
@@ -139,18 +148,26 @@ function Painel({ dados }) {
             </div>
 
             <Link to="/admin/aprovacoes" className="adm-text-link">
-              Ver aprovações <Icon name="arrow" size={15} />
+              Ver pendentes <Icon name="arrow" size={15} />
             </Link>
           </div>
 
           {atividades.length === 0 ? (
             <div className="adm-empty">Nenhuma atividade recente.</div>
           ) : (
-            atividades.map((atividade) => {
+                        atividades.map((atividade) => {
               const tipo = TIPO_ATIVIDADE[atividade.tipo] ?? ATIVIDADE_PADRAO;
 
+              // Se a atividade tem destino, a linha inteira vira um link
+              const Linha = tipo.destino ? Link : "div";
+              const propsLinha = tipo.destino ? { to: tipo.destino } : {};
+
               return (
-                <div className="adm-activity-item" key={atividade.id}>
+                <Linha
+                  className="adm-activity-item"
+                  key={atividade.id}
+                  {...propsLinha}
+                >
                   <span className={`adm-activity-icon ${tipo.tom}`}>
                     <Icon name={tipo.icone} size={16} />
                   </span>
@@ -163,7 +180,7 @@ function Painel({ dados }) {
                   <span className="adm-activity-time">
                     {formatarTempoRelativo(atividade.criado_em)}
                   </span>
-                </div>
+                </Linha>
               );
             })
           )}

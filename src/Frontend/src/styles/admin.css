@@ -999,13 +999,20 @@
   border-bottom: 1px solid #f0f1f5;
 }
 
-.adm-activity-item:first-of-type {
-  padding-top: 0;
-}
 
 .adm-activity-item:last-child {
   padding-bottom: 0;
   border-bottom: 0;
+}
+
+/* Atividade clicável (vira <a>): mantém o visual da linha normal */
+a.adm-activity-item {
+  color: inherit;
+  text-decoration: none;
+}
+
+a.adm-activity-item:hover .adm-activity-text strong {
+  color: var(--adm-primary-dark);
 }
 
 .adm-activity-icon {
