@@ -199,15 +199,16 @@ router.get("/dashboard", async (req, res) => {
     WHERE tipo IN ('ORGANIZADOR', 'FORNECEDOR')
   `);
 
-  const [[eventos]] = await pool.query(`
+    const [[eventos]] = await pool.query(`
     SELECT
-      COALESCE(SUM(e.status IN ('PLANEJAMENTO', 'CONFIRMADO')), 0) AS ativos,
-      COALESCE(SUM(e.status = 'CONFIRMADO'), 0) AS confirmados,
+      COALESCE(SUM(e.status = 'PLANEJAMENTO'
+                   OR (e.status = 'CONFIRMADO' AND e.data_evento >= CURDATE())), 0) AS ativos,
+      COALESCE(SUM(e.status = 'CONFIRMADO' AND e.data_evento >= CURDATE()), 0) AS confirmados,
       COALESCE(SUM(e.status <> 'CANCELADO'), 0) AS nao_cancelados,
-      COALESCE(SUM(e.status <> 'CANCELADO' AND EXISTS (
-        SELECT 1 FROM eventos_servicos es WHERE es.id_evento = e.id
-      )), 0) AS com_orcamento,
-      COALESCE(SUM(e.status IN ('PLANEJAMENTO', 'CONFIRMADO') AND EXISTS (
+      COALESCE(SUM(e.status <> 'CANCELADO'
+                   AND e.orcamento_previsto IS NOT NULL), 0) AS com_orcamento,
+      COALESCE(SUM((e.status = 'PLANEJAMENTO'
+                    OR (e.status = 'CONFIRMADO' AND e.data_evento >= CURDATE())) AND EXISTS (
         SELECT 1 FROM propostas p WHERE p.id_evento = e.id
       )), 0) AS ativos_com_proposta
     FROM eventos e
@@ -266,6 +267,63 @@ router.get("/dashboard", async (req, res) => {
   });
 });
 
+// ------------------------------------------------------
+// GET /admin/eventos
+// Todos os eventos da plataforma, cada um com as propostas dos fornecedores.
+//
+// Observações:
+//  - O status CONCLUIDO não existe no banco: um evento CONFIRMADO cuja data
+//    já passou é devolvido como CONCLUIDO.
+//  - orcamento_previsto é opcional (null = o organizador não informou).
+//  - As propostas vêm com o status original do banco; quem decide como
+//    mostrar (por exemplo "cancelada" em evento cancelado) é a tela.
+// ------------------------------------------------------
+router.get("/eventos", async (req, res) => {
+  const [eventos] = await pool.query(`
+    SELECT e.id, e.nome, e.local, e.data_evento, e.horario,
+           e.publico_min, e.publico_max, e.orcamento_previsto,
+           CASE WHEN e.status = 'CONFIRMADO' AND e.data_evento < CURDATE()
+                THEN 'CONCLUIDO' ELSE e.status END AS status,
+           u.nome AS organizador_nome
+      FROM eventos e
+      JOIN usuarios u ON u.id = e.id_organizador
+     ORDER BY e.data_evento, e.id
+  `);
+
+  const [propostas] = await pool.query(`
+    SELECT p.id, p.id_evento, p.valor, p.prazo_dias, p.status,
+           s.nome AS servico_nome, s.categoria,
+           f.nome AS fornecedor_nome
+      FROM propostas p
+      JOIN servicos s ON s.id = p.id_servico
+      JOIN usuarios f ON f.id = p.id_fornecedor
+     ORDER BY p.criado_em DESC, p.id DESC
+  `);
+
+  // Agrupa as propostas por evento (uma consulta só, em vez de uma por evento)
+  const propostasPorEvento = new Map();
+  for (const proposta of propostas) {
+    if (!propostasPorEvento.has(proposta.id_evento)) {
+      propostasPorEvento.set(proposta.id_evento, []);
+    }
+    propostasPorEvento.get(proposta.id_evento).push({
+      id: proposta.id,
+      fornecedor_nome: proposta.fornecedor_nome,
+      servico_nome: proposta.servico_nome,
+      categoria: proposta.categoria,
+      valor: proposta.valor,
+      prazo_dias: proposta.prazo_dias,
+      status: proposta.status,
+    });
+  }
+
+  res.json(
+    eventos.map((evento) => ({
+      ...evento,
+      propostas: propostasPorEvento.get(evento.id) || [],
+    }))
+  );
+});
 
 
 // ======================================================

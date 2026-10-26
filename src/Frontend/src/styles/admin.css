@@ -725,9 +725,9 @@
 }
 
 .adm-event-meta {
-  margin: 2px 0 0;
+  margin: 5px 0 0;
   color: var(--adm-muted);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .adm-finance {
@@ -745,6 +745,21 @@
 
 .adm-finance-row strong {
   color: #38445a;
+}
+
+/* Textos do cartão de evento (escopo só do cartão: o Dashboard usa as mesmas classes) */
+.adm-event-card .adm-finance {
+  margin-bottom: 18px;
+}
+
+.adm-event-card .adm-finance-row {
+  margin-bottom: 9px;
+  font-size: 13px;
+}
+
+.adm-event-card .adm-hint {
+  margin: 9px 0 0;
+  font-size: 12px;
 }
 
 .adm-progress {

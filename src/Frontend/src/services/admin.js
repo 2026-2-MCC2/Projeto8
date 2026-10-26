@@ -7,6 +7,8 @@ import { apiRequest } from "./api";
 export const adminApi = {
 // Visão geral: totais, atividade recente e saúde da plataforma
   dashboard: () => apiRequest("/admin/dashboard"),
+    // Eventos da plataforma, cada um com as propostas dos fornecedores
+  listarEventos: () => apiRequest("/admin/eventos"),
   // Cadastros (organizadores e fornecedores)
   // status: "PENDENTE" | "APROVADO" | "REJEITADO" (vazio = todos)
   listarCadastros: (status = "") =>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Badge from "./Badge";
 import { formatarMoeda } from "../../utils/formatadores";
+import { formatarCategoria } from "../../utils/cadastros";
 import { formatarDataCompleta } from "../../utils/datas";
 
 const STATUS_EVENTO = {
@@ -10,19 +11,22 @@ const STATUS_EVENTO = {
   CANCELADO: { rotulo: "Cancelado", tom: "red" },
 };
 
-const STATUS_COTACAO = {
-  APROVADO: { rotulo: "Aprovado", tom: "green" },
-  PENDENTE: { rotulo: "Pendente", tom: "orange" },
+const STATUS_PROPOSTA = {
+  ENVIADA: { rotulo: "Enviada", tom: "blue" },
+  EM_ANALISE: { rotulo: "Em análise", tom: "orange" },
+  SELECIONADA: { rotulo: "Selecionada", tom: "green" },
   RECUSADA: { rotulo: "Recusada", tom: "red" },
   CANCELADA: { rotulo: "Cancelada", tom: "dark" },
 };
 
 export default function CartaoEvento({ evento, resumo }) {
-  // Cada cartão guarda sozinho se está aberto 
+  // Cada cartão guarda sozinho se está aberto
   const [aberto, setAberto] = useState(false);
 
   const status = STATUS_EVENTO[evento.status];
-  const estourouOrcamento = resumo.custoAtual > evento.orcamento_previsto;
+  const cancelado = evento.status === "CANCELADO";
+  const estourouOrcamento =
+    resumo.temOrcamento && resumo.custoAtual > evento.orcamento_previsto;
 
   return (
     <article className="adm-event-card">
@@ -31,7 +35,12 @@ export default function CartaoEvento({ evento, resumo }) {
           <h2 className="adm-event-name">{evento.nome}</h2>
           <p className="adm-event-meta">Organizador: {evento.organizador_nome}</p>
           <p className="adm-event-meta">
-            Data do evento: {formatarDataCompleta(evento.data_evento)}
+            Data do evento:{" "}
+            {formatarDataCompleta(evento.data_evento, evento.horario)}
+          </p>
+          <p className="adm-event-meta">
+            Local: {evento.local} · Público: {evento.publico_min} a{" "}
+            {evento.publico_max} pessoas
           </p>
         </div>
 
@@ -40,34 +49,43 @@ export default function CartaoEvento({ evento, resumo }) {
 
       <div className="adm-finance">
         <div className="adm-finance-row">
-          <span>Custo atual / Orçamento previsto</span>
+          <span>
+            {resumo.temOrcamento
+              ? "Custo atual / Orçamento previsto"
+              : "Custo atual (propostas selecionadas)"}
+          </span>
           <strong>
-            {formatarMoeda(resumo.custoAtual)} /{" "}
-            {formatarMoeda(evento.orcamento_previsto)}
+            {formatarMoeda(resumo.custoAtual)}
+            {resumo.temOrcamento &&
+              ` / ${formatarMoeda(evento.orcamento_previsto)}`}
           </strong>
         </div>
 
-        <div className="adm-progress">
-          <div
-            className={`adm-progress-fill ${estourouOrcamento ? "over" : ""}`}
-            style={{ width: `${Math.min(resumo.percentualOrcamento, 100)}%` }}
-          />
-        </div>
+        {resumo.temOrcamento ? (
+          <div className="adm-progress">
+            <div
+              className={`adm-progress-fill ${estourouOrcamento ? "over" : ""}`}
+              style={{ width: `${Math.min(resumo.percentualOrcamento, 100)}%` }}
+            />
+          </div>
+        ) : (
+          <p className="adm-hint">Orçamento previsto não informado.</p>
+        )}
       </div>
 
       <div className="adm-finance">
         <div className="adm-finance-row">
-          <span>Cotações aprovadas</span>
+          <span>Propostas selecionadas</span>
           <strong>
-            {resumo.cotacoesAprovadas} de {resumo.totalCotacoes} (
-            {resumo.percentualCotacoes}%)
+            {resumo.propostasSelecionadas} de {resumo.totalPropostas} (
+            {resumo.percentualPropostas}%)
           </strong>
         </div>
 
         <div className="adm-progress">
           <div
             className="adm-progress-fill"
-            style={{ width: `${resumo.percentualCotacoes}%` }}
+            style={{ width: `${resumo.percentualPropostas}%` }}
           />
         </div>
       </div>
@@ -77,67 +95,39 @@ export default function CartaoEvento({ evento, resumo }) {
         className="adm-event-toggle"
         onClick={() => setAberto((atual) => !atual)}
       >
-        {aberto ? "Ocultar detalhes" : "Ver custos e cotações"}
+        {aberto ? "Ocultar detalhes" : "Ver propostas"}
       </button>
 
       {aberto && (
         <div className="adm-event-details">
-          <h3 className="adm-details-title">Custos por categoria</h3>
+          <h3 className="adm-details-title">Propostas por fornecedor</h3>
 
-          <table className="adm-cost-table">
-            <thead>
-              <tr>
-                <th>Categoria</th>
-                <th className="num">Previsto</th>
-                <th className="num">Atual</th>
-              </tr>
-            </thead>
+          {evento.propostas.length === 0 && (
+            <div className="adm-empty">
+              Este evento ainda não recebeu propostas.
+            </div>
+          )}
 
-            <tbody>
-              {evento.categorias.map((cat) => {
-                const acima = cat.valor_atual > cat.valor_previsto;
-
-                return (
-                  <tr key={cat.categoria} className={acima ? "over" : ""}>
-                    <td>
-                      {cat.categoria}
-                      {acima && (
-                        <span className="adm-over-note">⚠ acima do previsto</span>
-                      )}
-                    </td>
-                    <td className="num">{formatarMoeda(cat.valor_previsto)}</td>
-                    <td className="num">{formatarMoeda(cat.valor_atual)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-
-            <tfoot>
-              <tr>
-                <td>Total</td>
-                <td className="num">{formatarMoeda(evento.orcamento_previsto)}</td>
-                <td className="num">{formatarMoeda(resumo.custoAtual)}</td>
-              </tr>
-            </tfoot>
-          </table>
-
-          <h3 className="adm-details-title">Cotações por fornecedor</h3>
-
-          {evento.cotacoes.map((cot) => {
-            const statusCot = STATUS_COTACAO[cot.status];
+          {evento.propostas.map((proposta) => {
+            // Evento cancelado: todas as propostas aparecem como canceladas
+            const statusProposta =
+              STATUS_PROPOSTA[cancelado ? "CANCELADA" : proposta.status];
 
             return (
-              <div className="adm-quote-item" key={cot.fornecedor_nome + cot.categoria}>
+              <div className="adm-quote-item" key={proposta.id}>
                 <div className="adm-quote-info">
-                  <strong>{cot.fornecedor_nome}</strong>
-                  <span>{cot.categoria}</span>
+                  <strong>{proposta.fornecedor_nome}</strong>
+                  <span>
+                    {proposta.servico_nome} ·{" "}
+                    {formatarCategoria(proposta.categoria)}
+                  </span>
                 </div>
 
                 <span className="adm-quote-value">
-                  {cot.valor !== null ? formatarMoeda(cot.valor) : "—"}
+                  {formatarMoeda(proposta.valor)}
                 </span>
 
-                <Badge tone={statusCot.tom}>{statusCot.rotulo}</Badge>
+                <Badge tone={statusProposta.tom}>{statusProposta.rotulo}</Badge>
               </div>
             );
           })}

@@ -30,7 +30,7 @@ const ATIVIDADE_PADRAO = { icone: "bell", tom: "" };
 
 // Cada linha da "Saúde da plataforma": qual campo dos dados e qual texto
 const INDICADORES_SAUDE = [
-  { chave: "eventos_orcamento_completo", rotulo: "Eventos com orçamento montado" },
+  { chave: "eventos_orcamento_completo", rotulo: "Eventos com orçamento informado" },
   { chave: "eventos_com_propostas", rotulo: "Eventos ativos com propostas recebidas" },
   { chave: "cadastros_aprovados", rotulo: "Cadastros aprovados entre os analisados" },
 ];

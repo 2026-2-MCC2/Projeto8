@@ -1,31 +1,40 @@
-// Calcula os totais de UM evento: custo atual, % do orçamento
-// e quantas cotações já foram aprovadas.
+// Propostas que ainda aguardam decisão (o organizador ainda não escolheu)
+export const STATUS_PROPOSTA_PENDENTE = ["ENVIADA", "EM_ANALISE"];
+
+// Calcula os totais de UM evento a partir das propostas dos fornecedores:
+// custo atual (soma das propostas selecionadas) e quantas já foram selecionadas.
 export function calcularResumoEvento(evento) {
-  const custoAtual = evento.categorias.reduce(
-    (soma, categoria) => soma + categoria.valor_atual,
+  const selecionadas = evento.propostas.filter(
+    (proposta) => proposta.status === "SELECIONADA"
+  );
+
+  const custoAtual = selecionadas.reduce(
+    (soma, proposta) => soma + proposta.valor,
     0
   );
 
+  // orcamento_previsto é opcional: null = não informado (nunca vira 0)
+  const temOrcamento = evento.orcamento_previsto !== null;
+
   const percentualOrcamento =
-    evento.orcamento_previsto > 0
+    temOrcamento && evento.orcamento_previsto > 0
       ? Math.round((custoAtual / evento.orcamento_previsto) * 100)
       : 0;
 
-  const totalCotacoes = evento.cotacoes.length;
-  const cotacoesAprovadas = evento.cotacoes.filter(
-    (cotacao) => cotacao.status === "APROVADO"
-  ).length;
+  const totalPropostas = evento.propostas.length;
+  const propostasSelecionadas = selecionadas.length;
 
-  const percentualCotacoes =
-    totalCotacoes > 0
-      ? Math.round((cotacoesAprovadas / totalCotacoes) * 100)
+  const percentualPropostas =
+    totalPropostas > 0
+      ? Math.round((propostasSelecionadas / totalPropostas) * 100)
       : 0;
 
   return {
     custoAtual,
+    temOrcamento,
     percentualOrcamento,
-    totalCotacoes,
-    cotacoesAprovadas,
-    percentualCotacoes,
+    totalPropostas,
+    propostasSelecionadas,
+    percentualPropostas,
   };
 }
