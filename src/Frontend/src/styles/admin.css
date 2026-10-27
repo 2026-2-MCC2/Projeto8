@@ -762,6 +762,20 @@
   font-size: 12px;
 }
 
+/* Saúde da plataforma (Dashboard): textos e barra um pouco maiores */
+.adm-saude .adm-finance {
+  margin-bottom: 20px;
+}
+
+.adm-saude .adm-finance-row {
+  margin-bottom: 9px;
+  font-size: 13px;
+}
+
+.adm-saude .adm-progress {
+  height: 9px;
+}
+
 .adm-progress {
   height: 7px;
   overflow: hidden;
@@ -975,13 +989,13 @@
 
 .adm-report-row {
   display: grid;
-  grid-template-columns: 130px 1fr 44px;
+  grid-template-columns: 150px 1fr 48px;
   align-items: center;
   gap: 14px;
-  padding: 11px 0;
+  padding: 14px 0;
   border-bottom: 1px solid #f0f1f5;
   color: #6e798c;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .adm-report-row:last-child {
@@ -991,6 +1005,10 @@
 .adm-report-row strong {
   color: #38445a;
   text-align: right;
+}
+
+.adm-report-row .adm-progress {
+  height: 9px;
 }
 
 @media (max-width: 640px) {

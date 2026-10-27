@@ -186,7 +186,7 @@ function Painel({ dados }) {
           )}
         </section>
 
-        <section className="adm-panel adm-panel-padded">
+        <section className="adm-panel adm-panel-padded adm-saude">
           <div className="adm-panel-heading">
             <div>
               <h2>Saúde da plataforma</h2>

@@ -325,6 +325,81 @@ router.get("/eventos", async (req, res) => {
   );
 });
 
+// ------------------------------------------------------
+// GET /admin/relatorios
+// Números gerais da plataforma para a tela de Relatórios.
+//
+// Observações:
+//  - CONCLUIDO é derivado (CONFIRMADO com data passada), como em /eventos.
+//  - volume_selecionado = soma das propostas SELECIONADAS em eventos
+//    que não foram cancelados.
+//  - A tabela eventos não guarda a data de criação, então não existe
+//    "novos eventos nos últimos 30 dias"; propostas e usuários existem.
+//  - categorias: as 4 categorias com mais propostas; percentual é a
+//    fatia de cada uma no total de propostas.
+// ------------------------------------------------------
+router.get("/relatorios", async (req, res) => {
+  const [porStatus] = await pool.query(`
+    SELECT CASE WHEN status = 'CONFIRMADO' AND data_evento < CURDATE()
+                THEN 'CONCLUIDO' ELSE status END AS status,
+           COUNT(*) AS total
+      FROM eventos
+     GROUP BY 1
+  `);
+
+  const [[propostas]] = await pool.query(`
+    SELECT COUNT(*) AS total,
+           COALESCE(SUM(p.criado_em >= NOW() - INTERVAL 30 DAY), 0) AS ultimos_30d,
+           COALESCE(SUM(p.status = 'SELECIONADA' AND e.status <> 'CANCELADO'), 0)
+             AS selecionadas,
+           COALESCE(SUM(CASE WHEN p.status = 'SELECIONADA' AND e.status <> 'CANCELADO'
+                             THEN p.valor END), 0) AS volume
+      FROM propostas p
+      JOIN eventos e ON e.id = p.id_evento
+  `);
+
+  const [[fornecedores]] = await pool.query(`
+    SELECT COUNT(*) AS total,
+           COALESCE(SUM(criado_em >= NOW() - INTERVAL 30 DAY), 0) AS novos_30d
+      FROM usuarios
+     WHERE tipo = 'FORNECEDOR' AND status = 'APROVADO'
+  `);
+
+  const [categorias] = await pool.query(`
+    SELECT s.categoria, COUNT(*) AS total
+      FROM propostas p
+      JOIN servicos s ON s.id = p.id_servico
+     GROUP BY s.categoria
+     ORDER BY total DESC, s.categoria
+     LIMIT 4
+  `);
+
+  // Sempre devolve os 4 status, mesmo os que estão zerados
+  const eventosPorStatus = ["PLANEJAMENTO", "CONFIRMADO", "CONCLUIDO", "CANCELADO"].map(
+    (status) => ({
+      status,
+      total: Number(porStatus.find((linha) => linha.status === status)?.total ?? 0),
+    })
+  );
+
+  res.json({
+    totais: {
+      propostas_enviadas: Number(propostas.total),
+      propostas_30d: Number(propostas.ultimos_30d),
+      propostas_selecionadas: Number(propostas.selecionadas),
+      volume_selecionado: Number(propostas.volume),
+      fornecedores_ativos: Number(fornecedores.total),
+      fornecedores_novos_30d: Number(fornecedores.novos_30d),
+    },
+    eventos_por_status: eventosPorStatus,
+    categorias_mais_procuradas: categorias.map((linha) => ({
+      categoria: linha.categoria,
+      total: Number(linha.total),
+      percentual: percentual(Number(linha.total), Number(propostas.total)),
+    })),
+  });
+});
+
 
 // ======================================================
 // TRATAMENTO DE ERROS DO MÓDULO
