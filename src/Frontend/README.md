@@ -93,6 +93,20 @@ Esse modo permite acessar o fluxo principal do Organizador sem necessidade de ut
 
 O modo demonstração utiliza dados próprios para apresentação e não requer uma conta real de usuário.
 
+## Área do administrador
+
+O administrador aprova cadastros e acompanha usuários, eventos e relatórios, com dados reais da API (rotas `/admin/*`).
+
+**Preparar o banco:** depois de criar o banco com o `schema.sql`, execute em `src/Backend/migrations/`, nesta ordem: `001_fornecedor_propostas.sql`, `002_admin.sql` e `003_eventos_orcamento.sql`.
+
+**Criar o administrador** (não há tela de cadastro para esse perfil). Em `src/Backend`:
+
+```bash
+node scripts/criar-admin.js "email@exemplo.com" "senha-com-6-ou-mais-caracteres" "Nome"
+```
+
+**Dados de demonstração (opcional):** `src/Backend/seeds/dados-demo.sql` preenche eventos, serviços e propostas de exemplo (marcados com `[DEMO]`).
+
 ## Funcionalidades desenvolvidas
 
 - Login
@@ -105,6 +119,8 @@ O modo demonstração utiliza dados próprios para apresentação e não requer 
 - Modo Demonstração
 - Integração entre frontend e backend
 - Integração com banco de dados
+- Área do administrador (aprovação de cadastros, usuários, eventos e relatórios)
+- Relatórios com exportação em CSV
 
 ## Observação
 

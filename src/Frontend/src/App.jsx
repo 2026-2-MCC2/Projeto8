@@ -15,6 +15,13 @@ import ResumoCustos from "./pages/Organizador/ResumoCustos/ResumoCustos";
 import CalculoTicket from "./pages/Organizador/CalculoTicket/CalculoTicket";
 import MinhaConta from "./pages/Organizador/MinhaConta/MinhaConta";
 import RotaPrivada from "./components/organizador/RotaPrivada";
+import RotaPrivadaAdmin from "./components/admin/RotaPrivadaAdmin";
+import AdminDashboard from "./pages/admin/Dashboard/Dashboard";
+import AdminAprovacoes from "./pages/admin/Aprovacoes/Aprovacoes";
+import AdminUsuarios from "./pages/admin/Usuarios/Usuarios";
+import AdminEventos from "./pages/admin/Eventos/Eventos";
+import AdminRelatorios from "./pages/admin/Relatorios/Relatorios";
+import AdminMinhaConta from "./pages/admin/MinhaConta/MinhaConta";
 import DashboardFornecedor from "./pages/Fornecedor/DashboardFornecedor/DashboardFornecedor";
 import MeusServicos from "./pages/Fornecedor/MeusServicos/MeusServicos";
 import FormularioServico from "./pages/Fornecedor/FormularioServico/FormularioServico";
@@ -45,16 +52,39 @@ function App() {
           <Route path="/dashboard" element={<DashboardOrganizador />} />
           <Route path="/meus-eventos" element={<Meuseventos />} />
         </Route>
+        <Route element={<RotaPrivadaAdmin />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/aprovacoes" element={<AdminAprovacoes />} />
+          <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+          <Route path="/admin/eventos" element={<AdminEventos />} />
+          <Route path="/admin/relatorios" element={<AdminRelatorios />} />
+          <Route path="/admin/minha-conta" element={<AdminMinhaConta />} />
+        </Route>
 
         <Route element={<RotaPrivada tipo="FORNECEDOR" />}>
-          <Route path="/fornecedor/dashboard" element={<DashboardFornecedor />} />
+          <Route
+            path="/fornecedor/dashboard"
+            element={<DashboardFornecedor />}
+          />
           <Route path="/fornecedor/servicos" element={<MeusServicos />} />
-          <Route path="/fornecedor/servicos/novo" element={<FormularioServico />} />
-          <Route path="/fornecedor/servicos/:id/editar" element={<FormularioServico />} />
+          <Route
+            path="/fornecedor/servicos/novo"
+            element={<FormularioServico />}
+          />
+          <Route
+            path="/fornecedor/servicos/:id/editar"
+            element={<FormularioServico />}
+          />
           <Route path="/fornecedor/oportunidades" element={<Oportunidades />} />
-          <Route path="/fornecedor/oportunidades/:id" element={<DetalheOportunidade />} />
+          <Route
+            path="/fornecedor/oportunidades/:id"
+            element={<DetalheOportunidade />}
+          />
           <Route path="/fornecedor/propostas" element={<MinhasPropostas />} />
-          <Route path="/fornecedor/minha-conta" element={<MinhaContaFornecedor />} />
+          <Route
+            path="/fornecedor/minha-conta"
+            element={<MinhaContaFornecedor />}
+          />
         </Route>
 
         <Route path="*" element={<h1>Página não encontrada</h1>} />
