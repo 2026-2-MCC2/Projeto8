@@ -84,7 +84,7 @@ export default function LayoutAdmin({ children, active = "" }) {
     {
       path: "/admin/minha-conta",
       label: "Minha conta",
-      icon: "settings",
+      icon: "engrenagem",
       id: "minha-conta",
     },
   ];
