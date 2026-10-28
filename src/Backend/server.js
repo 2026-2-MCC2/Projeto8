@@ -1565,6 +1565,13 @@ app.post(
 // Todas as rotas exigem JWT de um FORNECEDOR com cadastro aprovado.
 app.use("/fornecedor", require("./routes/fornecedor"));
 
+
+// ======================================================
+// MÓDULO DO ADMINISTRADOR
+// ======================================================
+// Cadastros (aprovar, rejeitar, reabrir). Todas as rotas exigem JWT de um ADMINISTRADOR.
+app.use("/admin", require("./routes/admin"));
+
 // ======================================================
 // INICIALIZAÇÃO DO SERVIDOR
 // ======================================================

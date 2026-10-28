@@ -1,0 +1,418 @@
+// ======================================================
+// MÓDULO DO ADMINISTRADOR
+
+const express = require("express");
+const pool = require("../pool");
+const { autenticarToken, autorizarPerfis } = require("../middlewares/auth");
+
+const router = express.Router();
+
+router.use(autenticarToken, autorizarPerfis("ADMINISTRADOR"));
+
+// Helpers
+
+class ErroValidacao extends Error {
+  constructor(mensagem, status = 400) {
+    super(mensagem);
+    this.status = status;
+  }
+}
+
+const STATUS_CADASTRO = ["PENDENTE", "APROVADO", "REJEITADO"];
+
+// "2026-10-21 19:28:00" -> "2026-10-21T19:28:00" (o navegador entende melhor)
+function paraIso(valor) {
+  return valor ? String(valor).replace(" ", "T") : null;
+}
+
+// Consulta única usada na listagem e na resposta do PATCH,
+// assim o front-end sempre recebe o cadastro no mesmo formato.
+const SQL_CADASTRO = `
+  SELECT u.id, u.tipo, u.nome, u.email, u.telefone, u.status,
+         u.cidade, u.estado, u.criado_em, u.data_analise, u.motivo_rejeicao,
+         adm.nome AS analisado_por_nome,
+         o.tipo_pessoa, o.documento,
+         (SELECT COUNT(*) FROM eventos e WHERE e.id_organizador = u.id)
+           AS eventos_cadastrados,
+         f.CNPJ AS cnpj, f.categoria_atuacao, f.razao_social,
+         f.regiao_atendimento, f.descricao, f.site
+    FROM usuarios u
+    LEFT JOIN organizadores o ON o.id_usuario = u.id
+    LEFT JOIN fornecedores f ON f.id_usuario = u.id
+    LEFT JOIN usuarios adm ON adm.id = u.analisado_por
+   WHERE u.tipo IN ('ORGANIZADOR', 'FORNECEDOR')
+`;
+
+function formatarCadastro(linha) {
+  const cadastro = {
+    id: linha.id,
+    tipo: linha.tipo,
+    nome: linha.nome,
+    email: linha.email,
+    telefone: linha.telefone,
+    status: linha.status,
+    cidade: linha.cidade,
+    estado: linha.estado,
+    criado_em: paraIso(linha.criado_em),
+    data_analise: paraIso(linha.data_analise),
+    motivo_rejeicao: linha.motivo_rejeicao,
+    analisado_por_nome: linha.analisado_por_nome,
+  };
+
+  if (linha.tipo === "ORGANIZADOR") {
+    cadastro.tipo_pessoa = linha.tipo_pessoa;
+    cadastro.documento = linha.documento;
+    cadastro.eventos_cadastrados = linha.eventos_cadastrados;
+  } else {
+    cadastro.cnpj = linha.cnpj;
+    cadastro.categoria_atuacao = linha.categoria_atuacao;
+    cadastro.razao_social = linha.razao_social;
+    cadastro.regiao_atendimento = linha.regiao_atendimento;
+    cadastro.descricao = linha.descricao;
+    cadastro.site = linha.site;
+  }
+
+  return cadastro;
+}
+
+router.get("/cadastros", async (req, res) => {
+  const parametros = [];
+  let filtro = "";
+
+  if (req.query.status) {
+    if (!STATUS_CADASTRO.includes(req.query.status)) {
+      throw new ErroValidacao("Status inválido");
+    }
+    filtro = "AND u.status = ?";
+    parametros.push(req.query.status);
+  }
+
+  const [linhas] = await pool.query(
+    `${SQL_CADASTRO} ${filtro} ORDER BY u.criado_em DESC, u.id DESC`,
+    parametros
+  );
+
+  res.json(linhas.map(formatarCadastro));
+});
+
+// ------------------------------------------------------
+// PATCH /admin/cadastros/:id/status
+// body: { status: "APROVADO" | "REJEITADO" | "PENDENTE", motivo? }
+//
+//   APROVADO  -> aprova o cadastro
+//   REJEITADO -> rejeita (o motivo é obrigatório)
+//   PENDENTE  -> "reabrir análise": limpa quem analisou e o motivo
+// ------------------------------------------------------
+router.patch("/cadastros/:id/status", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) {
+    throw new ErroValidacao("ID inválido");
+  }
+
+  const { status, motivo } = req.body || {};
+
+  if (!STATUS_CADASTRO.includes(status)) {
+    throw new ErroValidacao("Status inválido");
+  }
+
+  let motivoRejeicao = null;
+  if (status === "REJEITADO") {
+    motivoRejeicao = typeof motivo === "string" ? motivo.trim() : "";
+    if (!motivoRejeicao) {
+      throw new ErroValidacao("Informe o motivo da rejeição");
+    }
+    if (motivoRejeicao.length > 500) {
+      throw new ErroValidacao("O motivo deve ter no máximo 500 caracteres");
+    }
+  }
+
+  // Só mexe em organizadores e fornecedores (nunca em outro administrador).
+  const [existe] = await pool.query(
+    "SELECT id FROM usuarios WHERE id = ? AND tipo IN ('ORGANIZADOR', 'FORNECEDOR')",
+    [id]
+  );
+
+  if (existe.length === 0) {
+    return res.status(404).json({ mensagem: "Cadastro não encontrado" });
+  }
+
+  if (status === "PENDENTE") {
+    await pool.query(
+      `UPDATE usuarios
+          SET status = 'PENDENTE', analisado_por = NULL,
+              data_analise = NULL, motivo_rejeicao = NULL
+        WHERE id = ?`,
+      [id]
+    );
+  } else {
+    await pool.query(
+      `UPDATE usuarios
+          SET status = ?, analisado_por = ?, data_analise = NOW(),
+              motivo_rejeicao = ?
+        WHERE id = ?`,
+      [status, req.usuario.id, motivoRejeicao, id]
+    );
+  }
+
+  const [linhas] = await pool.query(`${SQL_CADASTRO} AND u.id = ?`, [id]);
+
+  res.json({
+    mensagem: "Cadastro atualizado com sucesso",
+    cadastro: formatarCadastro(linhas[0]),
+  });
+});
+
+// ------------------------------------------------------
+// GET /admin/dashboard
+// Números da visão geral: totais, atividade recente e saúde da plataforma.
+// Tudo é calculado na hora a partir do banco (nada fica guardado à parte).
+// ------------------------------------------------------
+
+// Percentual inteiro; sem base de comparação (0 itens) vira 0%.
+function percentual(parte, total) {
+  return total > 0 ? Math.round((parte / total) * 100) : 0;
+}
+
+const TITULO_ATIVIDADE = {
+  CADASTRO_PENDENTE: (detalhe) =>
+    detalhe === "FORNECEDOR"
+      ? "Novo fornecedor aguardando aprovação"
+      : "Novo organizador aguardando aprovação",
+  CADASTRO_APROVADO: (detalhe) =>
+    detalhe === "FORNECEDOR"
+      ? "Fornecedor aprovado"
+      : "Organizador aprovado",
+  PROPOSTA_ENVIADA: () => "Nova proposta enviada",
+  PROPOSTA_SELECIONADA: () => "Proposta selecionada",
+};
+
+router.get("/dashboard", async (req, res) => {
+  const [[usuarios]] = await pool.query(`
+    SELECT
+      COALESCE(SUM(tipo = 'ORGANIZADOR' AND status = 'APROVADO'), 0) AS organizadores,
+      COALESCE(SUM(tipo = 'FORNECEDOR' AND status = 'APROVADO'), 0) AS fornecedores,
+      COALESCE(SUM(status = 'APROVADO'
+                   AND criado_em >= NOW() - INTERVAL 30 DAY), 0) AS novos_usuarios_30d,
+      COALESCE(SUM(status = 'APROVADO'), 0) AS aprovados,
+      COALESCE(SUM(status = 'REJEITADO'), 0) AS rejeitados
+    FROM usuarios
+    WHERE tipo IN ('ORGANIZADOR', 'FORNECEDOR')
+  `);
+
+    const [[eventos]] = await pool.query(`
+    SELECT
+      COALESCE(SUM(e.status = 'PLANEJAMENTO'
+                   OR (e.status = 'CONFIRMADO' AND e.data_evento >= CURDATE())), 0) AS ativos,
+      COALESCE(SUM(e.status = 'CONFIRMADO' AND e.data_evento >= CURDATE()), 0) AS confirmados,
+      COALESCE(SUM(e.status <> 'CANCELADO'), 0) AS nao_cancelados,
+      COALESCE(SUM(e.status <> 'CANCELADO'
+                   AND e.orcamento_previsto IS NOT NULL), 0) AS com_orcamento,
+      COALESCE(SUM((e.status = 'PLANEJAMENTO'
+                    OR (e.status = 'CONFIRMADO' AND e.data_evento >= CURDATE())) AND EXISTS (
+        SELECT 1 FROM propostas p WHERE p.id_evento = e.id
+      )), 0) AS ativos_com_proposta
+    FROM eventos e
+  `);
+
+  const [atividades] = await pool.query(`
+    SELECT * FROM (
+      SELECT 'CADASTRO_PENDENTE' AS tipo, u.id AS ref, u.nome AS descricao,
+             u.tipo AS detalhe, u.criado_em AS quando
+        FROM usuarios u
+       WHERE u.status = 'PENDENTE' AND u.tipo IN ('ORGANIZADOR', 'FORNECEDOR')
+      UNION ALL
+      SELECT 'CADASTRO_APROVADO', u.id, u.nome, u.tipo, u.data_analise
+        FROM usuarios u
+       WHERE u.status = 'APROVADO' AND u.data_analise IS NOT NULL
+      UNION ALL
+      SELECT 'PROPOSTA_ENVIADA', p.id, e.nome, NULL, p.criado_em
+        FROM propostas p JOIN eventos e ON e.id = p.id_evento
+      UNION ALL
+      SELECT 'PROPOSTA_SELECIONADA', p.id, e.nome, NULL, p.atualizado_em
+        FROM propostas p JOIN eventos e ON e.id = p.id_evento
+       WHERE p.status = 'SELECIONADA'
+    ) AS atividades
+    ORDER BY quando DESC
+    LIMIT 6
+  `);
+
+  const analisados = Number(usuarios.aprovados) + Number(usuarios.rejeitados);
+
+  res.json({
+    totais: {
+      organizadores: Number(usuarios.organizadores),
+      fornecedores: Number(usuarios.fornecedores),
+      eventos_ativos: Number(eventos.ativos),
+      novos_usuarios_30d: Number(usuarios.novos_usuarios_30d),
+      eventos_confirmados: Number(eventos.confirmados),
+    },
+    atividades: atividades.map((a) => ({
+      id: `${a.tipo}-${a.ref}`,
+      tipo: a.tipo,
+      titulo: TITULO_ATIVIDADE[a.tipo](a.detalhe),
+      descricao: a.descricao,
+      criado_em: paraIso(a.quando),
+    })),
+    saude: {
+      eventos_orcamento_completo: percentual(
+        Number(eventos.com_orcamento),
+        Number(eventos.nao_cancelados)
+      ),
+      eventos_com_propostas: percentual(
+        Number(eventos.ativos_com_proposta),
+        Number(eventos.ativos)
+      ),
+      cadastros_aprovados: percentual(Number(usuarios.aprovados), analisados),
+    },
+  });
+});
+
+// ------------------------------------------------------
+// GET /admin/eventos
+// Todos os eventos da plataforma, cada um com as propostas dos fornecedores.
+//
+// Observações:
+//  - O status CONCLUIDO não existe no banco: um evento CONFIRMADO cuja data
+//    já passou é devolvido como CONCLUIDO.
+//  - orcamento_previsto é opcional (null = o organizador não informou).
+//  - As propostas vêm com o status original do banco; quem decide como
+//    mostrar (por exemplo "cancelada" em evento cancelado) é a tela.
+// ------------------------------------------------------
+router.get("/eventos", async (req, res) => {
+  const [eventos] = await pool.query(`
+    SELECT e.id, e.nome, e.local, e.data_evento, e.horario,
+           e.publico_min, e.publico_max, e.orcamento_previsto,
+           CASE WHEN e.status = 'CONFIRMADO' AND e.data_evento < CURDATE()
+                THEN 'CONCLUIDO' ELSE e.status END AS status,
+           u.nome AS organizador_nome
+      FROM eventos e
+      JOIN usuarios u ON u.id = e.id_organizador
+     ORDER BY e.data_evento, e.id
+  `);
+
+  const [propostas] = await pool.query(`
+    SELECT p.id, p.id_evento, p.valor, p.prazo_dias, p.status,
+           s.nome AS servico_nome, s.categoria,
+           f.nome AS fornecedor_nome
+      FROM propostas p
+      JOIN servicos s ON s.id = p.id_servico
+      JOIN usuarios f ON f.id = p.id_fornecedor
+     ORDER BY p.criado_em DESC, p.id DESC
+  `);
+
+  // Agrupa as propostas por evento (uma consulta só, em vez de uma por evento)
+  const propostasPorEvento = new Map();
+  for (const proposta of propostas) {
+    if (!propostasPorEvento.has(proposta.id_evento)) {
+      propostasPorEvento.set(proposta.id_evento, []);
+    }
+    propostasPorEvento.get(proposta.id_evento).push({
+      id: proposta.id,
+      fornecedor_nome: proposta.fornecedor_nome,
+      servico_nome: proposta.servico_nome,
+      categoria: proposta.categoria,
+      valor: proposta.valor,
+      prazo_dias: proposta.prazo_dias,
+      status: proposta.status,
+    });
+  }
+
+  res.json(
+    eventos.map((evento) => ({
+      ...evento,
+      propostas: propostasPorEvento.get(evento.id) || [],
+    }))
+  );
+});
+
+// ------------------------------------------------------
+// GET /admin/relatorios
+// Números gerais da plataforma para a tela de Relatórios.
+//
+// Observações:
+//  - CONCLUIDO é derivado (CONFIRMADO com data passada), como em /eventos.
+//  - volume_selecionado = soma das propostas SELECIONADAS em eventos
+//    que não foram cancelados.
+//  - A tabela eventos não guarda a data de criação, então não existe
+//    "novos eventos nos últimos 30 dias"; propostas e usuários existem.
+//  - categorias: as 4 categorias com mais propostas; percentual é a
+//    fatia de cada uma no total de propostas.
+// ------------------------------------------------------
+router.get("/relatorios", async (req, res) => {
+  const [porStatus] = await pool.query(`
+    SELECT CASE WHEN status = 'CONFIRMADO' AND data_evento < CURDATE()
+                THEN 'CONCLUIDO' ELSE status END AS status,
+           COUNT(*) AS total
+      FROM eventos
+     GROUP BY 1
+  `);
+
+  const [[propostas]] = await pool.query(`
+    SELECT COUNT(*) AS total,
+           COALESCE(SUM(p.criado_em >= NOW() - INTERVAL 30 DAY), 0) AS ultimos_30d,
+           COALESCE(SUM(p.status = 'SELECIONADA' AND e.status <> 'CANCELADO'), 0)
+             AS selecionadas,
+           COALESCE(SUM(CASE WHEN p.status = 'SELECIONADA' AND e.status <> 'CANCELADO'
+                             THEN p.valor END), 0) AS volume
+      FROM propostas p
+      JOIN eventos e ON e.id = p.id_evento
+  `);
+
+  const [[fornecedores]] = await pool.query(`
+    SELECT COUNT(*) AS total,
+           COALESCE(SUM(criado_em >= NOW() - INTERVAL 30 DAY), 0) AS novos_30d
+      FROM usuarios
+     WHERE tipo = 'FORNECEDOR' AND status = 'APROVADO'
+  `);
+
+  const [categorias] = await pool.query(`
+    SELECT s.categoria, COUNT(*) AS total
+      FROM propostas p
+      JOIN servicos s ON s.id = p.id_servico
+     GROUP BY s.categoria
+     ORDER BY total DESC, s.categoria
+     LIMIT 4
+  `);
+
+  // Sempre devolve os 4 status, mesmo os que estão zerados
+  const eventosPorStatus = ["PLANEJAMENTO", "CONFIRMADO", "CONCLUIDO", "CANCELADO"].map(
+    (status) => ({
+      status,
+      total: Number(porStatus.find((linha) => linha.status === status)?.total ?? 0),
+    })
+  );
+
+  res.json({
+    totais: {
+      propostas_enviadas: Number(propostas.total),
+      propostas_30d: Number(propostas.ultimos_30d),
+      propostas_selecionadas: Number(propostas.selecionadas),
+      volume_selecionado: Number(propostas.volume),
+      fornecedores_ativos: Number(fornecedores.total),
+      fornecedores_novos_30d: Number(fornecedores.novos_30d),
+    },
+    eventos_por_status: eventosPorStatus,
+    categorias_mais_procuradas: categorias.map((linha) => ({
+      categoria: linha.categoria,
+      total: Number(linha.total),
+      percentual: percentual(Number(linha.total), Number(propostas.total)),
+    })),
+  });
+});
+
+
+// ======================================================
+// TRATAMENTO DE ERROS DO MÓDULO
+// ======================================================
+// O Express 5 encaminha rejeições de handlers async para cá.
+
+router.use((erro, req, res, next) => {
+  if (erro instanceof ErroValidacao) {
+    return res.status(erro.status).json({ mensagem: erro.message });
+  }
+
+  console.error("Erro no módulo do administrador:", erro.message);
+  res.status(500).json({ mensagem: "Erro interno do servidor" });
+});
+
+module.exports = router;

@@ -43,7 +43,7 @@ function Login() {
       }
 
       if (data.usuario?.tipo === "ADMINISTRADOR") {
-        setErro("O acesso de Administrador ainda está em desenvolvimento.");
+        navigate("/admin/dashboard");
         return;
       }
 
