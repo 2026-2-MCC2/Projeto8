@@ -4,12 +4,11 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 // MODO DEMONSTRAÇÃO
 // ======================================================
 
-export async function iniciarModoDemonstracao() {
+export async function iniciarModoDemonstracao(tipo = "ORGANIZADOR") {
   const response = await fetch(`${API_URL}/demo-login`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tipo }),
   });
 
   const data = await lerResposta(response);

@@ -59,17 +59,16 @@ function Login() {
     if (tipo !== "ORGANIZADOR") {
       setErro(
         tipo === "FORNECEDOR"
-          ? "O modo demonstração está disponível apenas para o Organizador. Entre com uma conta de fornecedor aprovada."
-          : "O acesso de Administrador ainda está em desenvolvimento."
+          ? "A demonstração do Fornecedor ainda não está disponível. Entre com uma conta aprovada."
+          : "A demonstração do Administrador ainda não está disponível."
       );
       return;
     }
 
     setErro("");
     setCarregando(true);
-
     try {
-      await iniciarModoDemonstracao();
+      await iniciarModoDemonstracao(tipo);
       navigate("/dashboard");
     } catch (error) {
       setErro(error.message);
@@ -260,7 +259,7 @@ function Login() {
 
               <span className="profile-info">
                 <strong>Fornecedor</strong>
-                <small>Ver oportunidades</small>
+                <small>Explorar serviços e propostas</small>
               </span>
 
               <span className="profile-arrow">→</span>
@@ -296,7 +295,7 @@ function Login() {
 
               <span className="profile-info">
                 <strong>Administrador</strong>
-                <small>Ver gestão da plataforma</small>
+                <small>Consultar painel administrativo</small>
               </span>
 
               <span className="profile-arrow">→</span>
