@@ -43,8 +43,13 @@ const jwt = require("jsonwebtoken");
 //
 // Depois disso, conseguimos acessar esses dados
 // através de req.body.
-app.use(cors());
-app.use(express.json());
+const origensPermitidas = (process.env.CORS_ORIGINS || "http://localhost:5173,http://127.0.0.1:5173")
+  .split(",").map((origem) => origem.trim()).filter(Boolean);
+app.use(cors({ origin(origem, callback) {
+  if (!origem || origensPermitidas.includes(origem)) return callback(null, true);
+  return callback(new Error("Origem não autorizada pelo CORS"));
+} }));
+app.use(express.json({ limit: "1mb" }));
 
 // Middlewares de autenticação (JWT) e autorização por perfil.
 // Ficam em middlewares/auth.js para serem compartilhados com as rotas do fornecedor.
@@ -1322,18 +1327,21 @@ app.post("/login", (req, res) => {
 // mesmo sem configurar o banco na própria máquina.
 
 app.post("/demo-login", (req, res) => {
+  if (req.body?.tipo && req.body.tipo !== "ORGANIZADOR") {
+    return res.status(501).json({
+      mensagem: "A demonstração deste perfil ainda não está disponível.",
+    });
+  }
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+    return res.status(503).json({
+      mensagem: "A demonstração está indisponível: configure um JWT_SECRET seguro no servidor.",
+    });
+  }
   const token = jwt.sign(
-    {
-      id: usuarioDemonstracao.id,
-      tipo: usuarioDemonstracao.tipo,
-      demo: true,
-    },
+    { id: usuarioDemonstracao.id, tipo: usuarioDemonstracao.tipo, demo: true },
     process.env.JWT_SECRET,
-    {
-      expiresIn: "2h",
-    }
+    { expiresIn: "2h", issuer: "ticketlab", audience: "ticketlab-demo" }
   );
-
   return res.status(200).json({
     mensagem: "Modo demonstração iniciado",
     token,
