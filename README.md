@@ -80,7 +80,7 @@ Ticket = Custo Total / [Público × (1 − Margem)]
 O sistema deve realizar as validações necessárias para impedir valores
 inválidos durante o cálculo.
 
-## 🛠️ Estrutura de pastas
+## Estrutura de pastas
 
 ```text
 Projeto8/
@@ -181,7 +181,7 @@ Documentação principal do projeto, reunindo informações sobre as
 disciplinas, estrutura, tecnologias, funcionalidades e documentação
 do TicketLab.
 
-## 🗄️ Banco de Dados
+## Banco de Dados
 
 O TicketLab utiliza **MySQL** como sistema de gerenciamento de banco
 de dados.
@@ -207,7 +207,7 @@ Entre as principais entidades utilizadas estão:
 - Preços de serviços
 - Serviços associados aos eventos
 
-## 🎨 Protótipo
+## Protótipo
 
 O protótipo navegável do TicketLab foi desenvolvido utilizando o
 **Bolt**.
@@ -223,7 +223,7 @@ O protótipo pode ser acessado pelo link abaixo:
 
 [🔗 Acessar protótipo do TicketLab](https://bolt.new/p/71361906)
 
-## ⚙️ Configuração para Desenvolvimento
+## Configuração para Desenvolvimento
 
 ### Ferramentas necessárias
 
@@ -296,26 +296,46 @@ normalmente:
 http://localhost:5173
 ```
 
-## 🎬 Modo Demonstração
+### Testes
 
-O TicketLab possui um **Modo Demonstração** desenvolvido para facilitar
-a apresentação e avaliação do projeto.
+Os testes de integração usam um banco MySQL separado, definido em `src/Backend/.env.test`
+(nunca aponte para o banco de desenvolvimento ou de produção). Crie o banco de teste com o schema
+e as migrations antes de rodar. O arquivo `.env.test` não é versionado.
 
-Esse modo permite acessar o fluxo principal do Organizador sem depender
-de uma conta real ou da configuração do banco de dados para o fluxo
-demonstrativo.
+```bash
+cd src/Backend
+npm run test:demo      # modo demonstração (não precisa de servidor rodando)
+npm run test:real      # login, eventos e troca de senha reais
+npm test               # módulo do fornecedor (exige `node --env-file=.env.test server.js` em outro terminal)
+
+cd ../Frontend
+npm run lint
+npm run build
+```
+
+## Modo Demonstração
+
+O TicketLab possui um Modo Demonstração para que qualquer avaliador explore os três perfis
+(Organizador, Fornecedor e Administrador) sem criar conta e sem configurar o MySQL.
 
 ### Para utilizar
 
-1. Inicie o Backend.
-2. Inicie o Frontend.
-3. Acesse a aplicação pelo endereço informado pelo Vite.
-4. Utilize a opção de **Modo Demonstração** disponível na aplicação.
+1. Inicie o backend e o frontend (veja "Configuração para Desenvolvimento").
+2. Abra a tela de login.
+3. Na seção "ou entre para demonstrar", escolha o perfil.
 
-Os dados utilizados durante o modo demonstração são temporários e
-mantidos em memória enquanto o servidor estiver em execução.
+### Como funciona
 
-## 🚀 Funcionalidades desenvolvidas
+- Cada clique cria uma sessão própria no servidor, com uma cópia independente dos dados fictícios, mantida apenas em memória.
+- Os dados fictícios são coerentes entre si (eventos, serviços, propostas e cadastros), e as datas são relativas a hoje.
+- Todas as operações disponíveis no sistema real funcionam: criar eventos, cadastrar e editar serviços, enviar e retirar propostas, aprovar, rejeitar e reabrir cadastros.
+- As alterações valem somente para a sessão. Reiniciar o servidor, sair ou deixar passar 2 horas descarta tudo.
+- O modo demonstração nunca acessa o MySQL: os tokens demo usam um segredo próprio e o backend só atende a eles por rotas em memória, negando todo o resto.
+- Algumas telas do Organizador (Buscar serviços, Cotações, Comparar propostas, Resumo de custos e Cálculo do ticket) usam dados estáticos também no sistema real, pois ainda não há API para elas.
+
+Detalhes técnicos em `docs/MODO_DEMONSTRACAO.md`.
+
+## Funcionalidades desenvolvidas
 
 - Página inicial
 - Login
@@ -332,7 +352,7 @@ mantidos em memória enquanto o servidor estiver em execução.
 - Validação de dados
 - API REST
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 ### Frontend
 
@@ -363,12 +383,12 @@ mantidos em memória enquanto o servidor estiver em execução.
 - Bolt
 - Visual Studio Code
 
-## 📚 Documentação
+## Documentação
 
 A documentação do projeto está organizada de acordo com as disciplinas,
 etapas e entregas do TicketLab.
 
-### 📦 Entrega 1
+### Entrega 1
 
 - [📐 Cálculo II](./Entrega-1/Calculo-II/)
 - [💼 Gestão Empresarial e Dinâmicas das Organizações](./Entrega-1/Gestao_empresarial_e_dinamicas_das_organizacoes/)
@@ -376,7 +396,7 @@ etapas e entregas do TicketLab.
 - [🗄️ Projeto em Banco de Dados](./Entrega-1/Projeto_em_banco_de_dados/)
 - [🎨 Projeto Interdisciplinar](./Entrega-1/Projeto_Interdisciplinar_programacao_web/)
 
-### 📦 Entrega 2
+### Entrega 2
 
 - [📐 Cálculo II](./Entrega-2/Calculo_II/)
 - [💼 Gestão Empresarial e Dinâmicas das Organizações](./Entrega-2/Gestao_empresarial_e_dinamicas_das_organizacoes/)
@@ -384,7 +404,7 @@ etapas e entregas do TicketLab.
 - [🗄️ Projeto em Banco de Dados](./Entrega-2/Projeto_em_banco_de_dados/)
 - [🎨 Projeto Interdisciplinar](./Entrega-2/Projeto_Interdisciplinar_programacao_web/)
 
-### 💻 Código-fonte da aplicação
+### Código-fonte da aplicação
 
 O código desenvolvido para a aplicação Web está atualmente organizado
 na pasta `src/Frontend`:
@@ -395,7 +415,7 @@ A API e as regras de negócio estão organizadas em:
 
 [📁 Backend](./src/Backend/)
 
-## 👥 Equipe
+## Equipe
 
 | Integrante            |
 | --------------------- |
@@ -403,7 +423,7 @@ A API e as regras de negócio estão organizadas em:
 | Max Tocantins Quaglia |
 | Rafael Nhoncanse      |
 
-## 📖 Referências
+## Referências
 
 1. [React](https://react.dev/)
 2. [Vite](https://vite.dev/)

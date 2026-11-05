@@ -30,10 +30,19 @@ function autenticarToken(req, res, next) {
 
   // Verifica se o token foi realmente assinado pelo nosso servidor
   // e se ainda não expirou.
-  jwt.verify(token, process.env.JWT_SECRET, (error, usuario) => {
+  jwt.verify(token, process.env.JWT_SECRET, { algorithms: ["HS256"] }, (error, usuario) => {
     if (error) {
       return res.status(401).json({
         mensagem: "Token inválido ou expirado",
+      });
+    }
+
+    // Tokens do modo demonstração são tratados exclusivamente em demo/index.js
+    // (outro segredo). Se algum chegar até aqui, é recusado: as rotas reais
+    // nunca atendem sessões demonstrativas.
+    if (usuario.demo !== undefined) {
+      return res.status(403).json({
+        mensagem: "Sessão de demonstração não pode acessar este recurso",
       });
     }
 
