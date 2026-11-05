@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useMemo } from "react";
+import { encerrarSessao } from "../../services/api";
+import { emModoDemonstracao } from "../../utils/sessao";
 import Icon from "./Icon";
 import "./LayoutOrganizador.css";
 
@@ -50,9 +52,8 @@ export default function LayoutOrganizador({
 
   const iniciais = obterIniciais(nomeUsuario);
 
-  function handleLogout() {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("usuario");
+  async function handleLogout() {
+    await encerrarSessao();
     navigate("/login", { replace: true });
   }
 
@@ -119,6 +120,12 @@ export default function LayoutOrganizador({
 
           <span className="org-role-chevron">⌄</span>
         </div>
+
+        {emModoDemonstracao() && (
+          <div className="org-demo-selo" role="status">
+            Modo demonstração: dados fictícios
+          </div>
+        )}
 
         <nav className="org-sidebar-nav" aria-label="Navegação principal">
           {menu.map((item) => {

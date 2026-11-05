@@ -1,7 +1,8 @@
 import "./Login.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { apiRequest, iniciarModoDemonstracao } from "../../services/api";
 import { useState } from "react";
+import { rotaPainel } from "../../utils/sessao";
 import festa from "../../assets/festa.png";
 
 function Login() {
@@ -9,7 +10,12 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
+  const [searchParams] = useSearchParams();
+  const [erro, setErro] = useState(
+    searchParams.get("sessao") === "expirada"
+      ? "Sua sessão expirou. Entre novamente."
+      : ""
+  );
   const [carregando, setCarregando] = useState(false);
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
@@ -56,20 +62,11 @@ function Login() {
   }
 
   async function handleAcessoPerfil(tipo) {
-    if (tipo !== "ORGANIZADOR") {
-      setErro(
-        tipo === "FORNECEDOR"
-          ? "A demonstração do Fornecedor ainda não está disponível. Entre com uma conta aprovada."
-          : "A demonstração do Administrador ainda não está disponível."
-      );
-      return;
-    }
-
     setErro("");
     setCarregando(true);
     try {
-      await iniciarModoDemonstracao(tipo);
-      navigate("/dashboard");
+      const data = await iniciarModoDemonstracao(tipo);
+      navigate(rotaPainel(data.usuario?.tipo) || "/login", { replace: true });
     } catch (error) {
       setErro(error.message);
     } finally {
@@ -215,6 +212,7 @@ function Login() {
             <button
               type="button"
               className="profile-access"
+              disabled={carregando}
               onClick={() => handleAcessoPerfil("ORGANIZADOR")}
             >
               <span className="profile-icon organizer">
@@ -242,6 +240,7 @@ function Login() {
             <button
               type="button"
               className="profile-access"
+              disabled={carregando}
               onClick={() => handleAcessoPerfil("FORNECEDOR")}
             >
               <span className="profile-icon supplier">
@@ -270,6 +269,7 @@ function Login() {
             <button
               type="button"
               className="profile-access"
+              disabled={carregando}
               onClick={() => handleAcessoPerfil("ADMINISTRADOR")}
             >
               <span className="profile-icon administrator">
