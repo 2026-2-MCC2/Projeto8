@@ -133,13 +133,18 @@ Arquivo de backup do banco de dados mantido na raiz do repositório.
 
 O TicketLab utiliza **MySQL** como sistema de gerenciamento de banco de dados.
 
-A documentação da modelagem e os arquivos relacionados estão disponíveis em:
+A documentação da modelagem e os arquivos relacionados estão disponíveis nas seguintes entregas:
 
-- [Projeto em Banco de Dados — Entrega 1](./documentos/Entrega-1/Projeto_em_banco_de_dados/)
+**Entrega 1 — Modelagem do Banco de Dados**
+- [Documentação da modelagem](./documentos/Entrega-1/Projeto_em_banco_de_dados/)
 - [Diagrama do Banco de Dados (PDF)](./documentos/Entrega-1/Projeto_em_banco_de_dados/diagrama-banco.pdf)
-- [Script de criação do banco (schema.sql)](./documentos/Entrega-1/Projeto_em_banco_de_dados/schema.sql)
+- [Script SQL da modelagem inicial](./documentos/Entrega-1/Projeto_em_banco_de_dados/schema.sql)
 
-Entre as principais entidades do sistema estão:
+**Entrega 2 — Implementação Inicial do Banco de Dados**
+- [Documentação da implementação](./documentos/Entrega-2/Projeto_em_banco_de_dados/README.md)
+- [Script SQL atualizado (schema.sql)](./documentos/Entrega-2/Projeto_em_banco_de_dados/schema.sql)
+
+O banco de dados atualmente contempla oito tabelas principais:
 
 - Usuários
 - Organizadores
@@ -148,6 +153,7 @@ Entre as principais entidades do sistema estão:
 - Serviços
 - Preços de serviços
 - Serviços associados aos eventos
+- Propostas comerciais
 
 ## Protótipo
 
