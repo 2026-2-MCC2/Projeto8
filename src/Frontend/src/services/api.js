@@ -1,10 +1,12 @@
+import { limparSessao } from "../utils/sessao";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // ======================================================
 // MODO DEMONSTRAÇÃO
 // ======================================================
 
-export async function iniciarModoDemonstracao(tipo = "ORGANIZADOR") {
+export async function iniciarModoDemonstracao(tipo) {
   const response = await fetch(`${API_URL}/demo-login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -24,6 +26,26 @@ export async function iniciarModoDemonstracao(tipo = "ORGANIZADOR") {
   sessionStorage.setItem("modoDemonstracao", "true");
 
   return data;
+}
+
+// Encerra a sessão: apaga os dados locais e, na demonstração, avisa o servidor
+// para descartar os dados fictícios da sessão (falha de rede não impede a saída).
+export async function encerrarSessao() {
+  const token = sessionStorage.getItem("token");
+  const demo = sessionStorage.getItem("modoDemonstracao") === "true";
+
+  limparSessao();
+
+  if (demo && token) {
+    try {
+      await fetch(`${API_URL}/demo-logout`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    } catch {
+      // o servidor descarta a sessão por expiração de qualquer forma
+    }
+  }
 }
 
 // ======================================================
@@ -65,10 +87,14 @@ export async function apiRequest(endpoint, options = {}) {
 
   const data = await lerResposta(response);
 
-  if (response.status === 401) {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("usuario");
-    sessionStorage.removeItem("modoDemonstracao");
+  // 401 em rota protegida = sessão expirada/inválida. Em /login o 401 é
+  // apenas "e-mail ou senha inválidos" e não encerra nada.
+  if (response.status === 401 && endpoint !== "/login") {
+    limparSessao();
+
+    if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+      window.location.assign("/login?sessao=expirada");
+    }
 
     throw new Error(data?.mensagem || "Sua sessão expirou. Faça login novamente.");
   }

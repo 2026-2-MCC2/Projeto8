@@ -1,109 +1,347 @@
 .cotacoes-page {
+  --primary: #5148d8;
+  --ink: #172033;
+  --muted: #68758b;
+  --line: #e5eaf2;
   min-height: 100%;
-  padding: 34px 36px 48px;
-  background: #f7f9fc;
+  padding: 36px clamp(20px, 3vw, 44px) 56px;
+  background: #f6f8fc;
+  color: var(--ink);
+}
+
+.cotacoes-page * {
+  box-sizing: border-box;
 }
 
 .cotacoes-header {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  gap: 30px;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 28px;
 }
 
 .cotacoes-label {
-  display: block;
-  margin-bottom: 10px;
-  color: #68789b;
+  display: inline-block;
+  margin-bottom: 9px;
+  color: var(--primary);
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.3px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
 }
 
 .cotacoes-header h1 {
   margin: 0;
-  color: #101c35;
-  font-size: 31px;
-  font-weight: 500;
+  color: #111a2e;
+  font-size: clamp(27px, 3vw, 35px);
+  font-weight: 750;
   letter-spacing: -1px;
 }
 
 .cotacoes-header p {
-  margin: 10px 0 0;
-  color: #71809a;
-  font-size: 13px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 14px;
 }
 
 .cotacoes-comparar {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  height: 48px;
+  gap: 9px;
+  min-height: 44px;
   padding: 0 17px;
-  border: 1px solid #dce3ed;
-  border-radius: 9px;
-  background: #ffffff;
-  color: #15213b;
+  border: 1px solid #dce3f0;
+  border-radius: 11px;
+  background: white;
+  color: #26345a;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
+  transition: 0.2s;
 }
 
 .cotacoes-comparar:hover {
-  border-color: #5264e8;
+  border-color: #aaa6f2;
+  color: var(--primary);
+  transform: translateY(-1px);
 }
 
 .cotacoes-comparar span {
-  color: #5264e8;
+  color: var(--primary);
   font-size: 18px;
 }
 
 .cotacoes-tabs {
   display: flex;
-  align-items: center;
-  gap: 25px;
-  margin: 28px 0 20px;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 22px;
+  padding: 5px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
 }
 
 .cotacoes-tabs button {
-  padding: 0;
+  min-height: 36px;
+  padding: 0 14px;
+  white-space: nowrap;
   border: 0;
+  border-radius: 8px;
   background: transparent;
-  color: #8190a9;
-  font-family: inherit;
-  font-size: 11px;
+  color: #718096;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
 }
 
-.cotacoes-tabs button:hover,
-.cotacoes-tabs .cotacoes-tab-ativa {
-  color: #5264e8;
-  font-weight: 600;
+.cotacoes-tabs button:hover {
+  background: #f4f5ff;
+  color: var(--primary);
+}
+
+.cotacoes-tabs button.cotacoes-tab-ativa {
+  background: #eeefff;
+  color: #3931ad;
+  font-weight: 800;
 }
 
 .cotacoes-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 15px;
+  max-width: 1120px;
 }
 
-@media (max-width: 800px) {
+.cotacao-card {
+  padding: 21px 23px 17px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 3px 12px #1423460a;
+  transition: 0.2s;
+}
+
+.cotacao-card:hover {
+  border-color: #cfd4fa;
+  box-shadow: 0 8px 24px #14234612;
+  transform: translateY(-1px);
+}
+
+.cotacao-card-conteudo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.cotacao-fornecedor {
+  display: flex;
+  align-items: center;
+  min-width: 210px;
+  gap: 13px;
+}
+
+.cotacao-avatar {
+  display: grid;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid #e1e4ff;
+  border-radius: 13px;
+  background: linear-gradient(145deg, #f0efff, #e7edff);
+  color: #4943bd;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.cotacao-fornecedor-info h2 {
+  margin: 0;
+  color: #172033;
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.cotacao-fornecedor-info p {
+  margin: 5px 0 0;
+  color: #748198;
+  font-size: 12px;
+}
+
+.cotacao-dados {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(18px, 3vw, 42px);
+}
+
+.cotacao-dados > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 100px;
+}
+
+.cotacao-dados > div span {
+  color: #8490a5;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cotacao-dados > div strong {
+  color: #172033;
+  font-size: 15px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.cotacao-dados > div:first-child strong {
+  color: #253b75;
+  font-size: 17px;
+}
+
+.cotacao-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 27px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.cotacao-status-recebida,
+.cotacao-status-enviada {
+  border-color: #c9e9d8;
+  background: #effaf3;
+  color: #18794e;
+}
+
+.cotacao-status-em-análise,
+.cotacao-status-em-analise {
+  border-color: #f5dfb1;
+  background: #fff8e9;
+  color: #9a6700;
+}
+
+.cotacao-status-selecionada {
+  border-color: #c9d5ff;
+  background: #eef2ff;
+  color: #3f51b5;
+}
+
+.cotacao-status-recusada {
+  border-color: #f2caca;
+  background: #fff1f1;
+  color: #b42318;
+}
+
+.cotacao-observacao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 19px;
+  padding: 13px 14px;
+  border: 1px solid #edf0f6;
+  border-radius: 10px;
+  background: #f8faff;
+  color: #66748a;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.cotacao-observacao span {
+  color: #34415b;
+  font-weight: 750;
+}
+
+.cotacao-acoes {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 13px;
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+.cotacoes-estado {
+  max-width: 1120px;
+  padding: 38px 24px;
+  border: 1px dashed #d7deeb;
+  border-radius: 15px;
+  background: white;
+  text-align: center;
+}
+
+.cotacoes-estado h2 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.cotacoes-estado p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.cotacoes-estado button {
+  min-height: 38px;
+  margin-top: 17px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .cotacao-card-conteudo {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cotacao-dados {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 18px 28px;
+  }
+}
+
+@media (max-width: 600px) {
   .cotacoes-page {
-    padding: 24px 18px 40px;
+    padding: 24px 15px 38px;
   }
 
   .cotacoes-header {
     flex-direction: column;
+    gap: 18px;
   }
 
   .cotacoes-comparar {
     width: 100%;
-    justify-content: center;
   }
 
   .cotacoes-tabs {
-    gap: 16px;
-    overflow-x: auto;
-    padding-bottom: 4px;
+    width: 100%;
+  }
+
+  .cotacao-card {
+    padding: 17px 15px 14px;
+  }
+
+  .cotacao-dados {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px 12px;
   }
 }

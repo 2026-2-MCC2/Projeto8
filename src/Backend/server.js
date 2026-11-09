@@ -6,24 +6,7 @@ const connection = require("./db");
 // Cria uma aplicação utilizando o Express.
 const app = express();
 
-// ======================================================
-// DADOS TEMPORÁRIOS DO MODO DEMONSTRAÇÃO
-// ======================================================
-
-// O modo demonstração não depende do MySQL.
-// Os eventos ficam somente na memória enquanto
-// o servidor estiver funcionando.
-
-const usuarioDemonstracao = {
-  id: 999999,
-  nome: "Organizador Demonstração",
-  email: "demo@ticketlab.com",
-  tipo: "ORGANIZADOR",
-};
-
-// Lista temporária de eventos criados durante a demonstração.
-const eventosDemonstracao = [];
-
+const { ErroValidacao, validarEvento } = require("./lib/validacao");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -45,11 +28,19 @@ const jwt = require("jsonwebtoken");
 // através de req.body.
 const origensPermitidas = (process.env.CORS_ORIGINS || "http://localhost:5173,http://127.0.0.1:5173")
   .split(",").map((origem) => origem.trim()).filter(Boolean);
-app.use(cors({ origin(origem, callback) {
-  if (!origem || origensPermitidas.includes(origem)) return callback(null, true);
-  return callback(new Error("Origem não autorizada pelo CORS"));
-} }));
+app.use(cors({
+  origin(origem, callback) {
+    if (!origem || origensPermitidas.includes(origem)) return callback(null, true);
+    return callback(new Error("Origem não autorizada pelo CORS"));
+  }
+}));
 app.use(express.json({ limit: "1mb" }));
+
+app.use("/catalogo", require("./routes/catalogo"));
+
+// Modo demonstração (dados em memória, isolado do MySQL).
+// Precisa vir antes de qualquer rota real: ver demo/index.js.
+app.use(require("./demo"));
 
 // Middlewares de autenticação (JWT) e autorização por perfil.
 // Ficam em middlewares/auth.js para serem compartilhados com as rotas do fornecedor.
@@ -286,15 +277,12 @@ app.patch("/usuarios/:id", autenticarToken, (req, res) => {
     }
   });
 
-  // Se uma nova senha foi enviada, adiciona o hash
-  // ao objeto de atualização.
-  if (dadosAtualizacao.senha_hash) {
-    dadosPermitidos.senha_hash = dadosAtualizacao.senha_hash;
-  }
+  // O cliente NUNCA envia o hash: só "senha" (texto), que é validada e
+  // transformada em hash bcrypt mais abaixo. Qualquer "senha_hash" no corpo é ignorado.
 
   // Verifica se pelo menos um campo válido
   // foi enviado para atualização.
-  if (Object.keys(dadosPermitidos).length === 0) {
+  if (Object.keys(dadosPermitidos).length === 0 && dadosAtualizacao.senha === undefined) {
     return res.status(400).json({
       mensagem: "Nenhum campo válido para atualização foi enviado",
     });
@@ -325,9 +313,7 @@ app.patch("/usuarios/:id", autenticarToken, (req, res) => {
     }
     const senhaHash = bcrypt.hashSync(dadosAtualizacao.senha, 10);
 
-    delete dadosAtualizacao.senha;
-
-    dadosAtualizacao.senha_hash = senhaHash;
+    dadosPermitidos.senha_hash = senhaHash;
   }
 
   // Verifica se o telefone enviado é uma string.
@@ -1317,39 +1303,6 @@ app.post("/login", (req, res) => {
 });
 
 // ======================================================
-// POST /demo-login
-// ======================================================
-// Cria uma sessão temporária para demonstração.
-//
-// IMPORTANTE:
-// O modo demonstração NÃO depende do MySQL.
-// Isso permite que o professor teste o sistema
-// mesmo sem configurar o banco na própria máquina.
-
-app.post("/demo-login", (req, res) => {
-  if (req.body?.tipo && req.body.tipo !== "ORGANIZADOR") {
-    return res.status(501).json({
-      mensagem: "A demonstração deste perfil ainda não está disponível.",
-    });
-  }
-  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
-    return res.status(503).json({
-      mensagem: "A demonstração está indisponível: configure um JWT_SECRET seguro no servidor.",
-    });
-  }
-  const token = jwt.sign(
-    { id: usuarioDemonstracao.id, tipo: usuarioDemonstracao.tipo, demo: true },
-    process.env.JWT_SECRET,
-    { expiresIn: "2h", issuer: "ticketlab", audience: "ticketlab-demo" }
-  );
-  return res.status(200).json({
-    mensagem: "Modo demonstração iniciado",
-    token,
-    usuario: usuarioDemonstracao,
-  });
-});
-
-// ======================================================
 // GET /eventos
 // ======================================================
 
@@ -1359,17 +1312,6 @@ app.get(
   autenticarToken,
   autorizarPerfis("ORGANIZADOR"),
   (req, res) => {
-    // ==================================================
-    // MODO DEMONSTRAÇÃO
-    // ==================================================
-    // Se o token pertence ao usuário de demonstração,
-    // retornamos os eventos temporários sem consultar
-    // o MySQL.
-
-    if (req.usuario.demo === true) {
-      return res.status(200).json(eventosDemonstracao);
-    }
-
     // ==================================================
     // MODO NORMAL
     // ==================================================
@@ -1416,100 +1358,21 @@ app.post(
   autenticarToken,
   autorizarPerfis("ORGANIZADOR"),
   (req, res) => {
-    // Recebe os dados enviados pelo frontend.
-    const {
-      nome,
-      descricao,
-      horario,
-      data_evento,
-      publico_min,
-      publico_max,
-      local,
-    } = req.body;
-
-    // ==================================================
-    // VALIDAÇÃO DOS CAMPOS
-    // ==================================================
-
-    if (
-      !nome ||
-      !horario ||
-      !data_evento ||
-      !publico_min ||
-      !publico_max ||
-      !local
-    ) {
-      return res.status(400).json({
-        mensagem: "Todos os campos obrigatórios devem ser preenchidos",
-      });
-    }
-
-    // Verifica se o nome é realmente um texto.
-    if (typeof nome !== "string") {
-      return res.status(400).json({
-        mensagem: "O nome do evento deve ser um texto",
-      });
-    }
-
-    // Verifica se existe uma descrição e garante que é texto.
-    if (descricao !== undefined && descricao !== null) {
-      if (typeof descricao !== "string") {
-        return res.status(400).json({
-          mensagem: "A descrição deve ser um texto",
-        });
+    // Valida e normaliza os dados enviados pelo frontend
+    // (regras compartilhadas com o modo demonstração: lib/validacao.js).
+    let dados;
+    try {
+      dados = validarEvento(req.body);
+    } catch (erro) {
+      if (erro instanceof ErroValidacao) {
+        return res.status(erro.status).json({ mensagem: erro.message });
       }
+      throw erro;
     }
 
-    // Converte os valores de público para número.
-    const minimo = Number(publico_min);
-    const maximo = Number(publico_max);
-
-    // Verifica se os públicos são números válidos.
-    if (
-      !Number.isInteger(minimo) ||
-      !Number.isInteger(maximo) ||
-      minimo <= 0 ||
-      maximo <= 0
-    ) {
-      return res.status(400).json({
-        mensagem: "O público deve ser informado com números inteiros positivos",
-      });
-    }
-
-    // O público mínimo precisa ser menor que o máximo.
-    if (minimo >= maximo) {
-      return res.status(400).json({
-        mensagem: "O público mínimo deve ser menor que o público máximo",
-      });
-    }
-
-    // ==================================================
-    // MODO DEMONSTRAÇÃO
-    // ==================================================
-    // No modo demonstração não usamos o MySQL.
-    // O evento é armazenado temporariamente na memória.
-
-    if (req.usuario.demo === true) {
-      const novoEvento = {
-        id: Date.now(),
-        id_organizador: usuarioDemonstracao.id,
-        nome,
-        descricao: descricao || null,
-        horario,
-        data_evento,
-        publico_min: minimo,
-        publico_max: maximo,
-        local,
-        status: "PLANEJAMENTO",
-      };
-
-      eventosDemonstracao.push(novoEvento);
-
-      return res.status(201).json({
-        mensagem: "Evento criado com sucesso!",
-        id: novoEvento.id,
-      });
-    }
+    const minimo = dados.publico_min;
+    const maximo = dados.publico_max;
+    const { nome, descricao, horario, data_evento, local } = dados;
 
     // ==================================================
     // INSERT NO BANCO
@@ -1572,6 +1435,9 @@ app.post(
 // Serviços, oportunidades, propostas, perfil e dashboard.
 // Todas as rotas exigem JWT de um FORNECEDOR com cadastro aprovado.
 app.use("/fornecedor", require("./routes/fornecedor"));
+
+app.use("/organizador", require("./routes/organizador-propostas"));
+
 
 
 // ======================================================

@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node --env-file=.env.test --test tests/fornecedor.integration.test.js",
+    "test:demo": "node --env-file=.env.test --test tests/demo.integration.test.js",
+    "test:real": "node --env-file=.env.test --test tests/real.integration.test.js",
     "start": "node server.js"
   },
   "keywords": [],

@@ -19,146 +19,21 @@ const { autenticarToken, autorizarPerfis } = require("../middlewares/auth");
 
 const router = express.Router();
 
-// Mesmas categorias oferecidas no cadastro do fornecedor (CadastroFornecedor.jsx).
-const CATEGORIAS = [
-  "ALIMENTACAO",
-  "DECORACAO",
-  "SEGURANCA",
-  "ENTRETENIMENTO",
-  "ESTRUTURA",
-  "FOTOGRAFIA",
-  "OUTROS",
-];
-
-const STATUS_SERVICO = ["ATIVO", "RASCUNHO"];
-const PRECO_MAXIMO = 99999999.99; // limite de DECIMAL(10,2)
-const REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const {
+  ErroValidacao,
+  exigirId,
+  lerTexto,
+  lerInteiroPositivo,
+  lerValor,
+  lerCategoria,
+  lerTelefone,
+  lerEmail,
+  validarServico,
+} = require("../lib/validacao");
 
 // ------------------------------------------------------
 // Helpers
 // ------------------------------------------------------
-
-class ErroValidacao extends Error {
-  constructor(mensagem, status = 400) {
-    super(mensagem);
-    this.status = status;
-  }
-}
-
-function lerId(valor) {
-  const numero = Number(valor);
-  return Number.isInteger(numero) && numero > 0 ? numero : null;
-}
-
-function exigirId(valor, rotulo = "ID") {
-  const id = lerId(valor);
-  if (id === null) {
-    throw new ErroValidacao(`${rotulo} inválido`);
-  }
-  return id;
-}
-
-function lerTexto(valor, rotulo, { min = 1, max, obrigatorio = true } = {}) {
-  if (valor === undefined || valor === null || valor === "") {
-    if (obrigatorio) {
-      throw new ErroValidacao(`${rotulo} é obrigatório`);
-    }
-    return null;
-  }
-
-  if (typeof valor !== "string") {
-    throw new ErroValidacao(`${rotulo} deve ser um texto`);
-  }
-
-  const texto = valor.trim();
-
-  if (texto.length < min) {
-    throw new ErroValidacao(
-      min === 1
-        ? `${rotulo} não pode ser vazio`
-        : `${rotulo} deve ter pelo menos ${min} caracteres`
-    );
-  }
-
-  if (max && texto.length > max) {
-    throw new ErroValidacao(`${rotulo} deve ter no máximo ${max} caracteres`);
-  }
-
-  return texto;
-}
-
-function lerInteiroPositivo(valor, rotulo, maximo = 2147483647) {
-  const numero = typeof valor === "string" && valor.trim() === "" ? NaN : Number(valor);
-
-  if (!Number.isInteger(numero) || numero <= 0 || numero > maximo) {
-    throw new ErroValidacao(`${rotulo} deve ser um número inteiro positivo`);
-  }
-
-  return numero;
-}
-
-function lerValor(valor, rotulo) {
-  const numero = typeof valor === "string" && valor.trim() === "" ? NaN : Number(valor);
-
-  if (!Number.isFinite(numero) || numero <= 0 || numero > PRECO_MAXIMO) {
-    throw new ErroValidacao(`${rotulo} deve ser um valor maior que zero`);
-  }
-
-  // duas casas decimais, como em DECIMAL(10,2)
-  return Math.round(numero * 100) / 100;
-}
-
-function lerCategoria(valor, rotulo = "Categoria") {
-  const categoria = lerTexto(valor, rotulo, { max: 100 });
-
-  if (!CATEGORIAS.includes(categoria)) {
-    throw new ErroValidacao(`${rotulo} inválida`);
-  }
-
-  return categoria;
-}
-
-function lerTelefone(valor) {
-  const telefone = lerTexto(valor, "Telefone", { max: 30 });
-
-  if (!/^\d{10,11}$/.test(telefone)) {
-    throw new ErroValidacao("Telefone inválido. Informe DDD + número, somente dígitos");
-  }
-
-  return telefone;
-}
-
-function lerEmail(valor) {
-  const email = lerTexto(valor, "E-mail", { max: 250 });
-
-  if (!REGEX_EMAIL.test(email)) {
-    throw new ErroValidacao("E-mail inválido");
-  }
-
-  return email;
-}
-
-// Valida e normaliza o corpo de um serviço (criação e edição).
-function validarServico(body = {}) {
-  const nome = lerTexto(body.nome, "Nome do serviço", { max: 200 });
-  const descricao = lerTexto(body.descricao, "Descrição", { max: 5000 });
-  const categoria = lerCategoria(body.categoria);
-  const preco = lerValor(body.preco, "Preço base");
-  const publicoMin = lerInteiroPositivo(body.publico_min, "Público mínimo");
-  const publicoMax = lerInteiroPositivo(body.publico_max, "Público máximo");
-
-  if (publicoMin >= publicoMax) {
-    throw new ErroValidacao("O público mínimo deve ser menor que o público máximo");
-  }
-
-  const status = body.status === undefined ? "ATIVO" : body.status;
-
-  if (!STATUS_SERVICO.includes(status)) {
-    throw new ErroValidacao("Status do serviço inválido");
-  }
-
-  return { nome, descricao, categoria, preco, publicoMin, publicoMax, status };
-}
 
 // Executa fn(conexao) dentro de uma transação, com COMMIT/ROLLBACK automáticos.
 async function emTransacao(fn) {
