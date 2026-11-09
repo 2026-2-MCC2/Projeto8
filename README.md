@@ -257,19 +257,6 @@ Os dados demonstrativos são temporários e mantidos em memória enquanto o proc
 
 Consulte os detalhes, perfis disponíveis, limitações e endpoints na [documentação técnica do Modo Demonstração](./documentos/tecnicos/MODO_DEMONSTRACAO.md).
 
-## Testes
-
-Durante a validação do projeto, foram executados testes automatizados e verificações dos fluxos da aplicação.
-
-| Conjunto de testes | Resultado registrado |
-| --- | --- |
-| Testes automatizados do backend | 46 aprovados |
-| Testes do Modo Demonstração | 16 aprovados e 1 ignorado |
-| Testes do ambiente real | 9 aprovados |
-| **Total registrado** | **71 aprovados, 0 reprovados e 1 ignorado** |
-
-Além dos testes automatizados, foram verificados o início do backend, a abertura do frontend, o Modo Demonstração, a criação de eventos e a listagem de eventos.
-
 ## Tecnologias
 
 ### Frontend
