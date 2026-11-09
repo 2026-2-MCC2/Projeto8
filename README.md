@@ -23,7 +23,7 @@ Projeto desenvolvido no curso de Ciência da Computação da FECAP.
 ## Descrição
 
 <p align="center">
-  <img src="./imagens/previa-prototipo.png"
+  <img src="./Imagens/previa-prototipo.png"
        alt="Tela inicial do protótipo do TicketLab"
        width="800">
   <br>
