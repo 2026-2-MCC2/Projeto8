@@ -1,203 +1,146 @@
-# FECAP - Fundação de Comércio Álvares Penteado
+# FECAP — Fundação de Comércio Álvares Penteado
 
 <p align="center">
-<a href="https://www.fecap.br/">
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhZPrRa89Kma0ZZogxm0pi-tCn_TLKeHGVxywp-LXAFGR3B1DPouAJYHgKZGV0XTEf4AE&usqp=CAU"
-alt="FECAP - Fundação de Comércio Álvares Penteado"
-border="0">
-</a>
+  <a href="https://www.fecap.br/">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhZPrRa89Kma0ZZogxm0pi-tCn_TLKeHGVxywp-LXAFGR3B1DPouAJYHgKZGV0XTEf4AE&usqp=CAU"
+         alt="FECAP — Fundação de Comércio Álvares Penteado"
+         border="0">
+  </a>
 </p>
 
 # TicketLab
 
 ## Projeto Interdisciplinar — Ciência da Computação
 
-## Integrantes: <a href="https://github.com/Brian-Walter">Brian Walter</a>, <a href="https://github.com/maxtq">Max Tocantis Quaglia</a>, <a href="https://github.com/Rafael1285">Rafael Nhoncanse</a>
+**Integrantes:** [Brian Walter](https://github.com/Brian-Walter), [Max Tocantins Quaglia](https://github.com/maxtq) e [Rafael Nhoncanse](https://github.com/Rafael1285).
 
-## Professores Orientadores: <a href="https://www.linkedin.com/in/cristina-machado-corr%C3%AAa-leite-630309160/">Cristina Machado Corrêa Leite</a>, <a href="https://www.linkedin.com/in/dolemes/">David de Oliveira Lemes</a>, <a href="https://www.linkedin.com/in/francisco-escobar/">Francisco de Souza Escobar</a>, <a href="https://www.linkedin.com/in/j%C3%A9sus-gomes-83b769108/">Jésus Gomes</a>, <a href="https://www.linkedin.com/in/katia-bossi/">Kátia Bossi</a>
+**Professores orientadores:** [Cristina Machado Corrêa Leite](https://www.linkedin.com/in/cristina-machado-corr%C3%AAa-leite-630309160/), [David de Oliveira Lemes](https://www.linkedin.com/in/dolemes/), [Francisco de Souza Escobar](https://www.linkedin.com/in/francisco-escobar/), [Jésus Gomes](https://www.linkedin.com/in/j%C3%A9sus-gomes-83b769108/) e [Kátia Bossi](https://www.linkedin.com/in/katia-bossi/).
 
 Projeto desenvolvido no curso de Ciência da Computação da FECAP.
+
+---
 
 ## Descrição
 
 <p align="center">
-<img src="./Imagens/previa-prototipo.png"
-alt="Tela de home do prototipo do TicketLab"
-border="0">
-<br>
-Tela de home do prototipo da plataforma TicketLab.
+  <img src="./imagens/previa-prototipo.png"
+       alt="Tela inicial do protótipo do TicketLab"
+       width="800">
+  <br>
+  <em>Tela inicial do protótipo da plataforma TicketLab.</em>
 </p>
 
-O **TicketLab** é uma plataforma Web desenvolvida como Projeto
-Interdisciplinar do curso de Ciência da Computação da FECAP. O sistema
-tem como objetivo auxiliar na **organização financeira e no planejamento
-de eventos universitários**, conectando organizadores e fornecedores em
-um único ambiente.
+O **TicketLab** é uma plataforma web desenvolvida como Projeto Interdisciplinar do curso de Ciência da Computação da FECAP. Seu objetivo é auxiliar na **organização financeira e no planejamento de eventos universitários**, conectando organizadores e fornecedores em um único ambiente.
 
-A plataforma permite que o **Organizador** cadastre eventos, organize
-seus custos e acompanhe propostas de fornecedores. O **Fornecedor** pode
-consultar oportunidades e enviar propostas para os serviços solicitados.
-O **Administrador** é responsável pelo gerenciamento dos usuários,
-aprovação de cadastros e acompanhamento das informações do sistema.
+A plataforma contempla três perfis de usuário:
 
-A partir dos custos consolidados, do público previsto e da margem de
-lucro definida pelo organizador, o TicketLab permite estimar o valor do
-ingresso necessário para o evento.
+- **Organizador:** cadastra eventos, organiza custos e acompanha as propostas recebidas.
+- **Fornecedor:** consulta oportunidades e envia propostas para os serviços solicitados.
+- **Administrador:** gerencia usuários, analisa solicitações de cadastro e acompanha informações do sistema.
 
-Para o escopo do projeto, cada evento possui apenas um tipo de ingresso.
-O MVP não realiza venda de ingressos nem processamento de pagamentos,
-tendo como foco o **planejamento, a cotação de fornecedores e a
-estimativa do valor do ticket**.
+Com os custos consolidados, o público previsto e a margem de lucro definida pelo organizador, o sistema permite estimar o valor necessário do ingresso para o evento.
+
+Para o escopo do projeto, cada evento possui apenas um tipo de ingresso. O MVP não realiza venda de ingressos nem processamento de pagamentos: seu foco é o planejamento, a cotação de fornecedores e a estimativa do valor do ticket.
 
 ## Funcionalidades
 
-| ID   | Funcionalidade               | Descrição                                                                                     |
-| ---- | ---------------------------- | --------------------------------------------------------------------------------------------- |
-| RF01 | Autocadastro de Organizador  | Permite que um organizador crie sua conta, que permanece pendente até análise administrativa. |
-| RF02 | Autocadastro de Fornecedor   | Permite que um fornecedor realize seu cadastro e aguarde aprovação.                           |
-| RF03 | Aprovação de cadastros       | Permite ao administrador aprovar ou rejeitar usuários cadastrados.                            |
-| RF04 | Autenticação e perfis        | Controla o acesso conforme o perfil de Administrador, Organizador ou Fornecedor.              |
-| RF05 | Cadastro de eventos          | Permite ao organizador cadastrar informações e características do evento.                     |
-| RF06 | Itens de composição de custo | Permite organizar serviços e produtos que fazem parte do orçamento do evento.                 |
-| RF07 | Custos do evento             | Permite registrar custos operacionais e outros custos não provenientes de propostas.          |
-| RF08 | Publicação para cotação      | Disponibiliza eventos e itens para fornecedores aprovados.                                    |
-| RF09 | Consulta de eventos          | Permite que fornecedores consultem eventos disponíveis para propostas.                        |
-| RF10 | Envio de propostas           | Permite que fornecedores enviem propostas vinculadas aos itens dos eventos.                   |
-| RF11 | Comparação de propostas      | Permite ao organizador comparar propostas recebidas.                                          |
-| RF12 | Consolidação do orçamento    | Permite selecionar propostas e consolidar os custos do evento.                                |
-| RF13 | Cálculo do ticket            | Estima o valor do ingresso com base nos custos, público e margem.                             |
-| RF14 | Visão administrativa         | Permite consultas e acompanhamento gerencial das informações do sistema.                      |
+| ID | Requisito funcional | Descrição |
+| --- | --- | --- |
+| RF01 | Autocadastro de Organizador | Permite que um organizador crie uma conta, inicialmente pendente de análise administrativa. |
+| RF02 | Autocadastro de Fornecedor | Permite que um fornecedor realize seu cadastro e aguarde aprovação. |
+| RF03 | Aprovação de cadastros | Permite ao administrador aprovar ou rejeitar usuários cadastrados. |
+| RF04 | Autenticação e perfis | Controla o acesso conforme os perfis de Administrador, Organizador e Fornecedor. |
+| RF05 | Cadastro de eventos | Permite ao organizador cadastrar informações e características do evento. |
+| RF06 | Itens de composição de custo | Permite organizar serviços e produtos que compõem o orçamento do evento. |
+| RF07 | Custos do evento | Permite registrar custos operacionais e outros custos não provenientes de propostas. |
+| RF08 | Publicação para cotação | Disponibiliza eventos e itens para fornecedores aprovados. |
+| RF09 | Consulta de eventos | Permite que fornecedores consultem eventos disponíveis para envio de propostas. |
+| RF10 | Envio de propostas | Permite que fornecedores enviem propostas vinculadas aos itens dos eventos. |
+| RF11 | Comparação de propostas | Permite ao organizador comparar as propostas recebidas. |
+| RF12 | Consolidação do orçamento | Permite selecionar propostas e consolidar os custos do evento. |
+| RF13 | Cálculo do ticket | Estima o valor do ingresso com base nos custos, no público e na margem definida. |
+| RF14 | Visão administrativa | Permite consultas e acompanhamento gerencial das informações do sistema. |
 
 ### Cálculo do ticket
 
-O cálculo utilizado pelo projeto considera a margem definida sobre a
-receita:
+O cálculo considera a margem definida sobre a receita:
 
 ```text
 Ticket = Custo Total / [Público × (1 − Margem)]
 ```
 
-O sistema deve realizar as validações necessárias para impedir valores
-inválidos durante o cálculo.
+O sistema deve validar os valores informados para evitar cálculos com dados inválidos.
 
 ## Estrutura de pastas
+
+A estrutura abaixo destaca os diretórios principais do repositório e evita listar arquivos gerados ou dependências instaladas localmente.
 
 ```text
 Projeto8/
 │
-├── Entrega-1/
-│   ├── Calculo-II/
-│   ├── Desenvolvimento_web_full_stack/
-│   ├── Gestao_empresarial_e_dinamicas_das_organizacoes/
-│   ├── Projeto_em_banco_de_dados/
-│   └── Projeto_Interdisciplinar_programacao_web/
+├── documentos/
+│   ├── Entrega-1/
+│   │   ├── Calculo-II/
+│   │   ├── Desenvolvimento_web_full_stack/
+│   │   ├── Gestao_empresarial_e_dinamicas_das_organizacoes/
+│   │   ├── Projeto_em_banco_de_dados/
+│   │   └── Projeto_Interdisciplinar_programacao_web/
+│   │
+│   ├── Entrega-2/
+│   │   ├── Calculo_II/
+│   │   ├── Desenvolvimento_web_full_stack/
+│   │   ├── Gestao_empresarial_e_dinamicas_das_organizacoes/
+│   │   ├── Projeto_em_banco_de_dados/
+│   │   └── Projeto_Interdisciplinar_programacao_web/
+│   │
+│   └── tecnicos/
+│       └── MODO_DEMONSTRACAO.md
 │
-├── Entrega-2/
-│   ├── Calculo_II/
-│   ├── Desenvolvimento_web_full_stack/
-│   ├── Gestao_empresarial_e_dinamicas_das_organizacoes/
-│   ├── Projeto_em_banco_de_dados/
-│   └── Projeto_Interdisciplinar_programacao_web/
-│
-├── Imagens/
+├── imagens/
+│   └── previa-prototipo.png
 │
 ├── src/
 │   ├── Backend/
-│   │   ├── db.js
-│   │   ├── server.js
-│   │   ├── package.json
-│   │   └── ...
-│   │
 │   └── Frontend/
-│       ├── public/
-│       │
-│       └── src/
-│           ├── assets/
-│           ├── pages/
-│           │   ├── Cadastro/
-│           │   ├── CadastroFornecedor/
-│           │   ├── CadastroOrganizador/
-│           │   ├── Home/
-│           │   ├── Login/
-│           │   └── Organizador/
-│           │       ├── CriarEvento/
-│           │       ├── DashboardOrganizador/
-│           │       └── Meuseventos/
-│           │
-│           └── services/
 │
+├── backup_antes_001.sql
 └── README.md
 ```
 
 ### Organização das principais pastas
 
-O projeto está organizado de acordo com as disciplinas e etapas
-acadêmicas envolvidas no desenvolvimento do TicketLab.
+**`documentos/`**  
+Reúne os materiais acadêmicos, documentos e entregas produzidos ao longo do desenvolvimento do TicketLab.
 
-**`Entrega-1/Calculo-II`**  
-Contém os materiais relacionados à disciplina de **Cálculo II**
-desenvolvidos para a primeira entrega do projeto.
+**`documentos/Entrega-1/` e `documentos/Entrega-2/`**  
+Organizam os materiais de cada etapa do projeto por disciplina, incluindo documentos de Cálculo II, Desenvolvimento Web Full Stack, Gestão Empresarial, Projeto em Banco de Dados e Projeto Interdisciplinar.
 
-**`Entrega-1/Desenvolvimento_web_full_stack`**  
-Contém a documentação e os materiais relacionados à disciplina de
-**Desenvolvimento Web Full Stack** referentes à primeira entrega.
+**`documentos/tecnicos/`**  
+Contém documentação técnica complementar, incluindo instruções do Modo Demonstração e informações do módulo de Fornecedor.
 
-O código-fonte atual da aplicação Web foi organizado posteriormente
-em `src/Frontend`.
+**`imagens/`**  
+Armazena imagens utilizadas na documentação e apresentação do projeto.
 
-**`Entrega-1/Gestao_empresarial_e_dinamicas_das_organizacoes`**  
-Contém os documentos e materiais desenvolvidos para a disciplina de
-**Gestão Empresarial e Dinâmicas das Organizações**, incluindo os
-conteúdos relacionados ao planejamento e à proposta de valor do
-TicketLab.
+**`src/Backend/`**  
+Contém a API desenvolvida com Node.js e Express, incluindo rotas, autenticação, regras de negócio, integração com MySQL e testes.
 
-**`Entrega-1/Projeto_em_banco_de_dados`**  
-Contém a documentação da modelagem do banco de dados, scripts SQL,
-diagramas e informações relacionadas à estrutura de dados.
+**`src/Frontend/`**  
+Contém a aplicação web desenvolvida com React e Vite, incluindo páginas, componentes, recursos visuais e serviços de comunicação com a API.
 
-**`Entrega-1/Projeto_Interdisciplinar_programacao_web`**  
-Contém a documentação e os materiais relacionados ao Projeto
-Interdisciplinar, incluindo o protótipo navegável e as evidências
-da entrega.
-
-**`Entrega-2`**  
-Área destinada aos materiais das disciplinas e atividades
-correspondentes à segunda etapa de entrega do projeto.
-
-**`src/Backend`**  
-Código-fonte da API desenvolvida com **Node.js e Express**, responsável
-pela comunicação com o banco de dados, autenticação e regras de negócio.
-
-**`src/Frontend`**  
-Código-fonte atual da aplicação de **Desenvolvimento Web Full Stack**,
-desenvolvida com **React e Vite**, responsável pela interface e
-interação com o usuário.
-
-**`Imagens`**  
-Contém imagens utilizadas na documentação e apresentação do projeto.
-
-**`README.md`**  
-Documentação principal do projeto, reunindo informações sobre as
-disciplinas, estrutura, tecnologias, funcionalidades e documentação
-do TicketLab.
+**`backup_antes_001.sql`**  
+Arquivo de backup do banco de dados mantido na raiz do repositório.
 
 ## Banco de Dados
 
-O TicketLab utiliza **MySQL** como sistema de gerenciamento de banco
-de dados.
+O TicketLab utiliza **MySQL** como sistema de gerenciamento de banco de dados.
 
-A documentação da modelagem do banco de dados está disponível na pasta:
+A documentação da modelagem e os arquivos relacionados estão disponíveis em:
 
-[📁 Projeto em Banco de Dados](./Entrega-1/Projeto_em_banco_de_dados/)
+- [Projeto em Banco de Dados — Entrega 1](./documentos/Entrega-1/Projeto_em_banco_de_dados/)
+- [Diagrama do Banco de Dados (PDF)](./documentos/Entrega-1/Projeto_em_banco_de_dados/diagrama-banco.pdf)
+- [Script de criação do banco (schema.sql)](./documentos/Entrega-1/Projeto_em_banco_de_dados/schema.sql)
 
-### Diagrama do Banco de Dados
-
-O diagrama apresenta as principais entidades, atributos e
-relacionamentos utilizados na estrutura do TicketLab.
-
-[📄 Visualizar Diagrama do Banco de Dados (PDF)](./Entrega-1/Projeto_em_banco_de_dados/diagrama-banco.pdf)
-
-Entre as principais entidades utilizadas estão:
+Entre as principais entidades do sistema estão:
 
 - Usuários
 - Organizadores
@@ -209,40 +152,53 @@ Entre as principais entidades utilizadas estão:
 
 ## Protótipo
 
-O protótipo navegável do TicketLab foi desenvolvido utilizando o
-**Bolt**.
+O protótipo navegável do TicketLab foi desenvolvido utilizando o **Bolt** e apresenta os principais fluxos e telas previstos para os perfis de Administrador, Organizador e Fornecedor.
 
-Ele apresenta os principais fluxos e telas da plataforma, contemplando
-os módulos de:
+- [Acessar o protótipo do TicketLab](https://bolt.new/p/71361906)
 
-- Administrador
-- Organizador
-- Fornecedor
+## Aplicação
 
-O protótipo pode ser acessado pelo link abaixo:
+A aplicação está organizada em frontend e backend.
 
-[🔗 Acessar protótipo do TicketLab](https://bolt.new/p/71361906)
+| Camada | Tecnologia principal | Responsabilidade |
+| --- | --- | --- |
+| Frontend | React + Vite | Interface e interação com o usuário. |
+| Backend | Node.js + Express | API, autenticação e regras de negócio. |
+| Banco de dados | MySQL | Persistência dos dados da aplicação. |
 
-## Configuração para Desenvolvimento
+### Estado atual do desenvolvimento
 
-### Ferramentas necessárias
+O projeto possui ambiente de frontend e backend, integração com MySQL e Modo Demonstração.
 
-- Node.js
+No fluxo real integrado ao backend, já foram validadas a criação e a listagem de eventos, além das informações de eventos exibidas no dashboard do Organizador. Outras telas do módulo Organizador ainda podem utilizar dados demonstrativos ou estar em etapa de integração; portanto, a existência de uma tela na interface não significa necessariamente que todo o seu fluxo esteja conectado ao banco de dados.
+
+O Modo Demonstração permite apresentar fluxos com dados temporários em memória. Ele não deve ser confundido com a autenticação e a persistência de dados do ambiente real. Consulte a [documentação técnica do Modo Demonstração](./documentos/tecnicos/MODO_DEMONSTRACAO.md).
+
+### Ambientes publicados
+
+- **Frontend:** [Acessar TicketLab](https://velvety-puppy-1dcdf0.netlify.app)
+- **Backend:** [API TicketLab no Railway](https://ticketlab-backend-production.up.railway.app)
+
+## Instalação e execução local
+
+### Requisitos
+
+- [Node.js](https://nodejs.org/)
 - npm
-- Git
-- MySQL
-- Visual Studio Code
+- [Git](https://git-scm.com/)
+- [MySQL](https://dev.mysql.com/downloads/)
+- Editor de código, como [Visual Studio Code](https://code.visualstudio.com/)
 
-### Clonar o repositório
+### 1. Clonar o repositório
 
 ```bash
 git clone https://github.com/2026-2-MCC2/Projeto8.git
 cd Projeto8
 ```
 
-### Configurar o Backend
+### 2. Configurar o Backend
 
-Acesse a pasta:
+Acesse a pasta do backend:
 
 ```bash
 cd src/Backend
@@ -254,24 +210,19 @@ Instale as dependências:
 npm install
 ```
 
-Configure o arquivo `.env` com as informações necessárias para o
-banco de dados e para o JWT.
+Crie o arquivo `.env` com as variáveis necessárias para a conexão com o MySQL e para a autenticação JWT. Use o arquivo `.env.example` como referência, quando disponível. **Não compartilhe nem versione credenciais ou segredos do ambiente.**
 
-Depois, execute:
+Depois de configurar o banco e as variáveis de ambiente, inicie a API:
 
 ```bash
 node server.js
 ```
 
-A API será executada na porta:
+A porta utilizada é definida pela configuração do backend. Verifique a mensagem exibida no terminal para confirmar o endereço local.
 
-```text
-http://localhost:3000
-```
+### 3. Configurar o Frontend
 
-### Configurar o Frontend
-
-Abra outro terminal e acesse:
+Abra outro terminal na raiz do projeto e acesse:
 
 ```bash
 cd src/Frontend
@@ -283,74 +234,41 @@ Instale as dependências:
 npm install
 ```
 
-Execute o ambiente de desenvolvimento:
+Inicie o servidor de desenvolvimento:
 
 ```bash
 npm run dev
 ```
 
-O Vite exibirá no terminal o endereço local da aplicação,
-normalmente:
-
-```text
-http://localhost:5173
-```
-
-### Testes
-
-Os testes de integração usam um banco MySQL separado, definido em `src/Backend/.env.test`
-(nunca aponte para o banco de desenvolvimento ou de produção). Crie o banco de teste com o schema
-e as migrations antes de rodar. O arquivo `.env.test` não é versionado.
-
-```bash
-cd src/Backend
-npm run test:demo      # modo demonstração (não precisa de servidor rodando)
-npm run test:real      # login, eventos e troca de senha reais
-npm test               # módulo do fornecedor (exige `node --env-file=.env.test server.js` em outro terminal)
-
-cd ../Frontend
-npm run lint
-npm run build
-```
+O Vite exibirá no terminal o endereço local para acessar a aplicação, normalmente `http://localhost:5173`.
 
 ## Modo Demonstração
 
-O TicketLab possui um Modo Demonstração para que qualquer avaliador explore os três perfis
-(Organizador, Fornecedor e Administrador) sem criar conta e sem configurar o MySQL.
+O TicketLab possui um **Modo Demonstração** para facilitar a apresentação e a avaliação dos fluxos da plataforma sem depender de uma conta real para esse ambiente demonstrativo.
 
-### Para utilizar
+Para utilizar:
 
-1. Inicie o backend e o frontend (veja "Configuração para Desenvolvimento").
-2. Abra a tela de login.
-3. Na seção "ou entre para demonstrar", escolha o perfil.
+1. Inicie o backend.
+2. Inicie o frontend.
+3. Acesse a aplicação pelo endereço informado pelo Vite.
+4. Selecione a opção **Modo Demonstração** na interface.
 
-### Como funciona
+Os dados demonstrativos são temporários e mantidos em memória enquanto o processo do backend estiver em execução. Eles não representam registros persistidos no banco de dados do ambiente real.
 
-- Cada clique cria uma sessão própria no servidor, com uma cópia independente dos dados fictícios, mantida apenas em memória.
-- Os dados fictícios são coerentes entre si (eventos, serviços, propostas e cadastros), e as datas são relativas a hoje.
-- Todas as operações disponíveis no sistema real funcionam: criar eventos, cadastrar e editar serviços, enviar e retirar propostas, aprovar, rejeitar e reabrir cadastros.
-- As alterações valem somente para a sessão. Reiniciar o servidor, sair ou deixar passar 2 horas descarta tudo.
-- O modo demonstração nunca acessa o MySQL: os tokens demo usam um segredo próprio e o backend só atende a eles por rotas em memória, negando todo o resto.
-- Algumas telas do Organizador (Buscar serviços, Cotações, Comparar propostas, Resumo de custos e Cálculo do ticket) usam dados estáticos também no sistema real, pois ainda não há API para elas.
+Consulte os detalhes, perfis disponíveis, limitações e endpoints na [documentação técnica do Modo Demonstração](./documentos/tecnicos/MODO_DEMONSTRACAO.md).
 
-Detalhes técnicos em `docs/MODO_DEMONSTRACAO.md`.
+## Testes
 
-## Funcionalidades desenvolvidas
+Durante a validação do projeto, foram executados testes automatizados e verificações dos fluxos da aplicação.
 
-- Página inicial
-- Login
-- Cadastro de Organizador
-- Cadastro de Fornecedor
-- Autenticação por JWT
-- Dashboard do Organizador
-- Cadastro de eventos
-- Visualização de eventos
-- Integração Frontend + Backend
-- Integração com MySQL
-- Modo Demonstração
-- Navegação entre as telas
-- Validação de dados
-- API REST
+| Conjunto de testes | Resultado registrado |
+| --- | --- |
+| Testes automatizados do backend | 46 aprovados |
+| Testes do Modo Demonstração | 16 aprovados e 1 ignorado |
+| Testes do ambiente real | 9 aprovados |
+| **Total registrado** | **71 aprovados, 0 reprovados e 1 ignorado** |
+
+Além dos testes automatizados, foram verificados o início do backend, a abertura do frontend, o Modo Demonstração, a criação de eventos e a listagem de eventos.
 
 ## Tecnologias
 
@@ -366,7 +284,7 @@ Detalhes técnicos em `docs/MODO_DEMONSTRACAO.md`.
 
 - Node.js
 - Express
-- JWT
+- JSON Web Token (JWT)
 - bcrypt
 - mysql2
 
@@ -383,45 +301,42 @@ Detalhes técnicos em `docs/MODO_DEMONSTRACAO.md`.
 - Bolt
 - Visual Studio Code
 
-## Documentação
+## Documentação do projeto
 
-A documentação do projeto está organizada de acordo com as disciplinas,
-etapas e entregas do TicketLab.
+Os materiais acadêmicos e técnicos estão organizados por etapa e disciplina.
 
 ### Entrega 1
 
-- [📐 Cálculo II](./Entrega-1/Calculo-II/)
-- [💼 Gestão Empresarial e Dinâmicas das Organizações](./Entrega-1/Gestao_empresarial_e_dinamicas_das_organizacoes/)
-- [💻 Desenvolvimento Web Full Stack](./Entrega-1/Desenvolvimento_web_full_stack/)
-- [🗄️ Projeto em Banco de Dados](./Entrega-1/Projeto_em_banco_de_dados/)
-- [🎨 Projeto Interdisciplinar](./Entrega-1/Projeto_Interdisciplinar_programacao_web/)
+- [Cálculo II](./documentos/Entrega-1/Calculo-II/)
+- [Gestão Empresarial e Dinâmicas das Organizações](./documentos/Entrega-1/Gestao_empresarial_e_dinamicas_das_organizacoes/)
+- [Desenvolvimento Web Full Stack](./documentos/Entrega-1/Desenvolvimento_web_full_stack/)
+- [Projeto em Banco de Dados](./documentos/Entrega-1/Projeto_em_banco_de_dados/)
+- [Projeto Interdisciplinar — Programação Web](./documentos/Entrega-1/Projeto_Interdisciplinar_programacao_web/)
 
 ### Entrega 2
 
-- [📐 Cálculo II](./Entrega-2/Calculo_II/)
-- [💼 Gestão Empresarial e Dinâmicas das Organizações](./Entrega-2/Gestao_empresarial_e_dinamicas_das_organizacoes/)
-- [💻 Desenvolvimento Web Full Stack](./Entrega-2/Desenvolvimento_web_full_stack/)
-- [🗄️ Projeto em Banco de Dados](./Entrega-2/Projeto_em_banco_de_dados/)
-- [🎨 Projeto Interdisciplinar](./Entrega-2/Projeto_Interdisciplinar_programacao_web/)
+- [Cálculo II](./documentos/Entrega-2/Calculo_II/)
+- [Gestão Empresarial e Dinâmicas das Organizações](./documentos/Entrega-2/Gestao_empresarial_e_dinamicas_das_organizacoes/)
+- [Desenvolvimento Web Full Stack](./documentos/Entrega-2/Desenvolvimento_web_full_stack/)
+- [Projeto em Banco de Dados](./documentos/Entrega-2/Projeto_em_banco_de_dados/)
+- [Projeto Interdisciplinar — Programação Web](./documentos/Entrega-2/Projeto_Interdisciplinar_programacao_web/)
 
-### Código-fonte da aplicação
+### Código-fonte
 
-O código desenvolvido para a aplicação Web está atualmente organizado
-na pasta `src/Frontend`:
-
-[📁 Frontend](./src/Frontend/)
-
-A API e as regras de negócio estão organizadas em:
-
-[📁 Backend](./src/Backend/)
+- [Frontend](./src/Frontend/)
+- [Backend](./src/Backend/)
 
 ## Equipe
 
-| Integrante            |
-| --------------------- |
-| Brian Walter          |
+| Integrante |
+| --- |
+| Brian Walter |
 | Max Tocantins Quaglia |
-| Rafael Nhoncanse      |
+| Rafael Nhoncanse |
+
+## Licença
+
+Este projeto foi desenvolvido para fins acadêmicos no âmbito do curso de Ciência da Computação da FECAP. Não há, nesta documentação, indicação de uma licença de distribuição específica.
 
 ## Referências
 
