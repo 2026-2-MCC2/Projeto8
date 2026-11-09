@@ -103,7 +103,6 @@ Projeto8/
 │   ├── Backend/
 │   └── Frontend/
 │
-├── backup_antes_001.sql
 └── README.md
 ```
 
