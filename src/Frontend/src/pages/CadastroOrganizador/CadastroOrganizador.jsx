@@ -3,6 +3,47 @@ import "./CadastroOrganizador.css";
 import { Link, useNavigate } from "react-router-dom";
 import { apiRequest } from "../../services/api";
 
+function apenasDigitos(valor) {
+  return valor.replace(/\D/g, "");
+}
+
+function formatarTelefone(valor) {
+  const digitos = apenasDigitos(valor).slice(0, 11);
+
+  if (digitos.length <= 10) {
+    return digitos
+      .replace(/^(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{4})(\d)/, "$1-$2");
+  }
+
+  return digitos
+    .replace(/^(\d{2})(\d)/, "($1) $2")
+    .replace(/(\d{5})(\d)/, "$1-$2");
+}
+
+function formatarCpf(valor) {
+  const digitos = apenasDigitos(valor).slice(0, 11);
+
+  return digitos
+    .replace(/^(\d{3})(\d)/, "$1.$2")
+    .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+    .replace(/\.(\d{3})(\d)/, ".$1-$2");
+}
+
+function formatarCnpj(valor) {
+  const digitos = apenasDigitos(valor).slice(0, 14);
+
+  return digitos
+    .replace(/^(\d{2})(\d)/, "$1.$2")
+    .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+    .replace(/\.(\d{3})(\d)/, ".$1/$2")
+    .replace(/(\d{4})(\d)/, "$1-$2");
+}
+
+function formatarDocumento(valor, tipoPessoa) {
+  return tipoPessoa === "PF" ? formatarCpf(valor) : formatarCnpj(valor);
+}
+
 function CadastroOrganizador() {
   const navigate = useNavigate();
 
@@ -20,10 +61,34 @@ function CadastroOrganizador() {
   const [sucesso, setSucesso] = useState("");
   const [carregando, setCarregando] = useState(false);
 
+  function handleTipoPessoa(novoTipo) {
+  setTipoPessoa(novoTipo);
+  setDocumento("");
+}
+
   async function handleSubmit(event) {
     event.preventDefault();
     setErro("");
     setSucesso("");
+    const telefoneNormalizado = apenasDigitos(telefone);
+
+if (telefoneNormalizado.length < 10 || telefoneNormalizado.length > 11) {
+  setErro("Informe um telefone válido com 10 ou 11 dígitos.");
+  return;
+}
+
+const documentoNormalizado = apenasDigitos(documento);
+const tamanhoEsperado = tipoPessoa === "PF" ? 11 : 14;
+
+if (documentoNormalizado.length !== tamanhoEsperado) {
+  setErro(
+    tipoPessoa === "PF"
+      ? "Informe um CPF válido com 11 dígitos."
+      : "Informe um CNPJ válido com 14 dígitos.",
+  );
+  return;
+}
+
     setCarregando(true);
 
     try {
@@ -33,9 +98,9 @@ function CadastroOrganizador() {
           nome,
           email,
           senha,
-          telefone,
+          telefone: telefoneNormalizado,
           tipo_pessoa: tipoPessoa,
-          documento,
+          documento: documentoNormalizado,
           data_nascimento: tipoPessoa === "PF" ? dataNascimento : null,
         }),
       });
@@ -104,9 +169,9 @@ function CadastroOrganizador() {
                 <input
                   id="telefone"
                   type="tel"
-                  placeholder="(00)00000-0000"
+                  placeholder="(11) 99999-9999"
                   value={telefone}
-                  onChange={(event) => setTelefone(event.target.value)}
+                  onChange={(event) => setTelefone(formatarTelefone(event.target.value))}
                   required
                 />
               </label>
@@ -117,7 +182,7 @@ function CadastroOrganizador() {
                     name="tipoPessoa"
                     value="PF"
                     checked={tipoPessoa === "PF"}
-                    onChange={(e) => setTipoPessoa(e.target.value)}
+                    onChange={(e) => handleTipoPessoa(e.target.value)}
                   />
                   Pessoa Física (PF)
                 </label>
@@ -128,7 +193,7 @@ function CadastroOrganizador() {
                     name="tipoPessoa"
                     value="PJ"
                     checked={tipoPessoa === "PJ"}
-                    onChange={(e) => setTipoPessoa(e.target.value)}
+                    onChange={(e) => handleTipoPessoa(e.target.value)}
                   />
                   Pessoa Jurídica (PJ)
                 </label>
@@ -139,13 +204,15 @@ function CadastroOrganizador() {
                 <input
                   id="documento"
                   type="text"
+                  inputMode="numeric"
+                  maxLength={tipoPessoa === "PF" ? 14 : 18}
                   placeholder={
                     tipoPessoa === "PF"
                       ? "000.000.000-00"
                       : "00.000.000/0000-00"
                   }
                   value={documento}
-                  onChange={(event) => setDocumento(event.target.value)}
+                  onChange={(event) => setDocumento(formatarDocumento(event.target.value, tipoPessoa))}
                   required
                 />
               </label>

@@ -97,6 +97,8 @@
 
 .forn-btn-perigo:hover:not(:disabled) {
   background: #fdf1f3;
+  color: #a42a40;
+  border-color: #eaa9b3;
 }
 
 .forn-btn-pequeno {

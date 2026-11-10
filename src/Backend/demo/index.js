@@ -13,7 +13,7 @@ const { criarSessao, resolverToken, encerrarSessao, PERFIS } = require("./sessoe
 const { USUARIO_DEMO } = require("./dados");
 const rotasFornecedor = require("./rotasFornecedor");
 const rotasAdmin = require("./rotasAdmin");
-const { router: rotasOrganizador, atualizarConta } = require("./rotasOrganizador");
+const { router: rotasOrganizador, atualizarConta, catalogo, propostasOrganizador } = require("./rotasOrganizador");
 
 const router = express.Router();
 
@@ -76,6 +76,8 @@ demo.post("/demo-logout", (req, res) => {
 demo.use("/fornecedor", exigirTipo("FORNECEDOR"), rotasFornecedor);
 demo.use("/admin", exigirTipo("ADMINISTRADOR"), rotasAdmin);
 demo.use("/eventos", exigirTipo("ORGANIZADOR"), rotasOrganizador);
+demo.use("/catalogo", exigirTipo("ORGANIZADOR"), catalogo);
+demo.use("/organizador", exigirTipo("ORGANIZADOR"), propostasOrganizador);
 demo.patch("/usuarios/:id", atualizarConta);
 demo.use((req, res) => {
   res.status(403).json({ mensagem: "Este recurso não está disponível no modo demonstração." });

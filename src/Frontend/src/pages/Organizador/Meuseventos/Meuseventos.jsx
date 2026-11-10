@@ -218,13 +218,14 @@ function Meuseventos() {
                         )}
                       </span>
 
-                      <span
-                        className="evento-card-arrow evento-card-arrow-disabled"
-                        aria-label="Detalhes do evento em breve"
-                        title="Detalhes do evento em breve"
+                      <Link
+                        to={`/meus-eventos/${evento.id}`}
+                        className="evento-card-arrow"
+                        aria-label={`Ver detalhes de ${evento.nome}`}
+                        title="Ver detalhes do evento"
                       >
-                        <Icon name="arrow" />
-                      </span>
+                      <Icon name="arrow" />
+                      </Link>
                     </div>
                   </article>
                 );

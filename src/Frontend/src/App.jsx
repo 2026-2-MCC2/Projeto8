@@ -29,6 +29,7 @@ import Oportunidades from "./pages/Fornecedor/Oportunidades/Oportunidades";
 import DetalheOportunidade from "./pages/Fornecedor/DetalheOportunidade/DetalheOportunidade";
 import MinhasPropostas from "./pages/Fornecedor/MinhasPropostas/MinhasPropostas";
 import MinhaContaFornecedor from "./pages/Fornecedor/MinhaContaFornecedor/MinhaContaFornecedor";
+import DetalheEvento from "./pages/Organizador/DetalheEvento/DetalheEvento";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
           <Route path="/criar-evento" element={<CriarEvento />} />
           <Route path="/dashboard" element={<DashboardOrganizador />} />
           <Route path="/meus-eventos" element={<Meuseventos />} />
+          <Route path="/meus-eventos/:id" element={<DetalheEvento />} />
         </Route>
         <Route element={<RotaPrivadaAdmin />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />

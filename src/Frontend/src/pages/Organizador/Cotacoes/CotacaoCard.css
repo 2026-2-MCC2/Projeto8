@@ -164,6 +164,7 @@
   color: #e85f5f;
 }
 
+
 @media (max-width: 900px) {
   .cotacao-card-conteudo {
     flex-direction: column;

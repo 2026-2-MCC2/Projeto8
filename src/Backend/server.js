@@ -36,11 +36,13 @@ app.use(cors({
 }));
 app.use(express.json({ limit: "1mb" }));
 
-app.use("/catalogo", require("./routes/catalogo"));
-
 // Modo demonstração (dados em memória, isolado do MySQL).
-// Precisa vir antes de qualquer rota real: ver demo/index.js.
+// Precisa vir antes de qualquer rota real (inclusive /catalogo): ver demo/index.js.
+// Se o /catalogo ficasse antes, o token demo cairia na verificação do JWT real
+// e o front-end entenderia isso como "sessão expirada".
 app.use(require("./demo"));
+
+app.use("/catalogo", require("./routes/catalogo"));
 
 // Middlewares de autenticação (JWT) e autorização por perfil.
 // Ficam em middlewares/auth.js para serem compartilhados com as rotas do fornecedor.
