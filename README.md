@@ -328,7 +328,7 @@ Os materiais acadêmicos e técnicos estão organizados por etapa e disciplina.
 
 ## Licença
 
-Este projeto foi desenvolvido para fins acadêmicos no âmbito do curso de Ciência da Computação da FECAP. Não há, nesta documentação, indicação de uma licença de distribuição específica.
+<a href="https://github.com/2026-2-MCC2/Projeto8/tree/main">TicketLab </a> © 2026 by <a href="https://example.com">Brian Walter, Rafael Nhoncanse, Max Tocantis</a> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
 
 ## Referências
 
