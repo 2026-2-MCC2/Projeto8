@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useMemo } from "react";
-import { encerrarSessao } from "../../services/api";
+import { useEffect, useMemo, useState } from "react";
+import { apiRequest, encerrarSessao } from "../../services/api";
 import { emModoDemonstracao } from "../../utils/sessao";
 import Icon from "./Icon";
 import "./LayoutOrganizador.css";
@@ -48,6 +48,29 @@ export default function LayoutOrganizador({
 
   const usuario = useMemo(() => obterUsuario(), []);
 
+    const [propostasPendentes, setPropostasPendentes] = useState(0);
+
+  useEffect(() => {
+    // Só o menu do Organizador mostra o contador de cotações.
+    if (menuPersonalizado) return;
+
+    let ativo = true;
+
+    apiRequest("/organizador/propostas")
+      .then((propostas) => {
+        if (!ativo || !Array.isArray(propostas)) return;
+
+        setPropostasPendentes(propostas.length);
+      })
+      .catch(() => {
+        // Se a busca falhar, o selo simplesmente não aparece.
+      });
+
+    return () => {
+      ativo = false;
+    };
+  }, [menuPersonalizado]);
+
   const nomeUsuario = usuario?.nome?.trim() || perfil;
 
   const iniciais = obterIniciais(nomeUsuario);
@@ -81,7 +104,6 @@ export default function LayoutOrganizador({
       label: "Cotações",
       icon: "quote",
       id: "cotacoes",
-      badge: 3,
     },
     {
       path: "/resumo-custos",
@@ -130,6 +152,7 @@ export default function LayoutOrganizador({
         <nav className="org-sidebar-nav" aria-label="Navegação principal">
           {menu.map((item) => {
             const isActive = active === item.id;
+            const badge = item.id === "cotacoes" ? propostasPendentes : item.badge;
 
             return (
               <Link
@@ -141,9 +164,7 @@ export default function LayoutOrganizador({
 
                 <span>{item.label}</span>
 
-                {item.badge && (
-                  <span className="org-nav-badge">{item.badge}</span>
-                )}
+                {badge > 0 && <span className="org-nav-badge">{badge}</span>}
               </Link>
             );
           })}

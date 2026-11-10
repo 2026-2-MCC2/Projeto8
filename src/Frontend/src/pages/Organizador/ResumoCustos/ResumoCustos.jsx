@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import LayoutOrganizador from "../../../components/organizador/LayoutOrganizador";
 import Icon from "../../../components/organizador/Icon";
+import { baixarCsv } from "../../../utils/exportarCsv";
 import "./ResumoCustos.css";
 
 const EVENTOS = [
@@ -64,36 +65,24 @@ function calcularResumo(evento) {
 }
 
 function exportarResumo(resumo) {
-  const dados = {
-    evento: resumo.nome,
-    data: resumo.data,
-    publico: resumo.publico,
-    custos: {
-      servicos: resumo.servicos,
-      adicionais: resumo.adicionais,
-      total: resumo.total,
-      porPessoa: Number(resumo.custoPorPessoa.toFixed(2)),
-    },
-    distribuicao: resumo.distribuicao.map((item) => ({
-      categoria: item.categoria,
-      valor: item.valor,
-      percentual: Number(item.percentual.toFixed(2)),
-    })),
-  };
-
-  const blob = new Blob([JSON.stringify(dados, null, 2)], {
-    type: "application/json;charset=utf-8",
-  });
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = "ticketlab-resumo-custos.json";
-
-  link.click();
-
-  URL.revokeObjectURL(url);
+  baixarCsv("resumo-custos-ticketlab.csv", [
+    ["Evento", resumo.nome],
+    ["Data", resumo.data],
+    ["Público", resumo.publico],
+    [],
+    ["Custo", "Valor"],
+    ["Custo de serviços", formatarMoeda(resumo.servicos)],
+    ["Custos adicionais", formatarMoeda(resumo.adicionais)],
+    ["Total", formatarMoeda(resumo.total)],
+    ["Custo por pessoa", formatarMoeda(resumo.custoPorPessoa)],
+    [],
+    ["Categoria", "Valor", "Percentual"],
+    ...resumo.distribuicao.map((item) => [
+      nomeCategoria(item.categoria),
+      formatarMoeda(item.valor),
+      `${item.percentual.toFixed(1).replace(".", ",")}%`,
+    ]),
+  ]);
 }
 
 function nomeCategoria(categoria) {
@@ -142,11 +131,10 @@ export default function ResumoCustos() {
 
           <button
             type="button"
-            className="resumo-export-button"
+            className="botao-exportar"
             onClick={() => exportarResumo(resumo)}
           >
-            Exportar resumo
-            <Icon name="download" />
+            <Icon name="download" /> Exportar resumo
           </button>
         </header>
 

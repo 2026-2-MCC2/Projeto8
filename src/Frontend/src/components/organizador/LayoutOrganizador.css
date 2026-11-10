@@ -418,3 +418,43 @@
   font-weight: 600;
   line-height: 1.3;
 }
+
+/* BOTÃO DE EXPORTAR (mesmo visual do "Exportar relatório" do administrador) */
+
+.botao-exportar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 11px 16px;
+
+  border: 1px solid #e6eaf1;
+  border-radius: 9px;
+
+  background: #fff;
+  color: #172033;
+
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.botao-exportar:hover:not(:disabled) {
+  border-color: #bcc7ef;
+  background: #fbfcff;
+  color: #5064e8;
+}
+
+.botao-exportar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.botao-exportar .organizador-icon {
+  width: 16px;
+  height: 16px;
+}

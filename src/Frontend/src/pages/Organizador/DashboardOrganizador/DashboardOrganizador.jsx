@@ -4,7 +4,8 @@ import LayoutOrganizador from "../../../components/organizador/LayoutOrganizador
 import Icon from "../../../components/organizador/Icon";
 import { useEffect, useState } from "react";
 import { apiRequest } from "../../../services/api";
-import { formatarDataEvento } from "../../../utils/datas";
+import { formatarDataEvento, formatarDataCompleta } from "../../../utils/datas";
+import { baixarCsv } from "../../../utils/exportarCsv";
 
 function DashboardOrganizador() {
   const [eventos, setEventos] = useState([]);
@@ -71,21 +72,19 @@ function DashboardOrganizador() {
     );
   }
 
-  function exportarDados() {
-    const blob = new Blob([JSON.stringify(eventos, null, 2)], {
-      type: "application/json",
-    });
-
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = "ticketlab-eventos.json";
-
-    link.click();
-
-    URL.revokeObjectURL(url);
+    function exportarDados() {
+    baixarCsv("eventos-ticketlab.csv", [
+      ["Evento", "Data", "Horário", "Local", "Público mínimo", "Público máximo", "Status"],
+      ...eventos.map((evento) => [
+        evento.nome,
+        formatarDataCompleta(evento.data_evento),
+        String(evento.horario || "").slice(0, 5),
+        evento.local || "",
+        evento.publico_min,
+        evento.publico_max,
+        statusLabel(evento.status),
+      ]),
+    ]);
   }
 
   const atividades = eventos.slice(0, 3);
@@ -109,11 +108,11 @@ function DashboardOrganizador() {
 
             <button
               type="button"
-              className="export-button"
+              className="botao-exportar"
               onClick={exportarDados}
+              disabled={carregando || eventos.length === 0}
             >
-              <span>Exportar dados</span>
-              <Icon name="download" />
+              <Icon name="download" /> Exportar relatório
             </button>
           </section>
 
