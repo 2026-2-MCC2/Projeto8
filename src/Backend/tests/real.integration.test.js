@@ -96,6 +96,29 @@ test("PATCH /usuarios/:id: troca de senha realmente grava hash bcrypt", async ()
   assert.equal((await api("/login", { metodo: "POST", corpo: { email: u.email, senha: "novaSenha1" } })).status, 200);
 });
 
+test("PATCH /conta/senha: confere a senha atual e grava a nova", async () => {
+  const u = await criarOrganizador("contasenha");
+
+  // sem token
+  assert.equal((await api("/conta/senha", { metodo: "PATCH", corpo: { senha_atual: SENHA, nova_senha: "novaSenha1" } })).status, 401);
+  // campos faltando, senha curta e senha igual
+  assert.equal((await api("/conta/senha", { metodo: "PATCH", token: u.token, corpo: { nova_senha: "novaSenha1" } })).status, 400);
+  assert.equal((await api("/conta/senha", { metodo: "PATCH", token: u.token, corpo: { senha_atual: SENHA, nova_senha: "123" } })).status, 400);
+  assert.equal((await api("/conta/senha", { metodo: "PATCH", token: u.token, corpo: { senha_atual: SENHA, nova_senha: SENHA } })).status, 400);
+  // senha atual errada: 403 (nunca 401, que o front trata como sessão expirada)
+  const errada = await api("/conta/senha", { metodo: "PATCH", token: u.token, corpo: { senha_atual: "errada123", nova_senha: "novaSenha1" } });
+  assert.equal(errada.status, 403);
+  assert.equal(errada.dados.mensagem, "Senha atual incorreta.");
+  assert.equal((await api("/login", { metodo: "POST", corpo: { email: u.email, senha: SENHA } })).status, 200);
+
+  // troca válida
+  const ok = await api("/conta/senha", { metodo: "PATCH", token: u.token, corpo: { senha_atual: SENHA, nova_senha: "novaSenha1" } });
+  assert.equal(ok.status, 200);
+  assert.equal((await api("/login", { metodo: "POST", corpo: { email: u.email, senha: SENHA } })).status, 401);
+  assert.equal((await api("/login", { metodo: "POST", corpo: { email: u.email, senha: "novaSenha1" } })).status, 200);
+});
+
+
 test("PATCH /usuarios/:id: senha_hash enviado pelo cliente é ignorado", async () => {
   const u = await criarOrganizador("Hash");
   const [[antes]] = await pool.query("SELECT senha_hash FROM usuarios WHERE id = ?", [u.id]);

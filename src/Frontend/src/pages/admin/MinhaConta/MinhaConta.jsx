@@ -7,6 +7,7 @@ import {
   formatarTelefone,
   obterIniciais,
 } from "../../../utils/formatadores";
+import AlterarSenha from "../../../components/AlterarSenha/AlterarSenha";
 
 function obterUsuario() {
   try {
@@ -272,6 +273,9 @@ export default function AdminMinhaConta() {
               As preferências ficam locais nesta entrega e ainda não são
               salvas pela API.
             </p>
+          </section>
+          <section className="adm-panel adm-panel-padded">
+            <AlterarSenha />
           </section>
         </div>
       </main>

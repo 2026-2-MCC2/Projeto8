@@ -1,0 +1,113 @@
+.senha h2 {
+  margin: 0 0 4px;
+
+  color: #17233d;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.senha-descricao {
+  margin: 0 0 20px;
+
+  color: #657086;
+
+  font-size: 11px;
+}
+
+.senha-form {
+  display: grid;
+  gap: 16px;
+}
+
+.senha-linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.senha-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  color: #17233d;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.senha-campo input {
+  height: 42px;
+  padding: 0 14px;
+
+  border: 1px solid #e0e6ef;
+  border-radius: 8px;
+
+  background: #fbfcfe;
+  color: #17233d;
+
+  font-size: 12px;
+}
+
+.senha-campo input:focus {
+  outline: none;
+  border-color: #5264e8;
+  box-shadow: 0 0 0 3px rgba(82, 99, 232, 0.12);
+}
+
+.senha-campo small {
+  color: #8a94a8;
+
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.senha-alerta {
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.senha-alerta.erro {
+  background: #fff1f1;
+  color: #b42318;
+}
+
+.senha-alerta.sucesso {
+  background: #e9f8f1;
+  color: #067647;
+}
+
+.senha-botao {
+  padding: 11px 18px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: #5264e8;
+  color: #fff;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.senha-botao:hover:not(:disabled) {
+  background: #4353cf;
+}
+
+.senha-botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 720px) {
+  .senha-linha {
+    grid-template-columns: 1fr;
+  }
+}

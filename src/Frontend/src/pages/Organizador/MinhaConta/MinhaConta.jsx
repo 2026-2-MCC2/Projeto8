@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import LayoutOrganizador from "../../../components/organizador/LayoutOrganizador";
 import { apiRequest } from "../../../services/api";
 import "./MinhaConta.css";
+import AlterarSenha from "../../../components/AlterarSenha/AlterarSenha";
 
 function obterUsuario() {
   try {
@@ -272,6 +273,9 @@ export default function MinhaConta() {
               As preferências ficam locais nesta entrega e ainda não são
               persistidas pela API.
             </p>
+          </article>
+          <article className="perfil-card">
+            <AlterarSenha />
           </article>
         </section>
       </main>

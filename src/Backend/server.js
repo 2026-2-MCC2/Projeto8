@@ -1439,6 +1439,8 @@ app.post(
 app.use("/fornecedor", require("./routes/fornecedor"));
 
 app.use("/organizador", require("./routes/organizador-propostas"));
+// Dados da própria conta (troca de senha), para qualquer perfil logado.
+app.use("/conta", require("./routes/conta"));
 
 
 

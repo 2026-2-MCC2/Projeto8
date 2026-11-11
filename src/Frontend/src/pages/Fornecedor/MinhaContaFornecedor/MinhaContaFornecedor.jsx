@@ -14,6 +14,24 @@ import {
 } from "../../../utils/fornecedor";
 
 const SENHA_VAZIA = { senha_atual: "", nova_senha: "", confirmar: "" };
+// Texto de cada interruptor. A "chave" liga o texto ao valor no estado.
+const PREFERENCIAS = [
+  {
+    chave: "oportunidades",
+    titulo: "Novas oportunidades",
+    descricao: "Receba alertas de eventos que combinam com seus serviços.",
+  },
+  {
+    chave: "propostas",
+    titulo: "Respostas às propostas",
+    descricao: "Saiba quando uma proposta for aceita ou recusada.",
+  },
+  {
+    chave: "resumo",
+    titulo: "Resumo semanal",
+    descricao: "Uma visão rápida das suas propostas e serviços.",
+  },
+];
 
 function iniciais(nome) {
   return String(nome || "F")
@@ -52,6 +70,18 @@ export default function MinhaContaFornecedor() {
   const [erroSenha, setErroSenha] = useState("");
   const [sucesso, setSucesso] = useState("");
   const [sucessoSenha, setSucessoSenha] = useState("");
+
+    // Os 3 interruptores ficam juntos em UM objeto
+  const [preferencias, setPreferencias] = useState({
+    oportunidades: true,
+    propostas: true,
+    resumo: false,
+  });
+
+  function alterarPreferencia(chave, valor) {
+    // Atualização imutável: copia o objeto e troca só uma chave
+    setPreferencias((atual) => ({ ...atual, [chave]: valor }));
+  }
 
   function aplicarPerfil(dados) {
     setPerfil(dados);
@@ -217,6 +247,39 @@ export default function MinhaContaFornecedor() {
             </div>
           </form>
 
+          <section className="forn-painel forn-form forn-pref-painel">
+            <h2 className="forn-titulo-form">Preferências</h2>
+            <p className="forn-pref-descricao">Escolha como quer receber novidades.</p>
+
+            <div className="forn-pref-lista">
+              {PREFERENCIAS.map((item) => (
+                <label className="forn-pref" key={item.chave}>
+                  <span className="forn-pref-texto">
+                    <strong>{item.titulo}</strong>
+                    <small>{item.descricao}</small>
+                  </span>
+
+                  <input
+                    type="checkbox"
+                    checked={preferencias[item.chave]}
+                    onChange={(event) =>
+                      alterarPreferencia(item.chave, event.target.checked)
+                    }
+                  />
+
+                  <span className="forn-switch" aria-hidden="true">
+                    <span />
+                  </span>
+                </label>
+              ))}
+            </div>
+
+            <p className="forn-pref-nota">
+              As preferências ficam locais nesta entrega e ainda não são
+              salvas pela API.
+            </p>
+          </section>
+
           <form className="forn-painel forn-form" onSubmit={salvarSenha} noValidate>
             <h2 className="forn-titulo-form">Alterar senha</h2>
 
@@ -234,6 +297,7 @@ export default function MinhaContaFornecedor() {
                 />
               </label>
 
+            <div className="forn-campos dois">
               <label className="forn-campo">
                 Nova senha
                 <input
@@ -254,10 +318,11 @@ export default function MinhaContaFornecedor() {
                   onChange={(e) => setSenha({ ...senha, confirmar: e.target.value })}
                 />
               </label>
+              </div>
             </div>
 
-            <div className="forn-form-acoes">
-              <button type="submit" className="forn-btn forn-btn-secundario" disabled={salvandoSenha}>
+            <div className="forn-form-acoes forn-form-acoes-esquerda">
+              <button type="submit" className="forn-btn forn-btn-primario" disabled={salvandoSenha}>
                 {salvandoSenha ? "Alterando..." : "Alterar senha"}
               </button>
             </div>
