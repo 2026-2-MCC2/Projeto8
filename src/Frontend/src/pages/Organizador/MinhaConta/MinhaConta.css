@@ -27,7 +27,7 @@
 
   color: #17233d;
 
-  font-size: 29px;
+  font-size: 31px;
   font-weight: 500;
   letter-spacing: -0.8px;
 }
@@ -37,7 +37,7 @@
 
   color: #71809b;
 
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .conta-grid {
@@ -87,7 +87,7 @@
   background: #dfe5ff;
   color: #536be7;
 
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -105,7 +105,7 @@
 
   color: #8b98af;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .alterar-foto-button {
@@ -120,7 +120,7 @@
 
   color: #17233d;
 
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
 
   cursor: pointer;
@@ -162,7 +162,7 @@
 .form-field label {
   color: #263651;
 
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -183,7 +183,7 @@
 
   color: #17233d;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -213,7 +213,7 @@
 
   box-shadow: 0 8px 18px rgb(83 104 231 / 18%);
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 
   cursor: pointer;
@@ -234,7 +234,7 @@
 
   color: #17233d;
 
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
 }
 
@@ -243,7 +243,7 @@
 
   color: #8b98af;
 
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .preferencias-list {
@@ -276,14 +276,14 @@
 .preferencia-texto strong {
   color: #263651;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .preferencia-texto small {
   color: #9aa5b7;
 
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .preferencia input {
@@ -383,7 +383,7 @@
   margin: 12px 0 0;
   padding: 10px 12px;
   border-radius: 8px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
 }
 
@@ -402,6 +402,6 @@
 .preferencias-observacao {
   margin: 18px 0 0;
   color: #8a95a8;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
 }

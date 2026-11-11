@@ -26,7 +26,7 @@
 .resumo-header h1 {
   margin: 0;
   color: #17233d;
-  font-size: 29px;
+  font-size: 31px;
   font-weight: 500;
   letter-spacing: -0.8px;
 }
@@ -34,7 +34,7 @@
 .resumo-header p {
   margin: 7px 0 0;
   color: #71809b;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 
@@ -106,13 +106,13 @@
   display: block;
   margin-bottom: 4px;
   color: #7f8da6;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .resumo-metric-card strong {
   display: block;
   color: #111e37;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -121,7 +121,7 @@
   display: block;
   margin-top: 3px;
   color: #3aa77c;
-  font-size: 8px;
+  font-size: 9px;
 }
 
 /* GRID */
@@ -155,14 +155,14 @@
 .distribuicao-header h2 {
   margin: 0;
   color: #17233d;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .distribuicao-header p {
   margin: 6px 0 0;
   color: #8b98af;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .evento-select {
@@ -177,7 +177,7 @@
   background: #fff;
   color: #667590;
 
-  font-size: 9px;
+  font-size: 11px;
   cursor: pointer;
 }
 
@@ -250,7 +250,7 @@
   margin-top: 4px;
 
   color: #9aa6b9;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 /* LEGENDA */
@@ -276,7 +276,7 @@
 
 .legend-name strong {
   color: #27354f;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .legend-dot {
@@ -300,14 +300,14 @@
 
 .legend-value {
   color: #1c2a44;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .legend-percent {
   grid-column: 1;
   margin-left: 16px;
   color: #8b98af;
-  font-size: 8px;
+  font-size: 10px;
 }
 
 /* INSIGHT */
@@ -351,7 +351,7 @@
 
   color: rgb(255 255 255 / 82%);
 
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 1.3px;
 }
@@ -370,7 +370,7 @@
 
   color: rgb(255 255 255 / 83%);
 
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.6;
 }
 
@@ -407,7 +407,7 @@
 
   color: rgb(255 255 255 / 82%);
 
-  font-size: 8px;
+  font-size: 10px;
 }
 
 /* RESPONSIVO */

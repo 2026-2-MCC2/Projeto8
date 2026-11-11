@@ -5,6 +5,7 @@ import { emModoDemonstracao } from "../../utils/sessao";
 import Icon from "../organizador/Icon";
 import "../organizador/LayoutOrganizador.css";
 import "../../styles/admin.css";
+import SinoNotificacoes from "../SinoNotificacoes/SinoNotificacoes";
 
 function obterUsuario() {
   try {
@@ -156,6 +157,7 @@ export default function LayoutAdmin({ children, active = "" }) {
           </div>
 
           <div className="org-topbar-user">
+            <SinoNotificacoes perfil="ADMINISTRADOR" />
             <div className="org-user">
               <div className="org-avatar">{iniciais}</div>
 

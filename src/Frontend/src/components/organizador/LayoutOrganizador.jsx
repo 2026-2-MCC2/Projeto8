@@ -4,6 +4,7 @@ import { apiRequest, encerrarSessao } from "../../services/api";
 import { emModoDemonstracao } from "../../utils/sessao";
 import Icon from "./Icon";
 import "./LayoutOrganizador.css";
+import SinoNotificacoes from "../SinoNotificacoes/SinoNotificacoes";
 
 function obterUsuario() {
   try {
@@ -196,16 +197,7 @@ export default function LayoutOrganizador({
           </div>
 
           <div className="org-topbar-user">
-            <button
-              type="button"
-              className="org-notification"
-              aria-label="Notificações (em breve)"
-              disabled
-              title="Notificações em breve"
-            >
-              <Icon name="bell" />
-              <span />
-            </button>
+          <SinoNotificacoes perfil={menuPersonalizado ? "FORNECEDOR" : "ORGANIZADOR"} />
 
             <div className="org-user">
               <div className="org-avatar">{iniciais}</div>
