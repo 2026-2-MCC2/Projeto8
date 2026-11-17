@@ -528,11 +528,8 @@ app.delete(
 //     "tipo": "ORGANIZADOR"
 // }
 
+
 app.post("/usuarios", (req, res) => {
-  // Retira do req.body os campos que precisamos
-  // para cadastrar o usuário.
-  //
-  // Isso é chamado de destructuring em JavaScript.
   const {
     nome,
     email,
@@ -543,7 +540,6 @@ app.post("/usuarios", (req, res) => {
     data_nascimento,
   } = req.body;
 
-  // Verifica se todos os campos obrigatórios foram enviados.
   if (
     !nome ||
     !email ||
@@ -558,147 +554,118 @@ app.post("/usuarios", (req, res) => {
     });
   }
 
-  // Verifica se o tipo de pessoa é válido.
-  //
-  // A tabela organizadores permite somente:
-  // PF = Pessoa Física
-  // PJ = Pessoa Jurídica
   if (tipo_pessoa !== "PF" && tipo_pessoa !== "PJ") {
     return res.status(400).json({
       mensagem: "Tipo de pessoa deve ser 'PF' ou 'PJ'",
     });
   }
 
-  // Gera um hash seguro para a senha.
-  //
-  // O número 10 representa o custo utilizado
-  // pelo bcrypt para gerar o hash.
-  //
-  // A senha original NÃO será armazenada no banco.
   const senhaHash = bcrypt.hashSync(senha, 10);
 
-  // SQL responsável por inserir um novo usuário.
-  //
-  // Os "?" são placeholders.
-  // Os valores reais serão enviados no array abaixo.
   const sqlUsuario = `
-        INSERT INTO usuarios
-        (nome, email, telefone, senha_hash, tipo, status)
-        VALUES (?, ?, ?, ?, ?, ?)
-    `;
+    INSERT INTO usuarios
+    (nome, email, telefone, senha_hash, tipo, status)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
 
-  // Inicia uma transação no banco de dados.
-  //
-  // A partir daqui, as alterações só serão confirmadas
-  // definitivamente quando executarmos o COMMIT.
-  connection.beginTransaction((error) => {
+  connection.getConnection((error, transactionConnection) => {
     if (error) {
-      console.error("Erro ao iniciar transação:", error.message);
-
+      console.error("Erro ao obter conexão:", error.message);
       return res.status(500).json({
         mensagem: "Erro ao iniciar cadastro",
       });
     }
 
-    // Executa o INSERT do usuário.
-    connection.query(
-      sqlUsuario,
-      [nome, email, telefone, senhaHash, "ORGANIZADOR", "PENDENTE"],
-      (error, results) => {
-        // Verifica se aconteceu algum erro
-        // durante o cadastro do usuário.
-        if (error) {
-          console.error("Erro ao cadastrar usuário:", error.message);
+    transactionConnection.beginTransaction((error) => {
+      if (error) {
+        console.error("Erro ao iniciar transação:", error.message);
+        transactionConnection.release();
 
-          // Desfaz qualquer alteração realizada
-          // dentro da transação.
-          return connection.rollback(() => {
-            // ER_DUP_ENTRY = registro duplicado.
-            //
-            // Nesse caso, normalmente significa
-            // que o email já está cadastrado.
-            if (error.code === "ER_DUP_ENTRY") {
-              return res.status(409).json({
-                mensagem: "Email já cadastrado",
-              });
-            }
+        return res.status(500).json({
+          mensagem: "Erro ao iniciar cadastro",
+        });
+      }
 
-            return res.status(500).json({
-              mensagem: "Erro ao cadastrar usuário",
-            });
-          });
-        }
+      transactionConnection.query(
+        sqlUsuario,
+        [nome, email, telefone, senhaHash, "ORGANIZADOR", "PENDENTE"],
+        (error, results) => {
+          if (error) {
+            console.error("Erro ao cadastrar usuário:", error.message);
 
-        // Guarda o ID gerado pelo AUTO_INCREMENT
-        // da tabela usuarios.
-        const idUsuario = results.insertId;
+            return transactionConnection.rollback(() => {
+              transactionConnection.release();
 
-        // SQL responsável por criar o registro
-        // correspondente na tabela organizadores.
-        const sqlOrganizador = `
-                    INSERT INTO organizadores
-                    (id_usuario, tipo_pessoa, documento, data_nascimento)
-                    VALUES (?, ?, ?, ?)
-                `;
-
-        // Cria o registro do organizador.
-        connection.query(
-          sqlOrganizador,
-          [idUsuario, tipo_pessoa, documento, data_nascimento],
-          (error) => {
-            // Verifica se aconteceu algum erro
-            // ao cadastrar os dados do organizador.
-            if (error) {
-              console.error("Erro ao cadastrar organizador:", error.message);
-
-              // Desfaz o INSERT do usuário
-              // caso o organizador não consiga
-              // ser cadastrado.
-              return connection.rollback(() => {
-                // ER_DUP_ENTRY pode acontecer
-                // caso o documento já exista.
-                if (error.code === "ER_DUP_ENTRY") {
-                  return res.status(409).json({
-                    mensagem: "Documento já cadastrado",
-                  });
-                }
-
-                return res.status(500).json({
-                  mensagem: "Erro ao cadastrar organizador",
+              if (error.code === "ER_DUP_ENTRY") {
+                return res.status(409).json({
+                  mensagem: "Email já cadastrado",
                 });
+              }
+
+              return res.status(500).json({
+                mensagem: "Erro ao cadastrar usuário",
               });
-            }
+            });
+          }
 
-            // Confirma definitivamente todas as
-            // alterações realizadas na transação.
-            connection.commit((error) => {
+          const idUsuario = results.insertId;
+
+          const sqlOrganizador = `
+            INSERT INTO organizadores
+            (id_usuario, tipo_pessoa, documento, data_nascimento)
+            VALUES (?, ?, ?, ?)
+          `;
+
+          transactionConnection.query(
+            sqlOrganizador,
+            [idUsuario, tipo_pessoa, documento, data_nascimento],
+            (error) => {
               if (error) {
-                console.error("Erro ao confirmar cadastro:", error.message);
+                console.error("Erro ao cadastrar organizador:", error.message);
 
-                // Se o COMMIT falhar, desfaz
-                // as alterações da transação.
-                return connection.rollback(() => {
+                return transactionConnection.rollback(() => {
+                  transactionConnection.release();
+
+                  if (error.code === "ER_DUP_ENTRY") {
+                    return res.status(409).json({
+                      mensagem: "Documento já cadastrado",
+                    });
+                  }
+
                   return res.status(500).json({
-                    mensagem: "Erro ao confirmar cadastro",
+                    mensagem: "Erro ao cadastrar organizador",
                   });
                 });
               }
 
-              // HTTP 201 = Created.
-              //
-              // Indica que os dois registros
-              // foram criados com sucesso.
-              return res.status(201).json({
-                mensagem: "Usuário cadastrado com sucesso!",
-                id: idUsuario,
+              transactionConnection.commit((error) => {
+                if (error) {
+                  console.error("Erro ao confirmar cadastro:", error.message);
+
+                  return transactionConnection.rollback(() => {
+                    transactionConnection.release();
+
+                    return res.status(500).json({
+                      mensagem: "Erro ao confirmar cadastro",
+                    });
+                  });
+                }
+
+                transactionConnection.release();
+
+                return res.status(201).json({
+                  mensagem: "Usuário cadastrado com sucesso!",
+                  id: idUsuario,
+                });
               });
-            });
-          }
-        );
-      }
-    );
+            }
+          );
+        }
+      );
+    });
   });
 });
+
 
 // ======================================================
 // POST /organizadores
@@ -722,12 +689,8 @@ app.post("/usuarios", (req, res) => {
 // Se alguma operação falhar:
 //     ROLLBACK
 
+
 app.post("/organizadores", (req, res) => {
-  // Retira do req.body os campos necessários
-  // para realizar o cadastro.
-  //
-  // Os primeiros campos pertencem à tabela "usuarios".
-  // Os últimos campos pertencem à tabela "organizadores".
   const {
     nome,
     email,
@@ -738,27 +701,17 @@ app.post("/organizadores", (req, res) => {
     data_nascimento,
   } = req.body;
 
-  // ==================================================
-  // VALIDAÇÃO DOS CAMPOS OBRIGATÓRIOS
-  // ==================================================
-
-  // Estes campos são obrigatórios para PF e PJ.
   if (!nome || !email || !senha || !telefone || !tipo_pessoa || !documento) {
     return res.status(400).json({
       mensagem: "Todos os campos são obrigatórios",
     });
   }
 
-  // A data de nascimento é obrigatória somente para PF.
   if (tipo_pessoa === "PF" && !data_nascimento) {
     return res.status(400).json({
       mensagem: "A data de nascimento é obrigatória para Pessoa Física",
     });
   }
-
-  // ==================================================
-  // VALIDAÇÃO DO TIPO DE PESSOA
-  // ==================================================
 
   if (tipo_pessoa !== "PF" && tipo_pessoa !== "PJ") {
     return res.status(400).json({
@@ -766,22 +719,15 @@ app.post("/organizadores", (req, res) => {
     });
   }
 
-  // ==================================================
-  // VALIDAÇÃO DA DATA DE NASCIMENTO
-  // ==================================================
-
-  // A data só precisa ser validada quando o cadastro for PF.
   if (tipo_pessoa === "PF") {
     const data = new Date(data_nascimento);
 
-    // Verifica se a data é válida.
     if (isNaN(data.getTime())) {
       return res.status(400).json({
         mensagem: "Data de nascimento inválida",
       });
     }
 
-    // A data não pode estar no futuro.
     if (data > new Date()) {
       return res.status(400).json({
         mensagem: "Data de nascimento não pode ser no futuro",
@@ -791,179 +737,109 @@ app.post("/organizadores", (req, res) => {
 
   const senhaHash = bcrypt.hashSync(senha, 10);
 
-  // ==================================================
-  // SQL DO USUÁRIO
-  // ==================================================
-
-  // SQL responsável por inserir o usuário.
-  //
-  // Os "?" são placeholders.
-  // Os valores reais serão enviados no array abaixo.
   const sql = `
-        INSERT INTO usuarios
-        (nome, email, telefone, senha_hash, tipo, status)
-        VALUES (?, ?, ?, ?, ?, ?)
-    `;
+    INSERT INTO usuarios
+    (nome, email, telefone, senha_hash, tipo, status)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
 
-  // ==================================================
-  // INÍCIO DA TRANSAÇÃO
-  // ==================================================
-
-  // Inicia uma transação no MySQL.
-  //
-  // A partir daqui, as alterações poderão ser
-  // confirmadas com COMMIT ou desfeitas com ROLLBACK.
-  connection.beginTransaction((error) => {
-    // Verifica se houve algum problema ao iniciar
-    // a transação.
+  connection.getConnection((error, transactionConnection) => {
     if (error) {
-      console.error("Erro ao iniciar transação:", error.message);
+      console.error("Erro ao obter conexão:", error.message);
 
-      res.status(500).json({
+      return res.status(500).json({
         mensagem: "Erro ao iniciar cadastro",
       });
-
-      return;
     }
 
-    // ==================================================
-    // PRIMEIRO INSERT
-    // ==================================================
+    transactionConnection.beginTransaction((error) => {
+      if (error) {
+        console.error("Erro ao iniciar transação:", error.message);
+        transactionConnection.release();
 
-    // Insere os dados básicos na tabela "usuarios".
-    connection.query(
-      sql,
+        return res.status(500).json({
+          mensagem: "Erro ao iniciar cadastro",
+        });
+      }
 
-      // Os valores seguem exatamente a mesma
-      // ordem dos "?" presentes na SQL.
-      [nome, email, telefone, senhaHash, "ORGANIZADOR", "PENDENTE"],
+      transactionConnection.query(
+        sql,
+        [nome, email, telefone, senhaHash, "ORGANIZADOR", "PENDENTE"],
+        (error, results) => {
+          if (error) {
+            return transactionConnection.rollback(() => {
+              transactionConnection.release();
 
-      (error, results) => {
-        // Se o primeiro INSERT falhar,
-        // desfazemos a transação.
-        if (error) {
-          connection.rollback(() => {
-            console.error("Erro ao cadastrar usuário:", error.message);
+              console.error("Erro ao cadastrar usuário:", error.message);
 
-            // ER_DUP_ENTRY significa que
-            // tentamos inserir um valor que
-            // deveria ser único, mas já existe.
-            if (error.code === "ER_DUP_ENTRY") {
-              res.status(409).json({
-                mensagem: "E-mail já cadastrado",
-              });
-
-              return;
-            }
-
-            res.status(500).json({
-              mensagem: "Erro ao cadastrar usuário",
-            });
-          });
-
-          return;
-        }
-
-        // ==================================================
-        // SQL DO ORGANIZADOR
-        // ==================================================
-
-        // SQL responsável por inserir os dados
-        // específicos do organizador.
-        const sqlOrganizador = `
-                    INSERT INTO organizadores
-                    (id_usuario, tipo_pessoa, documento, data_nascimento)
-                    VALUES (?, ?, ?, ?)
-                `;
-
-        // ==================================================
-        // SEGUNDO INSERT
-        // ==================================================
-
-        // Insere os dados específicos do organizador.
-        connection.query(
-          sqlOrganizador,
-
-          // results.insertId contém o ID gerado
-          // automaticamente pelo primeiro INSERT.
-          //
-          // Esse ID será utilizado como
-          // id_usuario na tabela organizadores.
-          [results.insertId, tipo_pessoa, documento, data_nascimento],
-
-          (error) => {
-            // Se o segundo INSERT falhar,
-            // desfazemos também o primeiro INSERT.
-            if (error) {
-              connection.rollback(() => {
-                console.error("Erro ao cadastrar organizador:", error.message);
-
-                // Verifica se o erro aconteceu
-                // porque o documento já existe.
-                if (error.code === "ER_DUP_ENTRY") {
-                  res.status(409).json({
-                    mensagem: "Documento já cadastrado",
-                  });
-
-                  return;
-                }
-
-                res.status(500).json({
-                  mensagem: "Erro ao cadastrar organizador",
+              if (error.code === "ER_DUP_ENTRY") {
+                return res.status(409).json({
+                  mensagem: "E-mail já cadastrado",
                 });
-              });
-
-              return;
-            }
-
-            // ==================================================
-            // COMMIT
-            // ==================================================
-
-            // Os dois INSERTs foram executados com sucesso.
-            //
-            // Agora confirmamos definitivamente
-            // todas as alterações realizadas
-            // durante a transação.
-            connection.commit((error) => {
-              // Verifica se houve algum problema
-              // ao confirmar a transação.
-              if (error) {
-                // Se o COMMIT falhar, tentamos
-                // desfazer a transação.
-                connection.rollback(() => {
-                  console.error("Erro ao confirmar cadastro:", error.message);
-
-                  res.status(500).json({
-                    mensagem: "Erro ao confirmar cadastro",
-                  });
-                });
-
-                return;
               }
 
-              // ==================================================
-              // RESPOSTA DE SUCESSO
-              // ==================================================
-
-              // HTTP 201 = Created.
-              //
-              // Só chegamos aqui depois que:
-              //
-              // 1. O usuário foi criado.
-              // 2. O organizador foi criado.
-              // 3. O COMMIT foi realizado.
-              res.status(201).json({
-                mensagem: "Organizador cadastrado com sucesso!",
-                id: results.insertId,
+              return res.status(500).json({
+                mensagem: "Erro ao cadastrar usuário",
               });
             });
           }
-        );
-      }
-    );
+
+          const sqlOrganizador = `
+            INSERT INTO organizadores
+            (id_usuario, tipo_pessoa, documento, data_nascimento)
+            VALUES (?, ?, ?, ?)
+          `;
+
+          transactionConnection.query(
+            sqlOrganizador,
+            [results.insertId, tipo_pessoa, documento, data_nascimento],
+            (error) => {
+              if (error) {
+                return transactionConnection.rollback(() => {
+                  transactionConnection.release();
+
+                  console.error("Erro ao cadastrar organizador:", error.message);
+
+                  if (error.code === "ER_DUP_ENTRY") {
+                    return res.status(409).json({
+                      mensagem: "Documento já cadastrado",
+                    });
+                  }
+
+                  return res.status(500).json({
+                    mensagem: "Erro ao cadastrar organizador",
+                  });
+                });
+              }
+
+              transactionConnection.commit((error) => {
+                if (error) {
+                  return transactionConnection.rollback(() => {
+                    transactionConnection.release();
+
+                    console.error("Erro ao confirmar cadastro:", error.message);
+
+                    return res.status(500).json({
+                      mensagem: "Erro ao confirmar cadastro",
+                    });
+                  });
+                }
+
+                transactionConnection.release();
+
+                return res.status(201).json({
+                  mensagem: "Organizador cadastrado com sucesso!",
+                  id: results.insertId,
+                });
+              });
+            }
+          );
+        }
+      );
+    });
   });
 });
+
 
 // ======================================================
 // POST /fornecedores
@@ -986,227 +862,136 @@ app.post("/organizadores", (req, res) => {
 // Se alguma operação falhar:
 //     ROLLBACK
 
+
 app.post("/fornecedores", (req, res) => {
-  // ==================================================
-  // DADOS RECEBIDOS
-  // ==================================================
+  const {
+    nome,
+    email,
+    senha,
+    telefone,
+    cnpj,
+    categoria_atuacao,
+  } = req.body;
 
-  // Retira do req.body os campos necessários
-  // para realizar o cadastro do fornecedor.
-  const { nome, email, senha, telefone, cnpj, categoria_atuacao } = req.body;
-
-  // ==================================================
-  // VALIDAÇÃO DOS CAMPOS OBRIGATÓRIOS
-  // ==================================================
-
-  // Verifica se algum dos campos necessários
-  // não foi informado pelo usuário.
   if (!nome || !email || !senha || !telefone || !cnpj || !categoria_atuacao) {
-    res.status(400).json({
+    return res.status(400).json({
       mensagem: "Todos os campos são obrigatórios",
     });
-
-    return;
   }
 
-  // ==================================================
-  // VALIDAÇÃO DO CNPJ
-  // ==================================================
-
-  // Neste momento estamos esperando que o CNPJ
-  // seja informado somente com números.
-  //
-  // Exemplo:
-  // 12345678000199
-  //
-  // Por isso verificamos se possui exatamente
-  // 14 caracteres.
   if (cnpj.length !== 14) {
-    res.status(400).json({
+    return res.status(400).json({
       mensagem: "CNPJ deve ter 14 dígitos",
     });
-
-    return;
   }
 
   const senhaHash = bcrypt.hashSync(senha, 10);
 
-  // ==================================================
-  // SQL DO USUÁRIO
-  // ==================================================
-
-  // Primeiro vamos cadastrar os dados básicos
-  // na tabela usuarios.
   const sql = `
     INSERT INTO usuarios
     (nome, email, telefone, senha_hash, tipo, status)
     VALUES (?, ?, ?, ?, ?, ?)
   `;
 
-  // ==================================================
-  // INÍCIO DA TRANSAÇÃO
-  // ==================================================
-
-  // Inicia uma transação no MySQL.
-  //
-  // A partir daqui, as alterações poderão ser
-  // confirmadas com COMMIT ou desfeitas com ROLLBACK.
-  connection.beginTransaction((error) => {
-    // Verifica se aconteceu algum erro
-    // ao iniciar a transação.
+  connection.getConnection((error, transactionConnection) => {
     if (error) {
-      console.error("Erro ao iniciar transação:", error.message);
+      console.error("Erro ao obter conexão:", error.message);
 
-      res.status(500).json({
+      return res.status(500).json({
         mensagem: "Erro ao iniciar cadastro",
       });
-
-      return;
     }
 
-    // ==================================================
-    // PRIMEIRO INSERT
-    // ==================================================
+    transactionConnection.beginTransaction((error) => {
+      if (error) {
+        console.error("Erro ao iniciar transação:", error.message);
+        transactionConnection.release();
 
-    // Insere os dados básicos do fornecedor
-    // na tabela usuarios.
-    connection.query(
-      sql,
+        return res.status(500).json({
+          mensagem: "Erro ao iniciar cadastro",
+        });
+      }
 
-      // Os valores seguem exatamente a mesma
-      // ordem dos "?" presentes na SQL.
-      [nome, email, telefone, senhaHash, "FORNECEDOR", "PENDENTE"],
+      transactionConnection.query(
+        sql,
+        [nome, email, telefone, senhaHash, "FORNECEDOR", "PENDENTE"],
+        (error, results) => {
+          if (error) {
+            return transactionConnection.rollback(() => {
+              transactionConnection.release();
 
-      (error, results) => {
-        // Verifica se aconteceu algum erro
-        // durante o primeiro INSERT.
-        if (error) {
-          // Desfaz a transação.
-          connection.rollback(() => {
-            console.error("Erro ao cadastrar fornecedor:", error.message);
+              console.error("Erro ao cadastrar fornecedor:", error.message);
 
-            // ER_DUP_ENTRY significa que tentamos
-            // inserir um valor que deveria ser único,
-            // mas ele já existe no banco.
-            if (error.code === "ER_DUP_ENTRY") {
-              res.status(409).json({
-                mensagem: "E-mail já cadastrado",
-              });
-
-              return;
-            }
-
-            res.status(500).json({
-              mensagem: "Erro ao cadastrar fornecedor",
-            });
-          });
-
-          return;
-        }
-
-        console.log("Usuário fornecedor criado com sucesso!");
-
-        // ==================================================
-        // SQL DO FORNECEDOR
-        // ==================================================
-
-        // Agora vamos inserir os dados específicos
-        // do fornecedor na tabela fornecedores.
-        const sqlFornecedor = `
-          INSERT INTO fornecedores
-          (id_usuario, cnpj, categoria_atuacao)
-          VALUES (?, ?, ?)
-        `;
-
-        // ==================================================
-        // SEGUNDO INSERT
-        // ==================================================
-
-        // Insere os dados específicos do fornecedor.
-        connection.query(
-          sqlFornecedor,
-
-          // results.insertId contém o ID gerado
-          // pelo primeiro INSERT na tabela usuarios.
-          //
-          // Esse mesmo ID será utilizado como
-          // id_usuario na tabela fornecedores.
-          [results.insertId, cnpj, categoria_atuacao],
-
-          (error) => {
-            // Verifica se aconteceu algum erro
-            // durante o segundo INSERT.
-            if (error) {
-              // Desfaz também o primeiro INSERT.
-              connection.rollback(() => {
-                console.error("Erro ao cadastrar fornecedor:", error.message);
-
-                // Se o CNPJ já existir,
-                // retornamos HTTP 409.
-                if (error.code === "ER_DUP_ENTRY") {
-                  res.status(409).json({
-                    mensagem: "CNPJ já cadastrado",
-                  });
-
-                  return;
-                }
-
-                res.status(500).json({
-                  mensagem: "Erro ao cadastrar fornecedor",
+              if (error.code === "ER_DUP_ENTRY") {
+                return res.status(409).json({
+                  mensagem: "E-mail já cadastrado",
                 });
-              });
-
-              return;
-            }
-
-            // ==================================================
-            // COMMIT
-            // ==================================================
-
-            // Os dois INSERTs foram executados com sucesso.
-            //
-            // Agora confirmamos definitivamente
-            // todas as alterações realizadas
-            // durante a transação.
-            connection.commit((error) => {
-              // Verifica se aconteceu algum erro
-              // ao confirmar a transação.
-              if (error) {
-                console.error("Erro ao confirmar cadastro:", error.message);
-
-                // Tenta desfazer a transação.
-                connection.rollback(() => {
-                  res.status(500).json({
-                    mensagem: "Erro ao confirmar cadastro",
-                  });
-                });
-
-                return;
               }
 
-              // ==================================================
-              // RESPOSTA DE SUCESSO
-              // ==================================================
-
-              // HTTP 201 = Created.
-              //
-              // Só chegamos aqui depois que:
-              //
-              // 1. O usuário foi criado.
-              // 2. O fornecedor foi criado.
-              // 3. O COMMIT foi realizado.
-
-              res.status(201).json({
-                mensagem: "Fornecedor cadastrado com sucesso!",
-                id: results.insertId,
+              return res.status(500).json({
+                mensagem: "Erro ao cadastrar fornecedor",
               });
             });
           }
-        );
-      }
-    );
+
+          console.log("Usuário fornecedor criado com sucesso!");
+
+          const sqlFornecedor = `
+            INSERT INTO fornecedores
+            (id_usuario, cnpj, categoria_atuacao)
+            VALUES (?, ?, ?)
+          `;
+
+          transactionConnection.query(
+            sqlFornecedor,
+            [results.insertId, cnpj, categoria_atuacao],
+            (error) => {
+              if (error) {
+                return transactionConnection.rollback(() => {
+                  transactionConnection.release();
+
+                  console.error("Erro ao cadastrar fornecedor:", error.message);
+
+                  if (error.code === "ER_DUP_ENTRY") {
+                    return res.status(409).json({
+                      mensagem: "CNPJ já cadastrado",
+                    });
+                  }
+
+                  return res.status(500).json({
+                    mensagem: "Erro ao cadastrar fornecedor",
+                  });
+                });
+              }
+
+              transactionConnection.commit((error) => {
+                if (error) {
+                  return transactionConnection.rollback(() => {
+                    transactionConnection.release();
+
+                    console.error("Erro ao confirmar cadastro:", error.message);
+
+                    return res.status(500).json({
+                      mensagem: "Erro ao confirmar cadastro",
+                    });
+                  });
+                }
+
+                transactionConnection.release();
+
+                return res.status(201).json({
+                  mensagem: "Fornecedor cadastrado com sucesso!",
+                  id: results.insertId,
+                });
+              });
+            }
+          );
+        }
+      );
+    });
   });
 });
+
 
 //Rota responsavel pelo login de usuários (organizadores e fornecedores).
 app.post("/login", (req, res) => {
